@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幸运转盘 - 喵喵游戏中心</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 返回按钮 -->
+        <a href="../../index.html" class="back-button">← 返回游戏中心</a>
+        
+        <!-- 游戏标题 -->
+        <h1 class="game-title">🎡 幸运转盘</h1>
+        <p class="game-description">转动幸运转盘，看看你的运气如何！</p>
+        
+        <!-- 转盘容器 -->
+        <div class="wheel-container">
+            <canvas id="wheelCanvas" width="400" height="400"></canvas>
+            <div class="wheel-pointer">▼</div>
+        </div>
+        
+        <!-- 控制区域 -->
+        <div class="controls">
+            <button id="spinButton" class="spin-button">🎲 开始抽奖</button>
+            <button id="resetButton" class="reset-button">🔄 重置</button>
+        </div>
+        
+        <!-- 结果显示 -->
+        <div id="resultDisplay" class="result-display" style="display: none;">
+            <h2>🎉 恭喜你抽中了：</h2>
+            <p id="resultText" class="result-text"></p>
+        </div>
+        
+        <!-- 设置区域 -->
+        <div class="settings">
+            <h3>转盘设置</h3>
+            <div class="settings-content">
+                <label for="itemsInput">奖项列表（每行一个）：</label>
+                <textarea id="itemsInput" rows="6" placeholder="一等奖&#10;二等奖&#10;三等奖&#10;谢谢参与"></textarea>
+                <button id="updateButton" class="update-button">更新转盘</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
