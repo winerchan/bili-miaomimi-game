@@ -1,0 +1,41 @@
+# 操作系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器和IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.log
+*.tmp
+.cache/
+
+# Node.js (如果将来需要使用)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# 构建输出 (如果将来需要构建)
+dist/
+build/
+.output/
+
+# 环境变量文件
+.env
+.env.local
+.env.*.local
+
+# 测试覆盖率报告
+coverage/
+.nyc_output/
+
+# Cloudflare相关
+.wrangler/
+wrangler.toml.backup
