@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星喵的贪心考验</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #0b0f20;
+            background-image: 
+                radial-gradient(ellipse at top, #1a1a3e 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, #0d1a2d 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            color: #e0f7fa;
+        }
+        
+        .container {
+            background: linear-gradient(135deg, #1c2a4f 0%, #162447 100%);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 0 40px rgba(100, 149, 237, 0.4);
+            padding: 25px;
+            position: relative;
+            border: 1px solid rgba(100, 149, 237, 0.3);
+        }
+        
+        /* 设置按钮 */
+        .settings-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #4a148c 0%, #6a1b9a 100%);
+            color: #ffd700;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(106, 27, 154, 0.5);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .settings-btn:hover {
+            transform: rotate(30deg) scale(1.1);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+        }
+        
+        /* 标题 */
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 15px;
+        }
+        
+        .title::before { content: '🐱'; margin-right: 10px; }
+        .title::after { content: '✨'; margin-left: 10px; }
+        
+        /* 进度条 */
+        .progress-bar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .progress-step {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            background: #2d3a5a;
+            color: #7f8c9a;
+            border: 2px solid #3d4a6a;
+            transition: all 0.3s ease;
+        }
+        
+        .progress-step.active {
+            background: linear-gradient(135deg, #6a1b9a 0%, #9c27b0 100%);
+            color: #fff;
+            border-color: #ce93d8;
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(156, 39, 176, 0.6);
+        }
+        
+        .progress-step.completed {
+            background: linear-gradient(135deg, #00796b 0%, #00e676 100%);
+            color: #fff;
+            border-color: #69f0ae;
+        }
+        
+        /* 关卡信息 */
+        .level-info {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #e65100 0%, #ff9800 100%);
+            color: white;
+            padding: 10px 28px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
+        }
+        
+        /* 当前奖励 */
+        .current-reward {
+            text-align: center;
+            margin: 20px 0;
+            padding: 18px;
+            background: linear-gradient(135deg, #1a237e 0%, #311b92 100%);
+            border-radius: 16px;
+            border: 2px solid #7c4dff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .current-reward::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(124, 77, 255, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .reward-label {
+            font-size: 14px;
+            color: #b388ff;
+            margin-bottom: 8px;
+        }
+        
+        .reward-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff69b4;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 难度显示 */
+        .difficulty-display {
+            text-align: center;
+            margin: 12px 0;
+            padding: 12px;
+            background: rgba(74, 20, 140, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(156, 39, 176, 0.3);
+        }
+        
+        .difficulty-text {
+            font-size: 14px;
+            color: #ce93d8;
+        }
+        
+        .difficulty-text strong {
+            color: #ffab40;
+        }
+        
+        /* 选择计数器 */
+        .selection-counter {
+            text-align: center;
+            margin: 12px 0;
+            font-size: 16px;
+            color: #ffd700;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* 提示信息 */
+        .hint {
+            text-align: center;
+            color: #f1c40f;
+            font-size: 15px;
+            margin: 15px 0;
+            min-height: 24px;
+            text-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
+        }
+        
+        .hint.warning {
+            color: #ff7043;
+            animation: pulse 1s infinite;
+        }
+        
+        .hint.success {
+            color: #69f0ae;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* 门区域 */
+        .doors-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+            min-height: 130px;
+            align-items: center;
+        }
+        
+        /* 卡样式 - 深空紫色卡片风格 */
+        .door {
+            width: 80px;
+            height: 105px;
+            background: linear-gradient(180deg, #4a148c 0%, #311b92 100%);
+            border: 3px solid #6a1b9a;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            user-select: none;
+            box-shadow: 0 5px 15px rgba(74, 20, 140, 0.4);
+        }
+        
+        .door-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #e0f7fa;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        
+        .door::before {
+            content: '?';
+            position: absolute;
+            font-size: 50px;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+        
+        .door:hover:not(.disabled):not(.selected):not(.revealed) {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(156, 39, 176, 0.5);
+            border-color: #ce93d8;
+            background: linear-gradient(180deg, #6a1b9a 0%, #4a148c 100%);
+        }
+        
+        /* 选中状态 - 金色边框 */
+        .door.selected {
+            border-color: #ffd700;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+            transform: scale(1.05);
+            background: linear-gradient(180deg, #5e35b1 0%, #4527a0 100%);
+        }
+        
+        .door.selected::after {
+            content: '★';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 20px;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+        }
+        
+        /* 扫描动画 */
+        .door.scanning {
+            animation: scanning 0.15s ease;
+        }
+        
+        /* 选中的卡扫描时保留边框和星星 */
+        .door.selected.scanning {
+            animation: scanning-selected 0.15s ease;
+        }
+        
+        @keyframes scanning {
+            0%, 100% { 
+                background: linear-gradient(180deg, #4a148c 0%, #311b92 100%);
+                transform: scale(1);
+            }
+            50% { 
+                background: linear-gradient(180deg, #ff5722 0%, #e64a19 100%);
+                transform: scale(1.08);
+                box-shadow: 0 0 30px rgba(255, 87, 34, 0.8);
+            }
+        }
+        
+        @keyframes scanning-selected {
+            0%, 100% { 
+                background: linear-gradient(180deg, #5e35b1 0%, #4527a0 100%);
+                transform: scale(1.05);
+            }
+            50% { 
+                background: linear-gradient(180deg, #ff5722 0%, #e64a19 100%);
+                transform: scale(1.12);
+                box-shadow: 0 0 30px rgba(255, 87, 34, 0.8), 0 0 15px rgba(255, 215, 0, 0.5);
+            }
+        }
+        
+        /* 揭示状态 - 抖动动画 */
+        .door.revealed {
+            cursor: default;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            10% { transform: translate(-1px, -1px) rotate(-0.5deg); }
+            20% { transform: translate(1px, -1px) rotate(0.5deg); }
+            30% { transform: translate(-1px, 1px) rotate(0deg); }
+            40% { transform: translate(1px, 1px) rotate(0.5deg); }
+            50% { transform: translate(-1px, -1px) rotate(-0.5deg); }
+            60% { transform: translate(1px, -1px) rotate(0deg); }
+            70% { transform: translate(-1px, 1px) rotate(-0.5deg); }
+            80% { transform: translate(1px, 1px) rotate(0.5deg); }
+            90% { transform: translate(-1px, -1px) rotate(0deg); }
+        }
+        
+        /* 中奖卡 - 绿色闪烁 */
+        .door.winner {
+            background: linear-gradient(180deg, #00c853 0%, #00e676 100%);
+            border-color: #69f0ae;
+            color: #1c2a4f;
+            animation: shake 0.5s, flash-green 0.5s 3;
+        }
+        
+        .door.winner .door-number {
+            color: #1c2a4f;
+        }
+        
+        @keyframes flash-green {
+            0%, 100% { box-shadow: 0 0 25px #00e676; }
+            50% { box-shadow: 0 0 5px #00e676; }
+        }
+        
+        /* 命中卡 - 粉色庆祝 */
+        .door.hit {
+            background: linear-gradient(180deg, #ff4081 0%, #f50057 100%);
+            border-color: #ff80ab;
+            animation: shake 0.5s, hit-celebrate 0.6s ease forwards, flash-pink 0.4s 5;
+        }
+        
+        .door.hit .door-number {
+            color: #fff;
+        }
+        
+        @keyframes hit-celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2) rotate(-5deg); }
+            100% { transform: scale(1.15); }
+        }
+        
+        @keyframes flash-pink {
+            0%, 100% { box-shadow: 0 0 30px #ff4081; }
+            50% { box-shadow: 0 0 50px #ff4081, 0 0 80px #f50057; }
+        }
+        
+        /* 未中奖卡 - 红色/灰暗 */
+        .door.loser {
+            background: linear-gradient(180deg, #37474f 0%, #263238 100%);
+            border-color: #455a64;
+            opacity: 0.5;
+            transform: scale(0.9);
+            animation: shake 0.5s;
+        }
+        
+        .door.loser .door-number {
+            color: #78909c;
+        }
+        
+        .door.disabled {
+            cursor: default;
+        }
+        
+        /* 按钮组 */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+            min-height: 52px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 30px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(52, 152, 219, 0.6);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(46, 204, 113, 0.4);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(46, 204, 113, 0.6);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(231, 76, 60, 0.6);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4);
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(243, 156, 18, 0.6);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* 结果弹窗 */
+        .result-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .result-overlay.active {
+            display: flex;
+        }
+        
+        .result-modal {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            animation: modalBounce 0.5s ease;
+        }
+        
+        @keyframes modalBounce {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .result-icon {
+            font-size: 80px;
+            margin-bottom: 15px;
+            animation: iconPulse 1s infinite;
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .result-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .result-title.success { 
+            color: #2ecc71;
+            text-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+        }
+        .result-title.fail { 
+            color: #e74c3c;
+            text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+        
+        .result-message {
+            font-size: 16px;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .result-reward {
+            font-size: 22px;
+            font-weight: bold;
+            color: #f39c12;
+            padding: 18px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 2px solid #f39c12;
+            box-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+        }
+        
+        /* 设置模态框 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 85vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            animation: modalIn 0.3s ease;
+        }
+        
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9) translateY(-20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #4a148c 0%, #6a1b9a 100%);
+            color: #ffd700;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 20px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+            background: #1a252f;
+        }
+        
+        .level-config {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .level-config:hover {
+            border-color: #9c27b0;
+        }
+        
+        .level-config-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .level-config-title {
+            font-weight: bold;
+            color: #f39c12;
+            font-size: 16px;
+        }
+        
+        .level-probability {
+            font-size: 13px;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        
+        .level-probability.low {
+            color: #e74c3c;
+        }
+        
+        .delete-level-btn {
+            background: #e74c3c;
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .delete-level-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+        
+        .config-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .config-row.four-cols {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .config-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .config-item.full {
+            grid-column: 1 / -1;
+        }
+        
+        .config-item label {
+            font-size: 11px;
+            color: #95a5a6;
+        }
+        
+        .config-item input {
+            padding: 10px;
+            border: 2px solid #34495e;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #1a252f;
+            color: #e0f7fa;
+            transition: border-color 0.3s;
+            width: 100%;
+        }
+        
+        .config-item input:focus {
+            outline: none;
+            border-color: #9c27b0;
+        }
+        
+        .config-hint {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 8px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            border-left: 3px solid #f39c12;
+        }
+        
+        .add-level-btn {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px dashed #6a1b9a;
+            border-radius: 12px;
+            font-size: 16px;
+            color: #ce93d8;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .add-level-btn:hover {
+            background: linear-gradient(135deg, #4a148c 0%, #6a1b9a 100%);
+            color: #ffd700;
+            border-color: transparent;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            background: #2c3e50;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-footer button {
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .save-btn {
+            background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
+            color: white;
+        }
+        
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(156, 39, 176, 0.5);
+        }
+        
+        .cancel-btn {
+            background: #455a64;
+            color: #e0f7fa;
+        }
+        
+        .cancel-btn:hover {
+            background: #546e7a;
+        }
+        
+        /* 撒花特效 */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            overflow: hidden;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confettiFall 3s ease-out forwards;
+        }
+        
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 星星特效 */
+        .star-burst {
+            position: absolute;
+            font-size: 30px;
+            animation: starBurst 1s ease-out forwards;
+            pointer-events: none;
+        }
+        
+        @keyframes starBurst {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2) rotate(180deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+            color: #e0f7fa;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: bold;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .container { padding: 15px; }
+            .title { font-size: 22px; }
+            .door { width: 60px; height: 80px; }
+            .door-number { font-size: 24px; }
+            .door::before { font-size: 35px; }
+            .btn { padding: 12px 18px; font-size: 14px; min-width: 110px; }
+            .reward-text { font-size: 18px; }
+            .progress-step { width: 28px; height: 28px; font-size: 11px; }
+            .config-row.four-cols { grid-template-columns: repeat(2, 1fr); }
+            .level-config-header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="settings-btn" id="settingsBtn" title="设置">⚙️</button>
+        <h1 class="title">星喵的贪心考验</h1>
+        
+        <div class="progress-bar" id="progressBar"></div>
+        
+        <div class="level-info">
+            <span class="level-badge" id="levelBadge">第 1 关</span>
+        </div>
+        
+        <div class="current-reward">
+            <div class="reward-label">🎁 当前关卡奖励</div>
+            <div class="reward-text" id="currentReward">神秘礼物</div>
+        </div>
+        
+        <div class="difficulty-display">
+            <div class="difficulty-text" id="difficultyText">
+                共 <strong>3</strong> 张，你选 <strong>1</strong> 张，星喵开 <strong>2</strong> 张
+            </div>
+        </div>
+        
+        <div class="selection-counter" id="selectionCounter" style="display:none;">
+            已选择: 0 / 1
+        </div>
+        
+        <div class="hint" id="hint">准备好接受星喵的贪心考验了吗？</div>
+        
+        <div class="doors-container" id="doorsContainer"></div>
+        
+        <div class="btn-group" id="btnGroup">
+            <button class="btn btn-primary" id="startBtn">开始挑战</button>
+        </div>
+    </div>
+    
+    <!-- 结果弹窗 -->
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-modal">
+            <div class="result-icon" id="resultIcon">🎉</div>
+            <div class="result-title" id="resultTitle">恭喜过关！</div>
+            <div class="result-message" id="resultMessage">你成功了！</div>
+            <div class="result-reward" id="resultReward" style="display:none;">获得奖励</div>
+            <div class="btn-group">
+                <button class="btn btn-warning" id="collectBtn" style="display:none;">收下奖励 💰</button>
+                <button class="btn btn-success" id="continueBtn" style="display:none;">继续挑战 🔥</button>
+                <button class="btn btn-danger" id="leaveBtn" style="display:none;">遗憾离场 😢</button>
+                <button class="btn btn-primary" id="retryBtn" style="display:none;">再来一次 🔄</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 设置模态框 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>⚙️ 关卡设置</h2>
+                <button class="close-btn" id="closeModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="level-list" id="levelList"></div>
+                <button class="add-level-btn" id="addLevelBtn">
+                    <span>➕</span> 添加关卡
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" id="cancelBtn">取消</button>
+                <button class="save-btn" id="saveBtn">保存设置</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM 元素
+            const progressBar = document.getElementById('progressBar');
+            const levelBadge = document.getElementById('levelBadge');
+            const currentRewardEl = document.getElementById('currentReward');
+            const difficultyText = document.getElementById('difficultyText');
+            const selectionCounter = document.getElementById('selectionCounter');
+            const hint = document.getElementById('hint');
+            const doorsContainer = document.getElementById('doorsContainer');
+            const btnGroup = document.getElementById('btnGroup');
+            const startBtn = document.getElementById('startBtn');
+            const resultOverlay = document.getElementById('resultOverlay');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultReward = document.getElementById('resultReward');
+            const collectBtn = document.getElementById('collectBtn');
+            const continueBtn = document.getElementById('continueBtn');
+            const leaveBtn = document.getElementById('leaveBtn');
+            const retryBtn = document.getElementById('retryBtn');
+            const settingsBtn = document.getElementById('settingsBtn');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const closeModal = document.getElementById('closeModal');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const levelList = document.getElementById('levelList');
+            const addLevelBtn = document.getElementById('addLevelBtn');
+            const confettiContainer = document.getElementById('confettiContainer');
+            
+            // 游戏状态
+            let currentLevel = 0;
+            let selectedDoors = [];
+            let gamePhase = 'idle';
+            let retryCount = {};
+            
+            // 默认关卡配置
+            let levelsConfig = [
+                { reward: '🎵 点歌一首', totalDoors: 3, winDoors: 1, userDoors: 2, pity: -1 },
+                { reward: '⭐ 小星星贴纸', totalDoors: 4, winDoors: 1, userDoors: 2, pity: -1 },
+                { reward: '💋 3分钟亲亲', totalDoors: 5, winDoors: 2, userDoors: 1, pity: 3 },
+                { reward: '🎁 神秘小礼物', totalDoors: 5, winDoors: 2, userDoors: 1, pity: -1 },
+                { reward: '🌙 一周哄睡服务', totalDoors: 6, winDoors: 2, userDoors: 1, pity: 5 },
+                { reward: '👑 超级大奖', totalDoors: 6, winDoors: 1, userDoors: 1, pity: 10 }
+            ];
+            
+            let tempConfig = [];
+            
+            // 计算概率
+            function calcProbability(total, win, user) {
+                if (user >= total || win >= total || user < 1 || win < 1) return 0;
+                const combination = (n, r) => {
+                    if (r > n || r < 0) return 0;
+                    if (r === 0 || r === n) return 1;
+                    let result = 1;
+                    for (let i = 0; i < r; i++) {
+                        result = result * (n - i) / (i + 1);
+                    }
+                    return result;
+                };
+                const noHitProb = combination(total - user, win) / combination(total, win);
+                return Math.max(0, Math.min(1, 1 - noHitProb));
+            }
+            
+            // 加载配置
+            function loadConfig() {
+                const saved = localStorage.getItem('greedyGameConfigV3');
+                if (saved) {
+                    try {
+                        levelsConfig = JSON.parse(saved);
+                        levelsConfig.forEach(c => {
+                            if (c.userDoors === undefined) c.userDoors = 1;
+                            if (c.pity === undefined) c.pity = -1;
+                        });
+                    } catch (e) {
+                        console.error('配置加载失败', e);
+                    }
+                }
+            }
+            
+            // 保存配置
+            function saveConfig() {
+                localStorage.setItem('greedyGameConfigV3', JSON.stringify(levelsConfig));
+            }
+            
+            // 渲染进度条
+            function renderProgress() {
+                progressBar.innerHTML = '';
+                levelsConfig.forEach((_, index) => {
+                    const step = document.createElement('div');
+                    step.className = 'progress-step';
+                    if (index < currentLevel) step.classList.add('completed');
+                    if (index === currentLevel) step.classList.add('active');
+                    step.textContent = index + 1;
+                    progressBar.appendChild(step);
+                });
+            }
+            
+            // 更新界面显示
+            function updateDisplay() {
+                const config = levelsConfig[currentLevel];
+                levelBadge.textContent = `第 ${currentLevel + 1} 关`;
+                currentRewardEl.textContent = config.reward;
+                difficultyText.innerHTML = `
+                    共 <strong>${config.totalDoors}</strong> 张卡，
+                    你选 <strong>${config.userDoors}</strong> 张，
+                    星喵选 <strong>${config.winDoors}</strong> 张
+                `;
+                renderProgress();
+            }
+            
+            // 更新选择计数器
+            function updateSelectionCounter() {
+                const config = levelsConfig[currentLevel];
+                selectionCounter.textContent = `已选择: ${selectedDoors.length} / ${config.userDoors}`;
+                selectionCounter.style.display = 'block';
+            }
+            
+            // 创建卡
+            function createDoors() {
+                const config = levelsConfig[currentLevel];
+                doorsContainer.innerHTML = '';
+                
+                for (let i = 0; i < config.totalDoors; i++) {
+                    const door = document.createElement('div');
+                    door.className = 'door';
+                    door.dataset.index = i;
+                    door.innerHTML = `<span class="door-number">${i + 1}</span>`;
+                    door.addEventListener('click', () => toggleDoor(door, i));
+                    doorsContainer.appendChild(door);
+                }
+            }
+            
+            // 切换卡选择
+            function toggleDoor(doorEl, index) {
+                if (gamePhase !== 'selecting') return;
+                
+                const config = levelsConfig[currentLevel];
+                
+                if (doorEl.classList.contains('selected')) {
+                    doorEl.classList.remove('selected');
+                    selectedDoors = selectedDoors.filter(d => d !== index);
+                } else {
+                    if (selectedDoors.length >= config.userDoors) {
+                        hint.textContent = `最多只能选 ${config.userDoors} 张卡！`;
+                        hint.classList.add('warning');
+                        return;
+                    }
+                    doorEl.classList.add('selected');
+                    selectedDoors.push(index);
+                }
+                
+                updateSelectionCounter();
+                
+                if (selectedDoors.length === config.userDoors) {
+                    const doorNumbers = selectedDoors.map(d => d + 1).sort((a,b) => a-b).join('、');
+                    hint.textContent = `已选择第 ${doorNumbers} 号卡，点击"确认选择"开始考验！`;
+                    hint.classList.remove('warning');
+                    hint.classList.add('success');
+                    
+                    btnGroup.innerHTML = `
+                        <button class="btn btn-warning" id="confirmBtn">确认选择 ✨</button>
+                        <button class="btn btn-danger" id="cancelSelectBtn">重新选择</button>
+                    `;
+                    
+                    document.getElementById('confirmBtn').addEventListener('click', confirmSelection);
+                    document.getElementById('cancelSelectBtn').addEventListener('click', resetSelection);
+                } else {
+                    hint.textContent = `请选择 ${config.userDoors} 张卡 (还需选 ${config.userDoors - selectedDoors.length} 张)`;
+                    hint.classList.remove('warning', 'success');
+                    btnGroup.innerHTML = `
+                        <button class="btn btn-danger" id="cancelSelectBtn">重新选择</button>
+                    `;
+                    document.getElementById('cancelSelectBtn').addEventListener('click', resetSelection);
+                }
+            }
+            
+            // 重置选择
+            function resetSelection() {
+                document.querySelectorAll('.door.selected').forEach(d => d.classList.remove('selected'));
+                selectedDoors = [];
+                updateSelectionCounter();
+                const config = levelsConfig[currentLevel];
+                hint.textContent = `请选择 ${config.userDoors} 张卡，考验你的运气！`;
+                hint.classList.remove('warning', 'success');
+                btnGroup.innerHTML = '';
+            }
+            
+            // 确认选择
+            async function confirmSelection() {
+                if (selectedDoors.length === 0) return;
+                
+                gamePhase = 'revealing';
+                btnGroup.innerHTML = '';
+                selectionCounter.style.display = 'none';
+                hint.textContent = '星喵正在进行贪心考验...';
+                hint.classList.remove('success');
+                hint.classList.add('warning');
+                
+                document.querySelectorAll('.door').forEach(d => d.classList.add('disabled'));
+                
+                const config = levelsConfig[currentLevel];
+                const totalDoors = config.totalDoors;
+                const winDoors = config.winDoors;
+                const pity = config.pity;
+                
+                const currentRetry = retryCount[currentLevel] || 0;
+                let forceWin = false;
+                
+                if (pity === 0) {
+                    forceWin = true;
+                } else if (pity > 0 && currentRetry >= pity) {
+                    forceWin = true;
+                }
+                
+                let winningDoors;
+                
+                if (forceWin) {
+                    const mustInclude = selectedDoors[Math.floor(Math.random() * selectedDoors.length)];
+                    const otherDoors = Array.from({length: totalDoors}, (_, i) => i)
+                        .filter(d => d !== mustInclude);
+                    const shuffledOthers = otherDoors.sort(() => Math.random() - 0.5);
+                    winningDoors = [mustInclude, ...shuffledOthers.slice(0, winDoors - 1)];
+                } else {
+                    const allDoors = Array.from({length: totalDoors}, (_, i) => i);
+                    const shuffled = allDoors.sort(() => Math.random() - 0.5);
+                    winningDoors = shuffled.slice(0, winDoors);
+                }
+                
+                winningDoors.sort((a, b) => a - b);
+                
+                const doors = document.querySelectorAll('.door');
+                const scanRounds = 3;
+                const scanDelay = 80;
+                
+                for (let round = 0; round < scanRounds; round++) {
+                    for (let i = 0; i < totalDoors; i++) {
+                        doors[i].classList.add('scanning');
+                        await sleep(scanDelay);
+                        doors[i].classList.remove('scanning');
+                    }
+                }
+                
+                hint.textContent = '命运正在揭晓...';
+                
+                const isWin = selectedDoors.some(d => winningDoors.includes(d));
+                
+                for (let i = 0; i < winningDoors.length; i++) {
+                    await sleep(600);
+                    const doorIndex = winningDoors[i];
+                    
+                    doors[doorIndex].classList.add('revealed');
+                    
+                    if (selectedDoors.includes(doorIndex)) {
+                        doors[doorIndex].classList.remove('selected');
+                        doors[doorIndex].classList.add('hit');
+                        doors[doorIndex].querySelector('.door-number').textContent = '🎉';
+                    } else {
+                        doors[doorIndex].classList.add('winner');
+                        doors[doorIndex].querySelector('.door-number').textContent = '✓';
+                    }
+                }
+                
+                await sleep(500);
+                doors.forEach((door, index) => {
+                    if (!winningDoors.includes(index)) {
+                        door.classList.remove('selected');
+                        door.classList.add('loser', 'revealed');
+                        door.querySelector('.door-number').textContent = '✗';
+                    }
+                });
+                
+                await sleep(800);
+                showResult(isWin);
+            }
+            
+            // 显示结果
+            async function showResult(isWin) {
+                gamePhase = 'result';
+                const config = levelsConfig[currentLevel];
+                const isLastLevel = currentLevel === levelsConfig.length - 1;
+                
+                if (isWin) {
+                    retryCount[currentLevel] = 0;
+                    
+                    // 先撒花
+                    createConfetti();
+                    
+                    // 延迟后再弹窗
+                    await sleep(800);
+                    
+                    resultIcon.textContent = '🎉';
+                    resultTitle.textContent = '恭喜过关！';
+                    resultTitle.className = 'result-title success';
+                    resultMessage.textContent = '你得到了喵喵的眷顾！';
+                    resultReward.textContent = `🎁 ${config.reward}`;
+                    resultReward.style.display = 'block';
+                    
+                    if (isLastLevel) {
+                        resultMessage.textContent = '🏆 恭喜通关所有关卡！你是最强欧皇！';
+                        collectBtn.style.display = 'inline-block';
+                        continueBtn.style.display = 'none';
+                    } else {
+                        resultMessage.textContent = '是否要挑战下一关？放弃则获得当前奖励';
+                        collectBtn.style.display = 'inline-block';
+                        continueBtn.style.display = 'inline-block';
+                    }
+                    
+                    leaveBtn.style.display = 'none';
+                    retryBtn.style.display = 'none';
+                } else {
+                    retryCount[currentLevel] = (retryCount[currentLevel] || 0) + 1;
+                    
+                    resultIcon.textContent = '💔';
+                    resultTitle.textContent = '挑战失败';
+                    resultTitle.className = 'result-title fail';
+                    resultMessage.textContent = '很遗憾，运气差了一点点...';
+                    resultReward.style.display = 'none';
+                    
+                    collectBtn.style.display = 'none';
+                    continueBtn.style.display = 'none';
+                    leaveBtn.style.display = 'inline-block';
+                    retryBtn.style.display = 'inline-block';
+                }
+                
+                resultOverlay.classList.add('active');
+            }
+            
+            // 撒花特效
+            function createConfetti() {
+                const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#1dd1a1', '#ffd700'];
+                
+                for (let i = 0; i < 60; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    if (Math.random() > 0.5) confetti.style.borderRadius = '50%';
+                    confettiContainer.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 4000);
+                }
+            }
+            
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            
+            // Toast提示
+            function showToast(message) {
+                // 移除已有的toast
+                const existingToast = document.querySelector('.toast');
+                if (existingToast) existingToast.remove();
+                
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                // 触发动画
+                requestAnimationFrame(() => {
+                    toast.classList.add('show');
+                });
+                
+                // 自动消失
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 400);
+                }, 2500);
+            }
+            
+            // 开始游戏
+            function startGame() {
+                gamePhase = 'selecting';
+                selectedDoors = [];
+                updateDisplay();
+                createDoors();
+                updateSelectionCounter();
+                const config = levelsConfig[currentLevel];
+                hint.textContent = `请选择 ${config.userDoors} 张卡，考验你的运气！`;
+                hint.classList.remove('warning', 'success');
+                btnGroup.innerHTML = '';
+            }
+            
+            // 重置游戏
+            function resetGame() {
+                currentLevel = 0;
+                gamePhase = 'idle';
+                selectedDoors = [];
+                retryCount = {};
+                updateDisplay();
+                doorsContainer.innerHTML = '';
+                selectionCounter.style.display = 'none';
+                hint.textContent = '准备好接受贪心的考验了吗？';
+                hint.classList.remove('warning', 'success');
+                btnGroup.innerHTML = `<button class="btn btn-primary" id="startBtn">开始挑战</button>`;
+                document.getElementById('startBtn').addEventListener('click', startGame);
+                resultOverlay.classList.remove('active');
+            }
+            
+            // 事件绑定
+            startBtn.addEventListener('click', startGame);
+            
+            collectBtn.addEventListener('click', () => {
+                // 直接显示成功收取的界面，不用 alert
+                resultIcon.textContent = '🎊';
+                resultTitle.textContent = '恭喜获得奖励！';
+                resultTitle.className = 'result-title success';
+                resultMessage.textContent = levelsConfig[currentLevel].reward;
+                resultReward.style.display = 'none';
+                
+                // 隐藏所有按钮，只显示返回按钮
+                collectBtn.style.display = 'none';
+                continueBtn.style.display = 'none';
+                leaveBtn.style.display = 'none';
+                retryBtn.style.display = 'none';
+                
+                // 创建返回首页按钮
+                const backBtn = document.createElement('button');
+                backBtn.className = 'btn btn-primary';
+                backBtn.textContent = '返回首页 🏠';
+                backBtn.onclick = () => {
+                    backBtn.remove();
+                    resetGame();
+                };
+                resultOverlay.querySelector('.btn-group').appendChild(backBtn);
+                
+                // 再来一波撒花
+                createConfetti();
+            });
+            
+            continueBtn.addEventListener('click', () => {
+                resultOverlay.classList.remove('active');
+                currentLevel++;
+                startGame();
+            });
+            
+            leaveBtn.addEventListener('click', resetGame);
+            
+            retryBtn.addEventListener('click', () => {
+                resultOverlay.classList.remove('active');
+                startGame();
+            });
+            
+            // 设置相关
+            settingsBtn.addEventListener('click', () => {
+                tempConfig = JSON.parse(JSON.stringify(levelsConfig));
+                renderLevelList();
+                modalOverlay.classList.add('active');
+            });
+            
+            function renderLevelList() {
+                levelList.innerHTML = '';
+                tempConfig.forEach((config, index) => {
+                    const prob = calcProbability(config.totalDoors, config.winDoors, config.userDoors);
+                    const probPercent = (prob * 100).toFixed(1);
+                    const probClass = prob < 0.5 ? 'low' : '';
+                    
+                    const item = document.createElement('div');
+                    item.className = 'level-config';
+                    item.innerHTML = `
+                        <div class="level-config-header">
+                            <span class="level-config-title">第 ${index + 1} 关</span>
+                            <span class="level-probability ${probClass}">过关概率: ${probPercent}%</span>
+                            <button class="delete-level-btn" data-index="${index}">✕</button>
+                        </div>
+                        <div class="config-item full">
+                            <label>奖励名称</label>
+                            <input type="text" value="${config.reward}" data-index="${index}" data-field="reward">
+                        </div>
+                        <div class="config-row four-cols">
+                            <div class="config-item">
+                                <label>总选项数量</label>
+                                <input type="number" value="${config.totalDoors}" min="2" max="12" data-index="${index}" data-field="totalDoors">
+                            </div>
+                            <div class="config-item">
+                                <label>观众选</label>
+                                <input type="number" value="${config.userDoors}" min="1" max="${config.totalDoors - 1}" data-index="${index}" data-field="userDoors">
+                            </div>
+                            <div class="config-item">
+                                <label>星喵选</label>
+                                <input type="number" value="${config.winDoors}" min="1" max="${config.totalDoors - 1}" data-index="${index}" data-field="winDoors">
+                            </div>
+                            <div class="config-item">
+                                <label>保底次数</label>
+                                <input type="number" value="${config.pity}" min="-1" max="99" data-index="${index}" data-field="pity">
+                            </div>
+                        </div>
+                        <div class="config-hint">
+                            💡 保底说明：-1=不保底，0=必中，N=失败N次后必中
+                        </div>
+                    `;
+                    levelList.appendChild(item);
+                });
+                
+                levelList.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('change', (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        const field = e.target.dataset.field;
+                        
+                        if (field === 'reward') {
+                            tempConfig[index][field] = e.target.value;
+                        } else {
+                            tempConfig[index][field] = parseInt(e.target.value) || 0;
+                        }
+                        
+                        const c = tempConfig[index];
+                        if (c.totalDoors < 2) c.totalDoors = 2;
+                        if (c.userDoors < 1) c.userDoors = 1;
+                        if (c.winDoors < 1) c.winDoors = 1;
+                        if (c.userDoors >= c.totalDoors) c.userDoors = c.totalDoors - 1;
+                        if (c.winDoors >= c.totalDoors) c.winDoors = c.totalDoors - 1;
+                        if (c.pity < -1) c.pity = -1;
+                        
+                        renderLevelList();
+                    });
+                });
+                
+                levelList.querySelectorAll('.delete-level-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        if (tempConfig.length > 1) {
+                            tempConfig.splice(index, 1);
+                            renderLevelList();
+                        } else {
+                            showToast('至少需要保留一个关卡');
+                        }
+                    });
+                });
+            }
+            
+            addLevelBtn.addEventListener('click', () => {
+                tempConfig.push({
+                    reward: '🎁 新奖励',
+                    totalDoors: 4,
+                    winDoors: 2,
+                    userDoors: 1,
+                    pity: -1
+                });
+                renderLevelList();
+                levelList.lastElementChild?.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            closeModal.addEventListener('click', () => modalOverlay.classList.remove('active'));
+            cancelBtn.addEventListener('click', () => modalOverlay.classList.remove('active'));
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) modalOverlay.classList.remove('active');
+            });
+            
+            saveBtn.addEventListener('click', () => {
+                for (let i = 0; i < tempConfig.length; i++) {
+                    const c = tempConfig[i];
+                    if (c.userDoors >= c.totalDoors || c.winDoors >= c.totalDoors) {
+                        showToast(`第 ${i + 1} 关配置有误：选卡数必须小于总卡数`);
+                        return;
+                    }
+                }
+                
+                levelsConfig = JSON.parse(JSON.stringify(tempConfig));
+                saveConfig();
+                modalOverlay.classList.remove('active');
+                resetGame();
+                showToast('设置已保存 ✓');
+            });
+            
+            // 初始化
+            loadConfig();
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>

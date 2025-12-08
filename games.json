@@ -7,11 +7,15 @@
       "category": "互动",
       "thumbnail": "assets/images/lucky-wheel-thumb.png",
       "path": "games/lucky-wheel/index.html",
-      "tags": ["抽奖", "互动", "趣味"],
+      "tags": [
+        "抽奖",
+        "互动",
+        "趣味"
+      ],
       "difficulty": "简单",
       "players": "单人",
-      "featured": true,
-      "hidden": false
+      "featured": false,
+      "hidden": true
     },
     {
       "id": "memory-cards",
@@ -20,10 +24,62 @@
       "category": "益智",
       "thumbnail": "assets/images/memory-cards-thumb.png",
       "path": "games/memory-cards/index.html",
-      "tags": ["记忆", "益智", "休闲"],
+      "tags": [
+        "记忆",
+        "益智",
+        "休闲"
+      ],
       "difficulty": "简单",
       "players": "单人",
+      "featured": false,
+      "hidden": true
+    },
+    {
+      "id": "star-cat-scratch",
+      "name": "星喵刮刮乐",
+      "description": "刮刮乐翻牌游戏，可以设置自己改概率和奖品~",
+      "category": "互动",
+      "thumbnail": "assets/images/star-cat-scratch-thumb.png",
+      "path": "games/star-cat-scratch/index.html",
+      "tags": [
+        "互动"
+      ],
+      "difficulty": "简单",
+      "players": "多人",
       "featured": true,
+      "hidden": false
+    },
+    {
+      "id": "greed-challenge",
+      "name": "星喵的贪心考验",
+      "description": "记得在合适的时候停下来，否则会因为贪心而失去一切！",
+      "category": "益智",
+      "thumbnail": "assets/images/greed-challenge-thumb.png",
+      "path": "games/greed-challenge/index.html",
+      "tags": [
+        "益智",
+        "互动"
+      ],
+      "difficulty": "中等",
+      "players": "多人",
+      "featured": true,
+      "hidden": false
+    },
+    {
+      "id": "lie-detector",
+      "name": "星喵的神秘测谎仪",
+      "description": "通过有趣的问题测试你的诚实度，看看你能否通过星喵的测谎仪！（疯狂点设置里的设置文字有彩蛋）",
+      "category": "互动",
+      "thumbnail": "assets/images/lie-detector-thumb.png",
+      "path": "games/lie-detector/index.html",
+      "tags": [
+        "互动",
+        "趣味",
+        "测试"
+      ],
+      "difficulty": "简单",
+      "players": "单人或多人",
+      "featured": false,
       "hidden": false
     }
   ],

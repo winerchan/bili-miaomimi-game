@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>星喵的神秘测谎仪</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: white;
+            user-select: none;
+            transition: background 0.3s;
+        }
+
+        .title {
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .title-text {
+            background: linear-gradient(90deg, #a855f7, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .title-emoji {
+            font-size: 2.2rem;
+        }
+
+        .detector-container {
+            position: relative;
+            width: 500px;
+            height: 280px;
+        }
+
+        .gauge-svg {
+            width: 500px;
+            height: 280px;
+        }
+
+        .controls {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .hint {
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        .hint span {
+            display: inline-block;
+            padding: 5px 15px;
+            margin: 5px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+
+        .settings-btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+
+        .settings-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .settings-panel.active {
+            display: flex;
+        }
+
+        .settings-content {
+            background: #2a2a4a;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 750px;
+            width: 95%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .settings-content h2 {
+            margin-bottom: 25px;
+            text-align: center;
+            cursor: default;
+        }
+
+        .settings-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .settings-col {
+            flex: 1;
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .settings-col h3 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .setting-item {
+            margin-bottom: 15px;
+        }
+
+        .setting-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .setting-item input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .setting-item input[type="color"] {
+            width: 60px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: none;
+        }
+
+        .setting-item input[type="file"] {
+            display: none;
+        }
+
+        .setting-item input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .file-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #6366f1;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .file-btn:hover {
+            background: #4f46e5;
+        }
+
+        .file-name {
+            font-size: 0.85rem;
+            color: #888;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .test-btn {
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .test-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .clear-btn {
+            padding: 8px 12px;
+            background: rgba(239, 68, 68, 0.3);
+            border: none;
+            color: #fca5a5;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .clear-btn:hover {
+            background: rgba(239, 68, 68, 0.5);
+        }
+
+        .global-settings {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .global-settings h3 {
+            margin-bottom: 15px;
+            color: #a5b4fc;
+        }
+
+        .range-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .range-row input[type="range"] {
+            flex: 1;
+        }
+
+        .range-value {
+            min-width: 60px;
+            text-align: right;
+            font-family: monospace;
+            color: #a5b4fc;
+        }
+
+        .close-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            background: #6366f1;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #4f46e5;
+        }
+
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .color-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .color-group .color-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .color-group .color-item span {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); }
+            50% { filter: drop-shadow(0 0 20px rgba(255,255,255,0.2)); }
+        }
+
+        .detector-container {
+            animation: glow 3s infinite;
+        }
+
+        #needleGroup {
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: 250px 250px;
+            transform-box: view-box;
+            will-change: transform;
+        }
+
+        /* 喵喵指针隐藏设置 */
+        .secret-settings {
+            display: none;
+            background: rgba(255, 182, 193, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px dashed #ff69b4;
+        }
+
+        .secret-settings.active {
+            display: block;
+        }
+
+        .secret-settings h3 {
+            margin-bottom: 15px;
+            color: #ff69b4;
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #444;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #ff69b4;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+
+        .toggle-label {
+            font-size: 0.95rem;
+            color: #ffb6c1;
+        }
+
+        @media (max-width: 600px) {
+            .settings-row {
+                flex-direction: column;
+            }
+            .detector-container {
+                width: 350px;
+                height: 196px;
+            }
+            .gauge-svg {
+                width: 350px;
+                height: 196px;
+            }
+            .title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <span class="title-emoji">😺</span>
+        <span class="title-text">星喵的神秘测谎仪</span>
+        <span class="title-emoji">✨</span>
+    </div>
+    
+    <div class="detector-container">
+        <svg class="gauge-svg" viewBox="0 0 500 280" id="gaugeSvg">
+            <defs>
+                <path id="leftTextArc" />
+                <path id="rightTextArc" />
+                <linearGradient id="needleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#444" />
+                    <stop offset="50%" style="stop-color:#1a1a1a" />
+                    <stop offset="100%" style="stop-color:#444" />
+                </linearGradient>
+                <!-- 喵喵指针的圆形裁剪 -->
+                <clipPath id="catClip">
+                    <circle cx="250" cy="70" r="28" />
+                </clipPath>
+            </defs>
+            
+            <path id="outerRing" fill="#2563eb" />
+            <path id="leftArea" fill="#22c55e" />
+            <path id="rightArea" fill="#ef4444" />
+            <circle id="centerCircle" cx="250" cy="250" r="45" fill="white" />
+            
+            <text fill="white" font-size="28" font-weight="bold">
+                <textPath id="leftText" href="#leftTextArc" startOffset="50%" text-anchor="middle">TRUTH</textPath>
+            </text>
+            <text fill="white" font-size="28" font-weight="bold">
+                <textPath id="rightText" href="#rightTextArc" startOffset="50%" text-anchor="middle">LIE</textPath>
+            </text>
+            
+            <g id="needleGroup">
+                <!-- 普通指针 -->
+                <g id="normalNeedle">
+                    <rect id="needleBody" x="244" y="90" width="12" height="160" rx="6" fill="url(#needleGradient)" />
+                </g>
+                <!-- 喵喵指针 -->
+                <g id="catNeedle" style="display: none;">
+                    <!-- 指针杆 -->
+                    <rect x="244" y="98" width="12" height="152" rx="6" fill="url(#needleGradient)" />
+                    <!-- 圆形边框 -->
+                    <circle cx="250" cy="70" r="32" fill="#1a1a1a" />
+                    <!-- 图片 -->
+                    <image id="catImage" 
+                           x="222" y="42" 
+                           width="56" height="56" 
+                           clip-path="url(#catClip)"
+                           preserveAspectRatio="xMidYMid slice" />
+                    <!-- 圆形描边 -->
+                    <circle cx="250" cy="70" r="30" fill="none" stroke="#1a1a1a" stroke-width="4" />
+                </g>
+                <!-- 底部圆 -->
+                <circle id="needleBase" cx="250" cy="250" r="18" fill="#1a1a1a" />
+            </g>
+            
+            <rect id="bottomCover" x="0" y="250" width="500" height="30" fill="#2d1f1a" />
+        </svg>
+    </div>
+
+    <div class="controls">
+        <div class="hint">
+            <span id="hintLeft">🖱️ 左键 / A键 → TRUTH</span>
+            <span id="hintRight">🖱️ 右键 / D键 → LIE</span>
+        </div>
+        <button class="settings-btn" onclick="openSettings()">⚙️ 设置</button>
+    </div>
+
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-content">
+            <h2 id="settingsTitle">⚙️ 设置</h2>
+
+            <!-- 隐藏的喵喵指针设置 -->
+            <div class="secret-settings" id="secretSettings">
+                <h3>🐱 喵喵彩蛋</h3>
+                <div class="setting-item">
+                    <div class="toggle-row">
+                        <div class="toggle-switch" id="catNeedleToggle" onclick="toggleCatNeedle()"></div>
+                        <span class="toggle-label">喵喵指针</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="global-settings">
+                <h3>🌐 通用设置</h3>
+                
+                <div class="setting-item">
+                    <label>🎨 颜色设置</label>
+                    <div class="color-group">
+                        <div class="color-item">
+                            <span>网页背景</span>
+                            <div class="color-row">
+                                <input type="color" id="bgColor" value="#1a1a2e" oninput="updateBgColor()">
+                                <div class="color-preview" id="bgColorPreview" style="background:#1a1a2e;"></div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <span>仪表盘边框</span>
+                            <div class="color-row">
+                                <input type="color" id="borderColor" value="#2563eb" oninput="updateBorderColor()">
+                                <div class="color-preview" id="borderColorPreview" style="background:#2563eb;"></div>
+                            </div>
+                        </div>
+                        <div class="color-item">
+                            <span>底部遮挡</span>
+                            <div class="color-row">
+                                <input type="color" id="coverColor" value="#2d1f1a" oninput="updateCoverColor()">
+                                <div class="color-preview" id="coverColorPreview" style="background:#2d1f1a;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <label>⏱️ 指针回弹时间</label>
+                    <div class="range-row">
+                        <input type="range" id="returnTime" min="0.3" max="5" step="0.1" value="1.5" oninput="updateReturnTime()">
+                        <span class="range-value" id="returnTimeValue">1.5 秒</span>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <label>🔄 指针偏转角度</label>
+                    <div class="range-row">
+                        <input type="range" id="needleAngle" min="10" max="90" step="1" value="75" oninput="updateNeedleAngle()">
+                        <span class="range-value" id="needleAngleValue">75°</span>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <label>📏 指针长度</label>
+                    <div class="range-row">
+                        <input type="range" id="needleLength" min="80" max="180" step="5" value="160" oninput="updateNeedleLength()">
+                        <span class="range-value" id="needleLengthValue">160</span>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <label>📊 左右颜色占比（左侧占比 %）</label>
+                    <div class="range-row">
+                        <input type="range" id="colorRatio" min="10" max="90" step="1" value="50" oninput="updateColorRatio()">
+                        <span class="range-value" id="colorRatioValue">50%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-row">
+                <div class="settings-col">
+                    <h3>⬅️ 左侧设置</h3>
+                    
+                    <div class="setting-item">
+                        <label>显示文字</label>
+                        <input type="text" id="leftTextInput" value="TRUTH" maxlength="12" oninput="updateLabels()">
+                    </div>
+
+                    <div class="setting-item">
+                        <label>背景颜色</label>
+                        <div class="color-row">
+                            <input type="color" id="leftColor" value="#22c55e" oninput="updateGauge()">
+                            <div class="color-preview" id="leftColorPreview" style="background:#22c55e;"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>音效文件</label>
+                        <div class="file-row">
+                            <label class="file-btn" for="leftAudio">选择</label>
+                            <input type="file" id="leftAudio" accept="audio/*" onchange="loadAudio('left', this)">
+                            <span class="file-name" id="leftFileName">未选择</span>
+                        </div>
+                        <div class="file-row" style="margin-top:8px;">
+                            <button class="test-btn" onclick="testAudio('left')">▶ 测试</button>
+                            <button class="clear-btn" onclick="clearAudio('left')">✕ 清除</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-col">
+                    <h3>➡️ 右侧设置</h3>
+                    
+                    <div class="setting-item">
+                        <label>显示文字</label>
+                        <input type="text" id="rightTextInput" value="LIE" maxlength="12" oninput="updateLabels()">
+                    </div>
+
+                    <div class="setting-item">
+                        <label>背景颜色</label>
+                        <div class="color-row">
+                            <input type="color" id="rightColor" value="#ef4444" oninput="updateGauge()">
+                            <div class="color-preview" id="rightColorPreview" style="background:#ef4444;"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>音效文件</label>
+                        <div class="file-row">
+                            <label class="file-btn" for="rightAudio">选择</label>
+                            <input type="file" id="rightAudio" accept="audio/*" onchange="loadAudio('right', this)">
+                            <span class="file-name" id="rightFileName">未选择</span>
+                        </div>
+                        <div class="file-row" style="margin-top:8px;">
+                            <button class="test-btn" onclick="testAudio('right')">▶ 测试</button>
+                            <button class="clear-btn" onclick="clearAudio('right')">✕ 清除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="close-btn" onclick="closeSettings()">确定</button>
+        </div>
+    </div>
+
+    <audio id="leftSound"></audio>
+    <audio id="rightSound"></audio>
+
+    <script>
+        const cx = 250, cy = 250, outerR = 250, innerR = 230, centerR = 45, textR = 150;
+        let isAnimating = false, returnTime = 1.5, colorRatio = 50, needleAngle = 75, needleLength = 160;
+        const defaultLeftAudio = 'truth.mp4';
+        const defaultRightAudio = 'lie.mp4';
+        let leftAudioSrc = null, rightAudioSrc = null;
+        let catNeedleEnabled = false;
+
+        // 彩蛋点击计数
+        let secretClickCount = 0;
+        let secretClickTimer = null;
+
+        const needleGroup = document.getElementById('needleGroup');
+        const needleBody = document.getElementById('needleBody');
+        const normalNeedle = document.getElementById('normalNeedle');
+        const catNeedle = document.getElementById('catNeedle');
+        const catImage = document.getElementById('catImage');
+        const outerRing = document.getElementById('outerRing');
+        const leftArea = document.getElementById('leftArea');
+        const rightArea = document.getElementById('rightArea');
+        const leftTextArc = document.getElementById('leftTextArc');
+        const rightTextArc = document.getElementById('rightTextArc');
+        const leftTextEl = document.getElementById('leftText');
+        const rightTextEl = document.getElementById('rightText');
+        const hintLeft = document.getElementById('hintLeft');
+        const hintRight = document.getElementById('rightRight');
+        const leftSound = document.getElementById('leftSound');
+        const rightSound = document.getElementById('rightSound');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const bottomCover = document.getElementById('bottomCover');
+        const settingsTitle = document.getElementById('settingsTitle');
+        const secretSettings = document.getElementById('secretSettings');
+        const catNeedleToggle = document.getElementById('catNeedleToggle');
+
+        // 设置标题点击事件（彩蛋）
+        settingsTitle.addEventListener('click', function() {
+            secretClickCount++;
+            
+            if (secretClickTimer) {
+                clearTimeout(secretClickTimer);
+            }
+            
+            secretClickTimer = setTimeout(() => {
+                secretClickCount = 0;
+            }, 1000);
+            
+            if (secretClickCount >= 5) {
+                secretSettings.classList.add('active');
+                secretClickCount = 0;
+                // 预加载图片
+                if (!catImage.getAttribute('href')) {
+                    catImage.setAttribute('href', 'https://i1.hdslb.com/bfs/face/4823ef4641663be7ae3c4463143e37d83af7d620.jpg');
+                }
+            }
+        });
+
+        // 切换喵喵指针
+        function toggleCatNeedle() {
+            catNeedleEnabled = !catNeedleEnabled;
+            catNeedleToggle.classList.toggle('active', catNeedleEnabled);
+            
+            if (catNeedleEnabled) {
+                normalNeedle.style.display = 'none';
+                catNeedle.style.display = 'block';
+            } else {
+                normalNeedle.style.display = 'block';
+                catNeedle.style.display = 'none';
+            }
+            
+            // 更新指针长度以适应当前设置
+            updateNeedleLength();
+        }
+
+        function polarToCartesian(cx, cy, r, angleDeg) {
+            const angleRad = (angleDeg - 90) * Math.PI / 180;
+            return { x: cx + r * Math.cos(angleRad), y: cy + r * Math.sin(angleRad) };
+        }
+
+        function describeArc(cx, cy, outerR, innerR, startAngle, endAngle) {
+            const outerStart = polarToCartesian(cx, cy, outerR, startAngle);
+            const outerEnd = polarToCartesian(cx, cy, outerR, endAngle);
+            const innerStart = polarToCartesian(cx, cy, innerR, startAngle);
+            const innerEnd = polarToCartesian(cx, cy, innerR, endAngle);
+            const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
+            return `M ${outerStart.x} ${outerStart.y} A ${outerR} ${outerR} 0 ${largeArc} 1 ${outerEnd.x} ${outerEnd.y} L ${innerEnd.x} ${innerEnd.y} A ${innerR} ${innerR} 0 ${largeArc} 0 ${innerStart.x} ${innerStart.y} Z`;
+        }
+
+        function describeTextArc(cx, cy, r, startAngle, endAngle) {
+            const start = polarToCartesian(cx, cy, r, startAngle);
+            const end = polarToCartesian(cx, cy, r, endAngle);
+            const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
+            return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y}`;
+        }
+
+        function updateBgColor() {
+            const color = document.getElementById('bgColor').value;
+            document.getElementById('bgColorPreview').style.background = color;
+            document.body.style.background = color;
+        }
+
+        function updateBorderColor() {
+            const color = document.getElementById('borderColor').value;
+            document.getElementById('borderColorPreview').style.background = color;
+            outerRing.setAttribute('fill', color);
+        }
+
+        function updateCoverColor() {
+            const color = document.getElementById('coverColor').value;
+            document.getElementById('coverColorPreview').style.background = color;
+            bottomCover.setAttribute('fill', color);
+        }
+
+        function updateGauge() {
+            const leftColor = document.getElementById('leftColor').value;
+            const rightColor = document.getElementById('rightColor').value;
+            document.getElementById('leftColorPreview').style.background = leftColor;
+            document.getElementById('rightColorPreview').style.background = rightColor;
+            const divideAngle = -90 + (180 * colorRatio / 100);
+            outerRing.setAttribute('d', describeArc(cx, cy, outerR, innerR, -90, 90));
+            leftArea.setAttribute('d', describeArc(cx, cy, innerR, centerR, -90, divideAngle));
+            leftArea.setAttribute('fill', leftColor);
+            rightArea.setAttribute('d', describeArc(cx, cy, innerR, centerR, divideAngle, 90));
+            rightArea.setAttribute('fill', rightColor);
+            const leftMid = (-90 + divideAngle) / 2;
+            leftTextArc.setAttribute('d', describeTextArc(cx, cy, textR, leftMid - 35, leftMid + 35));
+            const rightMid = (divideAngle + 90) / 2;
+            rightTextArc.setAttribute('d', describeTextArc(cx, cy, textR, rightMid - 35, rightMid + 35));
+        }
+
+        function updateLabels() {
+            const leftStr = document.getElementById('leftTextInput').value || 'LEFT';
+            const rightStr = document.getElementById('rightTextInput').value || 'RIGHT';
+            leftTextEl.textContent = leftStr;
+            rightTextEl.textContent = rightStr;
+            document.getElementById('hintLeft').textContent = `🖱️ 左键 / A键 → ${leftStr}`;
+            document.getElementById('hintRight').textContent = `🖱️ 右键 / D键 → ${rightStr}`;
+        }
+
+        function updateReturnTime() {
+            returnTime = parseFloat(document.getElementById('returnTime').value);
+            document.getElementById('returnTimeValue').textContent = returnTime.toFixed(1) + ' 秒';
+        }
+
+        function updateNeedleAngle() {
+            needleAngle = parseInt(document.getElementById('needleAngle').value);
+            document.getElementById('needleAngleValue').textContent = needleAngle + '°';
+        }
+
+        function updateNeedleLength() {
+            needleLength = parseInt(document.getElementById('needleLength').value);
+            document.getElementById('needleLengthValue').textContent = needleLength;
+            
+            // 更新普通指针
+            needleBody.setAttribute('y', cy - needleLength);
+            needleBody.setAttribute('height', needleLength);
+            
+            // 更新喵喵指针
+            const catNeedleRect = catNeedle.querySelector('rect');
+            const catCircleY = cy - needleLength - 22;
+            const catRectHeight = needleLength - 30;
+            
+            catNeedleRect.setAttribute('y', cy - needleLength + 40);
+            catNeedleRect.setAttribute('height', catRectHeight);
+            
+            // 更新图片和圆形位置
+            const circles = catNeedle.querySelectorAll('circle');
+            circles.forEach(c => c.setAttribute('cy', catCircleY + 32));
+            
+            catImage.setAttribute('y', catCircleY + 4);
+            
+            // 更新clipPath
+            document.querySelector('#catClip circle').setAttribute('cy', catCircleY + 32);
+        }
+
+        function updateColorRatio() {
+            colorRatio = parseInt(document.getElementById('colorRatio').value);
+            document.getElementById('colorRatioValue').textContent = colorRatio + '%';
+            updateGauge();
+        }
+
+        function pointToLeft() {
+            if (isAnimating) return;
+            isAnimating = true;
+            needleGroup.style.transform = `rotate(-${needleAngle}deg)`;
+            if (leftAudioSrc) { leftSound.currentTime = 0; leftSound.play(); }
+            setTimeout(() => {
+                needleGroup.style.transform = 'rotate(0deg)';
+                setTimeout(() => { isAnimating = false; }, 300);
+            }, returnTime * 1000);
+        }
+
+        function pointToRight() {
+            if (isAnimating) return;
+            isAnimating = true;
+            needleGroup.style.transform = `rotate(${needleAngle}deg)`;
+            if (rightAudioSrc) { rightSound.currentTime = 0; rightSound.play(); }
+            setTimeout(() => {
+                needleGroup.style.transform = 'rotate(0deg)';
+                setTimeout(() => { isAnimating = false; }, 300);
+            }, returnTime * 1000);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (settingsPanel.classList.contains('active')) return;
+            if (e.key.toLowerCase() === 'a') pointToLeft();
+            else if (e.key.toLowerCase() === 'd') pointToRight();
+        });
+
+        document.addEventListener('mousedown', (e) => {
+            if (settingsPanel.classList.contains('active')) return;
+            if (e.target.closest('.settings-btn') || e.target.closest('.settings-panel')) return;
+            if (e.button === 0) pointToLeft();
+            else if (e.button === 2) pointToRight();
+        });
+
+        document.addEventListener('contextmenu', (e) => {
+            if (!settingsPanel.classList.contains('active')) e.preventDefault();
+        });
+
+        function openSettings() { settingsPanel.classList.add('active'); }
+        function closeSettings() { settingsPanel.classList.remove('active'); }
+
+        function loadAudio(side, input) {
+            const file = input.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                if (side === 'left') {
+                    leftAudioSrc = url; leftSound.src = url;
+                    document.getElementById('leftFileName').textContent = file.name;
+                } else {
+                    rightAudioSrc = url; rightSound.src = url;
+                    document.getElementById('rightFileName').textContent = file.name;
+                }
+            }
+        }
+
+        function testAudio(side) {
+            if (side === 'left' && leftAudioSrc) { leftSound.currentTime = 0; leftSound.play(); }
+            else if (side === 'right' && rightAudioSrc) { rightSound.currentTime = 0; rightSound.play(); }
+        }
+
+        function clearAudio(side) {
+            if (side === 'left') {
+                leftAudioSrc = null; leftSound.src = '';
+                document.getElementById('leftFileName').textContent = '未选择';
+                document.getElementById('leftAudio').value = '';
+            } else {
+                rightAudioSrc = null; rightSound.src = '';
+                document.getElementById('rightFileName').textContent = '未选择';
+                document.getElementById('rightAudio').value = '';
+            }
+        }
+
+        settingsPanel.addEventListener('click', (e) => { if (e.target === settingsPanel) closeSettings(); });
+
+        function setDefaultAudio() {
+            leftAudioSrc = defaultLeftAudio;
+            rightAudioSrc = defaultRightAudio;
+            leftSound.src = leftAudioSrc;
+            rightSound.src = rightAudioSrc;
+            document.getElementById('leftFileName').textContent = defaultLeftAudio;
+            document.getElementById('rightFileName').textContent = defaultRightAudio;
+        }
+
+        setDefaultAudio();
+        updateBgColor(); updateBorderColor(); updateCoverColor(); updateGauge(); updateLabels(); updateNeedleLength(); updateNeedleAngle();
+    </script>
+</body>
+</html>
