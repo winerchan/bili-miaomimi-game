@@ -185,8 +185,6 @@ body {
 .settings-toggle-button:hover {
     background: #2980b9;
 }
-    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-}
 
 /* 胜利模态框 */
 .modal {
