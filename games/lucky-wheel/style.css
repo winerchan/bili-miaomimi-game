@@ -86,6 +86,7 @@ body {
 
 .spin-button,
 .reset-button,
+.settings-toggle-button,
 .update-button {
     padding: 15px 40px;
     font-size: 1.2em;
@@ -118,6 +119,15 @@ body {
 
 .reset-button:hover {
     background: #7f8c8d;
+}
+
+.settings-toggle-button {
+    background: #3498db;
+    color: white;
+}
+
+.settings-toggle-button:hover {
+    background: #2980b9;
 }
 
 /* 结果显示 */
@@ -202,19 +212,91 @@ body {
 }
 
 /* 响应式设计 */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .game-container {
+        padding: 25px;
+    }
+
+    .back-button {
+        padding: 8px 16px;
+        font-size: 0.9em;
+    }
+
+    .game-title {
+        font-size: 2em;
+    }
+
+    .game-description {
+        font-size: 1em;
+    }
+
+    .wheel-container {
+        width: 320px;
+        height: 320px;
+    }
+
+    #wheelCanvas {
+        width: 320px;
+        height: 320px;
+    }
+
+    .wheel-pointer {
+        font-size: 35px;
+        top: -18px;
+    }
+
+    .controls {
+        flex-direction: column;
+        gap: 12px;
+        margin: 25px 0;
+    }
+
+    .spin-button,
+    .reset-button,
+    .settings-toggle-button {
+        width: 100%;
+        padding: 12px 30px;
+        font-size: 1.1em;
+    }
+
+    .result-display {
+        padding: 25px;
+    }
+
+    .result-display h2 {
+        font-size: 1.5em;
+    }
+
+    .result-text {
+        font-size: 1.8em;
+    }
+
+    .settings {
+        padding-top: 25px;
+    }
+
+    #itemsInput {
+        font-size: 14px;
+    }
+}
+
 @media (max-width: 600px) {
     .game-container {
         padding: 20px;
     }
 
     .wheel-container {
-        width: 300px;
-        height: 300px;
+        width: 280px;
+        height: 280px;
     }
 
     #wheelCanvas {
-        width: 300px;
-        height: 300px;
+        width: 280px;
+        height: 280px;
     }
 
     .game-title {
@@ -226,7 +308,57 @@ body {
     }
 
     .spin-button,
-    .reset-button {
+    .reset-button,
+    .settings-toggle-button {
         width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        padding: 15px;
+    }
+
+    .back-button {
+        padding: 6px 12px;
+        font-size: 0.85em;
+    }
+
+    .game-title {
+        font-size: 1.5em;
+    }
+
+    .game-description {
+        font-size: 0.95em;
+    }
+
+    .wheel-container {
+        width: 240px;
+        height: 240px;
+    }
+
+    #wheelCanvas {
+        width: 240px;
+        height: 240px;
+    }
+
+    .wheel-pointer {
+        font-size: 30px;
+        top: -15px;
+    }
+
+    .spin-button,
+    .reset-button,
+    .settings-toggle-button {
+        padding: 10px 25px;
+        font-size: 1em;
+    }
+
+    .result-display h2 {
+        font-size: 1.3em;
+    }
+
+    .result-text {
+        font-size: 1.5em;
     }
 }

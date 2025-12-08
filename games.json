@@ -10,7 +10,8 @@
       "tags": ["抽奖", "互动", "趣味"],
       "difficulty": "简单",
       "players": "单人",
-      "featured": true
+      "featured": true,
+      "hidden": false
     },
     {
       "id": "memory-cards",
@@ -22,7 +23,8 @@
       "tags": ["记忆", "益智", "休闲"],
       "difficulty": "简单",
       "players": "单人",
-      "featured": true
+      "featured": true,
+      "hidden": false
     }
   ],
   "categories": [

@@ -199,6 +199,16 @@ class LuckyWheel {
             
             this.updateItems(items);
         });
+        
+        // 设置按钮切换
+        document.getElementById('settingsToggle').addEventListener('click', () => {
+            const settingsPanel = document.getElementById('settingsPanel');
+            if (settingsPanel.style.display === 'none') {
+                settingsPanel.style.display = 'block';
+            } else {
+                settingsPanel.style.display = 'none';
+            }
+        });
     }
 }
 

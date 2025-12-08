@@ -162,7 +162,8 @@ mkdir games/my-new-game
   "tags": ["休闲", "趣味"],
   "difficulty": "简单",
   "players": "单人",
-  "featured": false
+  "featured": false,
+  "hidden": false
 }
 ```
 
@@ -190,6 +191,7 @@ mkdir games/my-new-game
 | `difficulty` | string | 是 | 难度（简单/中等/困难） |
 | `players` | string | 是 | 玩家数量 |
 | `featured` | boolean | 否 | 是否为推荐游戏 |
+| `hidden` | boolean | 否 | 是否隐藏游戏（隐藏后不会显示在列表中，也不会被搜索到） |
 
 ## 🛠️ 技术栈
 

@@ -15,7 +15,8 @@ async function loadGames() {
     try {
         const response = await fetch('games.json');
         const data = await response.json();
-        allGames = data.games;
+        // 过滤掉隐藏的游戏
+        allGames = data.games.filter(game => !game.hidden);
         filteredGames = [...allGames];
         
         // 初始化分类选择器

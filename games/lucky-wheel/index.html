@@ -25,6 +25,7 @@
         <div class="controls">
             <button id="spinButton" class="spin-button">🎲 开始抽奖</button>
             <button id="resetButton" class="reset-button">🔄 重置</button>
+            <button id="settingsToggle" class="settings-toggle-button">⚙️ 设置</button>
         </div>
         
         <!-- 结果显示 -->
@@ -34,7 +35,7 @@
         </div>
         
         <!-- 设置区域 -->
-        <div class="settings">
+        <div class="settings" id="settingsPanel" style="display: none;">
             <h3>转盘设置</h3>
             <div class="settings-content">
                 <label for="itemsInput">奖项列表（每行一个）：</label>

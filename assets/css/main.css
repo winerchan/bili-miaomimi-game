@@ -265,25 +265,97 @@ body {
 
 /* 响应式设计 - 移动端适配 */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .header {
+        padding: 20px 0;
+    }
+
     .site-title {
         font-size: 1.8em;
     }
 
+    .site-subtitle {
+        font-size: 1em;
+    }
+
+    .controls {
+        margin: 15px 0;
+        padding: 15px 0;
+    }
+
     .controls .container {
         flex-direction: column;
+        gap: 10px;
     }
 
     .search-box {
         max-width: 100%;
     }
 
-    .games-grid {
-        grid-template-columns: 1fr;
+    .search-input {
+        font-size: 14px;
+        padding: 10px 15px;
     }
 
     .filter-box {
         width: 100%;
         justify-content: center;
+    }
+
+    .category-select {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+
+    .games-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 15px 0;
+    }
+
+    .game-card {
+        border-radius: 12px;
+    }
+
+    .game-thumbnail {
+        height: 150px;
+        font-size: 3em;
+    }
+
+    .game-info {
+        padding: 15px;
+    }
+
+    .game-title {
+        font-size: 1.3em;
+    }
+
+    .game-category {
+        font-size: 0.8em;
+        padding: 4px 10px;
+    }
+
+    .game-description {
+        font-size: 0.95em;
+    }
+
+    .game-meta {
+        font-size: 0.85em;
+        gap: 10px;
+    }
+
+    .play-button {
+        padding: 10px;
+        font-size: 0.95em;
+    }
+
+    .footer {
+        margin-top: 30px;
+        padding: 15px 0;
+        font-size: 0.9em;
     }
 }
 
@@ -292,7 +364,32 @@ body {
         font-size: 1.5em;
     }
 
+    .site-subtitle {
+        font-size: 0.9em;
+    }
+
+    .header {
+        padding: 15px 0;
+    }
+
     .game-title {
         font-size: 1.2em;
+    }
+
+    .game-thumbnail {
+        height: 120px;
+        font-size: 2.5em;
+    }
+
+    .game-card.featured::before {
+        font-size: 11px;
+        padding: 4px 10px;
+        top: 8px;
+        right: 8px;
+    }
+
+    .game-tag {
+        font-size: 0.8em;
+        padding: 3px 8px;
     }
 }
