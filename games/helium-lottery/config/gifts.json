@@ -1,0 +1,281 @@
+{
+  "settings": {
+    "title": "氦氦的轮盘机",
+    "subtitle": "由船船碎片打造~",
+    "highValueThreshold": 1000,
+    "mediumValueThreshold": 100,
+    "spinDuration": 6500,
+    "adminClickCount": 8
+  },
+  "giftTiers": {
+    "legendary": {
+      "minBattery": 1000,
+      "label": "传说礼物",
+      "color": "#FFD700"
+    },
+    "rare": {
+      "minBattery": 99,
+      "label": "稀有礼物",
+      "color": "#9B59B6"
+    },
+    "common": {
+      "minBattery": 0,
+      "label": "普通礼物",
+      "color": "#3498DB"
+    }
+  },
+  "gifts": [
+    {
+      "id": 34001,
+      "name": "粉丝团灯牌",
+      "battery": 1,
+      "image": "https://s1.hdslb.com/bfs/live/e051dfd4557678f8edcac4993ed00a0935cbd9cc.png",
+      "weight": 10000
+    },
+    {
+      "id": 34016,
+      "name": "小花花",
+      "battery": 1,
+      "image": "https://s1.hdslb.com/bfs/live/5126973892625f3a43a8290be6b625b5e54261a5.png",
+      "weight": 6680
+    },
+    {
+      "id": 34003,
+      "name": "人气票",
+      "battery": 1,
+      "image": "https://s1.hdslb.com/bfs/live/7164c955ec0ed7537491d189b821cc68f1bea20d.png",
+      "weight": 6680
+    },
+    {
+      "id": 32760,
+      "name": "口水黄豆",
+      "battery": 1,
+      "image": "https://s1.hdslb.com/bfs/live/1e70a12a59c48fd29febe9db3ec9a930c39ffa07.png",
+      "weight": 3340
+    },
+    {
+      "id": 31039,
+      "name": "牛哇牛哇",
+      "battery": 1,
+      "image": "https://s1.hdslb.com/bfs/live/91ac8e35dd93a7196325f1e2052356e71d135afb.png",
+      "weight": 3340
+    },
+    {
+      "id": 31213,
+      "name": "这个好诶",
+      "battery": 1,
+      "image": "https://s1.hdslb.com/bfs/live/9260c680959428c45b3a2742e42ea7ae75e457ef.png",
+      "weight": 6680
+    },
+    {
+      "id": 34492,
+      "name": "猫猫礼物1电池版",
+      "battery": 1,
+      "image": "https://s1.hdslb.com/bfs/open-live/8282c184fb756a4d9b62b15a7b19b6328ae5862c.png",
+      "weight": 10000
+    },
+    {
+      "id": 34758,
+      "name": "棒棒糖",
+      "battery": 2,
+      "image": "https://s1.hdslb.com/bfs/live/15313516b3ec0875d67130f18c0a53c582e76531.png",
+      "weight": 3340
+    },
+    {
+      "id": 34493,
+      "name": "毛线球",
+      "battery": 5,
+      "image": "https://s1.hdslb.com/bfs/open-live/d9c7224bda1adde527e3863df326a274e8dffb50.png",
+      "weight": 1136
+    },
+    {
+      "id": 34979,
+      "name": "你真好看",
+      "battery": 10,
+      "image": "https://s1.hdslb.com/bfs/live/24afbb083aa700d7576d60a1189d3505262d160d.png",
+      "weight": 668
+    },
+    {
+      "id": 35206,
+      "name": "幸运盲盒",
+      "battery": 50,
+      "image": "https://s1.hdslb.com/bfs/live/d9bf4b2234e854b0badbd509edf59b5bf0361b7f.png",
+      "weight": 72
+    },
+    {
+      "id": 34493,
+      "name": "毛线球*10",
+      "battery": 50,
+      "image": "https://s1.hdslb.com/bfs/open-live/d9c7224bda1adde527e3863df326a274e8dffb50.png",
+      "weight": 252
+    },
+    {
+      "id": 31044,
+      "name": "情书",
+      "battery": 52,
+      "image": "https://s1.hdslb.com/bfs/live/14dafbf217618f0931c08897e0b3eefc00d0da22.png",
+      "weight": 60
+    },
+    {
+      "id": 33020,
+      "name": "摸摸头",
+      "battery": 99,
+      "image": "https://s1.hdslb.com/bfs/live/ff743d8ea62fed68f20e55d33b8a1c0f0d9df05f.png",
+      "weight": 66
+    },
+    {
+      "id": 32761,
+      "name": "可爱捏",
+      "battery": 99,
+      "image": "https://s1.hdslb.com/bfs/live/6dab14826b531c731521345e00d6b56a6708a449.png",
+      "weight": 66
+    },
+    {
+      "id": 34315,
+      "name": "喜欢你",
+      "battery": 99,
+      "image": "https://s1.hdslb.com/bfs/live/5d940270c22a17fa2ff17a0713b4383b6febd945.png",
+      "weight": 66
+    },
+    {
+      "id": 34065,
+      "name": "为你打call",
+      "battery": 99,
+      "image": "https://s1.hdslb.com/bfs/live/d6525ee20a1fedd258f4e86684df5f8c748c1f0d.png",
+      "weight": 66
+    },
+    {
+      "id": 34003,
+      "name": "人气票*100",
+      "battery": 100,
+      "image": "https://s1.hdslb.com/bfs/live/7164c955ec0ed7537491d189b821cc68f1bea20d.png",
+      "weight": 65
+    },
+    {
+      "id": 32251,
+      "name": "心动盲盒",
+      "battery": 150,
+      "image": "https://s1.hdslb.com/bfs/live/a78fa33c0431fcb816cf2ac31deed8dee0b5b6e2.png",
+      "weight": 44
+    },
+    {
+      "id": 31588,
+      "name": "星河入梦",
+      "battery": 199,
+      "image": "https://s1.hdslb.com/bfs/live/4f6d2b9f7ba7661b4f1405daebb294a2b06e4b09.png",
+      "weight": 32
+    },
+    {
+      "id": 31053,
+      "name": "告白花束",
+      "battery": 199,
+      "image": "https://s1.hdslb.com/bfs/live/a4aa89aaa24534cb77534680eaed1f5f2f9aa71f.png",
+      "weight": 32
+    },
+    {
+      "id": 30873,
+      "name": "花式夸夸",
+      "battery": 299,
+      "image": "https://s1.hdslb.com/bfs/live/28186596880db45a7b843f17d6ebb70feeac06f9.png",
+      "weight": 20
+    },
+    {
+      "id": 34990,
+      "name": "干杯",
+      "battery": 299,
+      "image": "https://s1.hdslb.com/bfs/live/3d75e6cb91edeb2b46b85023ccb44a20b9e7e348.png",
+      "weight": 20
+    },
+    {
+      "id": 32767,
+      "name": "黄金麦克风",
+      "battery": 330,
+      "image": "https://s1.hdslb.com/bfs/live/1cd618250b1fe4925903a36a3b2498fddb258acd.png",
+      "weight": 16
+    },
+    {
+      "id": 34429,
+      "name": "爱心小熊",
+      "battery": 520,
+      "image": "https://s1.hdslb.com/bfs/live/5e4587eda937b7a3f6d708116ea466fb3d6e41f1.png",
+      "weight": 6
+    },
+    {
+      "id": 34495,
+      "name": "猫猫礼物结芬版",
+      "battery": 520,
+      "image": "https://s1.hdslb.com/bfs/open-live/9a7f7f6ea4d925b8f72365d33b01516c3bc6d33d.png",
+      "weight": 18
+    },
+    {
+      "id": 34991,
+      "name": "新星诞生",
+      "battery": 666,
+      "image": "https://s1.hdslb.com/bfs/live/0a031171bfbfb2c64360865a62059f53c3639bf7.png",
+      "weight": 6
+    },
+    {
+      "id": 34494,
+      "name": "逗猫棒",
+      "battery": 980,
+      "image": "https://s1.hdslb.com/bfs/open-live/195eba4b97b6a2c4da871b147c5066734fff214c.png",
+      "weight": 6
+    },
+    {
+      "id": 31122,
+      "name": "星愿水晶球",
+      "battery": 1000,
+      "image": "https://s1.hdslb.com/bfs/live/f26242d5dc86bbc695336383e2ac4ba50ec033eb.png",
+      "weight": 6
+    },
+    {
+      "id": 35017,
+      "name": "风之吟唱",
+      "battery": 1000,
+      "image": "https://s1.hdslb.com/bfs/live/e8e095ecff8770f8a21ff9af61cfe256c77a83a8.png",
+      "weight": 4
+    },
+    {
+      "id": 31589,
+      "name": "我星永恒",
+      "battery": 1314,
+      "image": "https://s1.hdslb.com/bfs/live/5a736ce7e1b8989ca2f5cf8dec82c60f02a1f260.png",
+      "weight": 2
+    },
+    {
+      "id": 31883,
+      "name": "璀璨烟火",
+      "battery": 1314,
+      "image": "https://s1.hdslb.com/bfs/live/d819113c3c3edde56d0eb872d3723ac2025f19bc.png",
+      "weight": 2
+    },
+    {
+      "id": 34684,
+      "name": "花的告白",
+      "battery": 1520,
+      "image": "https://s1.hdslb.com/bfs/live/bcd0ab1366545d348d7b3c5d3f5565b6bc2e6d3b.png",
+      "weight": 2
+    },
+    {
+      "id": 34832,
+      "name": "猫猫礼物MAX版",
+      "battery": 1520,
+      "image": "https://s1.hdslb.com/bfs/open-live/bfc959242eb944e541cfd893ee87f2b967b87c09.png",
+      "weight": 4
+    },
+    {
+      "id": 32613,
+      "name": "告白气球",
+      "battery": 2000,
+      "image": "https://s1.hdslb.com/bfs/live/d4df99e01fe6dc69636742a998bfd2962480522e.png",
+      "weight": 1
+    },
+    {
+      "id": 31932,
+      "name": "梦游仙境",
+      "battery": 3000,
+      "image": "https://s1.hdslb.com/bfs/live/88a338dbe644473c800e4cde1306d923be350e94.png",
+      "weight": 1
+    }
+  ]
+}

@@ -5,7 +5,7 @@
       "name": "幸运转盘",
       "description": "转动幸运转盘，看看你的运气如何！适合直播互动抽奖使用。",
       "category": "互动",
-      "thumbnail": "assets/images/lucky-wheel-thumb.png",
+      "thumbnail_no": "assets/images/lucky-wheel-thumb.png",
       "path": "games/lucky-wheel/index.html",
       "tags": [
         "抽奖",
@@ -22,7 +22,7 @@
       "name": "记忆翻牌",
       "description": "经典的记忆力游戏，翻开卡片找到匹配的一对。考验你的记忆力！",
       "category": "益智",
-      "thumbnail": "assets/images/memory-cards-thumb.png",
+      "thumbnail_no": "assets/images/memory-cards-thumb.png",
       "path": "games/memory-cards/index.html",
       "tags": [
         "记忆",
@@ -39,7 +39,7 @@
       "name": "星喵刮刮乐",
       "description": "刮刮乐翻牌游戏，可以设置自己改概率和奖品~",
       "category": "互动",
-      "thumbnail": "assets/images/star-cat-scratch-thumb.png",
+      "thumbnail_no": "assets/images/star-cat-scratch-thumb.png",
       "path": "games/star-cat-scratch/index.html",
       "tags": [
         "互动"
@@ -54,7 +54,7 @@
       "name": "星喵的贪心考验",
       "description": "记得在合适的时候停下来，否则会因为贪心而失去一切！",
       "category": "益智",
-      "thumbnail": "assets/images/greed-challenge-thumb.png",
+      "thumbnail_no": "assets/images/greed-challenge-thumb.png",
       "path": "games/greed-challenge/index.html",
       "tags": [
         "益智",
@@ -70,7 +70,7 @@
       "name": "星喵的神秘测谎仪",
       "description": "通过有趣的问题测试你的诚实度，看看你能否通过星喵的测谎仪！（疯狂点设置里的设置文字有彩蛋）",
       "category": "互动",
-      "thumbnail": "assets/images/lie-detector-thumb.png",
+      "thumbnail_no": "assets/images/lie-detector-thumb.png",
       "path": "games/lie-detector/index.html",
       "tags": [
         "互动",
@@ -80,6 +80,23 @@
       "difficulty": "简单",
       "players": "单人或多人",
       "featured": false,
+      "hidden": false
+    },
+    {
+      "id": "helium-lottery",
+      "name": "氦氦的轮盘机",
+      "description": "体验氦氦的轮盘机，感受幸运的转动！",
+      "category": "互动",
+      "thumbnail": "assets/images/helium-lottery-thumb.png",
+      "path": "games/helium-lottery/index.html",
+      "tags": [
+        "抽奖",
+        "互动",
+        "趣味"
+      ],
+      "difficulty": "简单",
+      "players": "单人",
+      "featured": true,
       "hidden": false
     }
   ],

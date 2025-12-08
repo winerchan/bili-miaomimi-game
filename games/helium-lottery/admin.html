@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="氦氦的轮盘机 - 管理面板">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>管理面板 - 氦氦的轮盘机</title>
+  
+  <!-- 预加载字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- 样式 -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+</head>
+<body>
+  <!-- 背景 -->
+  <div class="background-container">
+    <div class="background-gradient"></div>
+    <div class="floating-shapes">
+      <div class="floating-shape"></div>
+      <div class="floating-shape"></div>
+      <div class="floating-shape"></div>
+    </div>
+  </div>
+  
+  <!-- 管理容器 -->
+  <div class="admin-container">
+    <!-- 头部 -->
+    <header class="admin-header">
+      <h1 class="admin-title">⚙️ DD管理面板</h1>
+      <button class="admin-back" id="btnBack">← 返回抽奖</button>
+    </header>
+    
+    <!-- 基础设置 -->
+    <section class="settings-section">
+      <h2 class="section-title">基础设置</h2>
+      <div class="settings-grid">
+        <div class="setting-item">
+          <label class="setting-label">轮盘机标题</label>
+          <input type="text" class="setting-input" id="settingTitle" placeholder="氦氦的轮盘机">
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">副标题</label>
+          <input type="text" class="setting-input" id="settingSubtitle" placeholder="由船船碎片打造~">
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">转动时长（毫秒）</label>
+          <input type="number" class="setting-input" id="settingSpinDuration" min="1000" max="10000" value="4000">
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">管理入口点击次数</label>
+          <input type="number" class="setting-input" id="settingAdminClicks" min="3" max="20" value="5">
+        </div>
+      </div>
+    </section>
+    
+    <!-- 礼物等级设置 -->
+    <section class="settings-section">
+      <h2 class="section-title">礼物等级设置</h2>
+      <div class="settings-grid">
+        <div class="setting-item">
+          <label class="setting-label">🌟 传说级最低电池</label>
+          <input type="number" class="setting-input" id="settingLegendaryMin" min="1" value="1000">
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">💎 稀有级最低电池</label>
+          <input type="number" class="setting-input" id="settingRareMin" min="1" value="100">
+        </div>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 15px;">
+        💡 提示：电池数 ≥ 传说级阈值 = 传说礼物；≥ 稀有级阈值 = 稀有礼物；其他 = 普通礼物
+      </p>
+    </section>
+    
+    <!-- 礼物列表 -->
+    <section class="settings-section">
+      <h2 class="section-title">礼物列表</h2>
+      
+      <!-- 期望值统计 -->
+      <div class="stats-panel" id="statsPanel">
+        <div class="stat-item">
+          <span class="stat-label">礼物总数</span>
+          <span class="stat-value" id="statGiftCount">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">总权重</span>
+          <span class="stat-value" id="statTotalWeight">0</span>
+        </div>
+        <div class="stat-item highlight">
+          <span class="stat-label">单次期望电池</span>
+          <span class="stat-value" id="statExpectedBattery">0.00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">期望价值(元)</span>
+          <span class="stat-value" id="statExpectedValue">¥0.00</span>
+        </div>
+      </div>
+      
+      <div class="gifts-list" id="giftsList">
+        <!-- 礼物卡片会通过JS动态生成 -->
+      </div>
+    </section>
+    
+    <!-- 操作按钮 -->
+    <div class="action-buttons">
+      <button class="btn-primary" id="btnSave">
+        💾 保存并下载配置
+      </button>
+      <button class="btn-secondary" id="btnExport">
+        📥 导出配置
+      </button>
+      <div class="file-upload">
+        <button class="btn-secondary" id="btnImport">
+          📤 导入配置
+        </button>
+        <input type="file" id="fileImport" accept=".json">
+      </div>
+      <button class="btn-secondary" id="btnReset" style="border-color: #e74c3c; color: #e74c3c;">
+        🔄 重新加载
+      </button>
+    </div>
+  </div>
+  
+  <!-- 提示消息 -->
+  <div class="toast" id="toast"></div>
+  
+  <!-- 脚本 -->
+  <script src="js/admin.js"></script>
+</body>
+</html>

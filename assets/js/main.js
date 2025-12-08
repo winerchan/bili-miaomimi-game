@@ -129,8 +129,11 @@ function createGameCard(game) {
     
     // 检查是否有实际图片，否则显示emoji占位符
     if (game.thumbnail && game.thumbnail.endsWith('.png')) {
-        // 这里可以后续添加实际图片
-        thumbnail.innerHTML = getGameEmoji(game.category);
+        const img = document.createElement('img');
+        img.src = game.thumbnail;
+        img.alt = game.name;
+        img.className = 'thumbnail-image';
+        thumbnail.appendChild(img);
     } else {
         thumbnail.innerHTML = getGameEmoji(game.category);
     }
