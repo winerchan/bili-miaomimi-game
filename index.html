@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="星流喵（MiaoMimi）的HTML小游戏合集">
+    <title>喵喵游戏中心 - 星流喵的游戏合集</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <!-- 页面头部 -->
+    <header class="header">
+        <div class="container">
+            <h1 class="site-title">🎮 喵喵游戏中心</h1>
+            <p class="site-subtitle">星流喵（MiaoMimi）的HTML小游戏合集</p>
+        </div>
+    </header>
+
+    <!-- 搜索和筛选区域 -->
+    <section class="controls">
+        <div class="container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 搜索游戏名称、标签..." class="search-input">
+            </div>
+            <div class="filter-box">
+                <label for="categoryFilter">分类筛选：</label>
+                <select id="categoryFilter" class="category-select">
+                    <option value="全部">全部分类</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- 游戏卡片区域 -->
+    <main class="main-content">
+        <div class="container">
+            <div id="gamesContainer" class="games-grid">
+                <!-- 游戏卡片将通过JavaScript动态生成 -->
+            </div>
+            <div id="noResults" class="no-results" style="display: none;">
+                <p>😿 没有找到匹配的游戏</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页面底部 -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 星流喵（MiaoMimi）游戏中心 | 
+                <a href="https://github.com/winerchan/bili-miaomimi-game" target="_blank">GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- 引入主要的JavaScript文件 -->
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

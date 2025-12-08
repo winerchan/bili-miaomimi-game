@@ -1,0 +1,38 @@
+{
+  "games": [
+    {
+      "id": "lucky-wheel",
+      "name": "幸运转盘",
+      "description": "转动幸运转盘，看看你的运气如何！适合直播互动抽奖使用。",
+      "category": "互动",
+      "thumbnail": "assets/images/lucky-wheel-thumb.png",
+      "path": "games/lucky-wheel/index.html",
+      "tags": ["抽奖", "互动", "趣味"],
+      "difficulty": "简单",
+      "players": "单人",
+      "featured": true,
+      "hidden": false
+    },
+    {
+      "id": "memory-cards",
+      "name": "记忆翻牌",
+      "description": "经典的记忆力游戏，翻开卡片找到匹配的一对。考验你的记忆力！",
+      "category": "益智",
+      "thumbnail": "assets/images/memory-cards-thumb.png",
+      "path": "games/memory-cards/index.html",
+      "tags": ["记忆", "益智", "休闲"],
+      "difficulty": "简单",
+      "players": "单人",
+      "featured": true,
+      "hidden": false
+    }
+  ],
+  "categories": [
+    "全部",
+    "互动",
+    "益智",
+    "休闲",
+    "竞速",
+    "策略"
+  ]
+}

@@ -1,0 +1,395 @@
+/* 全局样式重置和基础设置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 页面头部样式 */
+.header {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px 0;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.site-title {
+    font-size: 2.5em;
+    color: #667eea;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.site-subtitle {
+    font-size: 1.1em;
+    color: #666;
+}
+
+/* 搜索和筛选控制区域 */
+.controls {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px 0;
+    margin: 20px 0;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.controls .container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 250px;
+    max-width: 500px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+}
+
+.filter-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-box label {
+    font-weight: bold;
+    color: #555;
+}
+
+.category-select {
+    padding: 10px 20px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.category-select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* 主内容区域 */
+.main-content {
+    padding: 20px 0 40px;
+}
+
+/* 游戏卡片网格布局 */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 20px 0;
+}
+
+/* 单个游戏卡片样式 */
+.game-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.game-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.game-card.featured::before {
+    content: '⭐ 推荐';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ffd700;
+    color: #333;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.game-thumbnail {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4em;
+    color: white;
+}
+
+.game-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.game-info {
+    padding: 20px;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 10px;
+}
+
+.game-title {
+    font-size: 1.5em;
+    color: #333;
+    font-weight: bold;
+}
+
+.game-category {
+    background: #667eea;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    white-space: nowrap;
+}
+
+.game-description {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    min-height: 3em;
+}
+
+.game-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9em;
+    color: #999;
+    margin-bottom: 15px;
+}
+
+.game-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.game-tag {
+    background: #f0f0f0;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    color: #666;
+}
+
+.play-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-align: center;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.play-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* 无结果提示 */
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: white;
+    font-size: 1.5em;
+}
+
+/* 页脚样式 */
+.footer {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px 0;
+    text-align: center;
+    color: #666;
+    margin-top: 40px;
+}
+
+.footer a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* 响应式设计 - 移动端适配 */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .header {
+        padding: 20px 0;
+    }
+
+    .site-title {
+        font-size: 1.8em;
+    }
+
+    .site-subtitle {
+        font-size: 1em;
+    }
+
+    .controls {
+        margin: 15px 0;
+        padding: 15px 0;
+    }
+
+    .controls .container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-box {
+        max-width: 100%;
+    }
+
+    .search-input {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+    .filter-box {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .category-select {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+
+    .games-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 15px 0;
+    }
+
+    .game-card {
+        border-radius: 12px;
+    }
+
+    .game-thumbnail {
+        height: 150px;
+        font-size: 3em;
+    }
+
+    .game-info {
+        padding: 15px;
+    }
+
+    .game-title {
+        font-size: 1.3em;
+    }
+
+    .game-category {
+        font-size: 0.8em;
+        padding: 4px 10px;
+    }
+
+    .game-description {
+        font-size: 0.95em;
+    }
+
+    .game-meta {
+        font-size: 0.85em;
+        gap: 10px;
+    }
+
+    .play-button {
+        padding: 10px;
+        font-size: 0.95em;
+    }
+
+    .footer {
+        margin-top: 30px;
+        padding: 15px 0;
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-title {
+        font-size: 1.5em;
+    }
+
+    .site-subtitle {
+        font-size: 0.9em;
+    }
+
+    .header {
+        padding: 15px 0;
+    }
+
+    .game-title {
+        font-size: 1.2em;
+    }
+
+    .game-thumbnail {
+        height: 120px;
+        font-size: 2.5em;
+    }
+
+    .game-card.featured::before {
+        font-size: 11px;
+        padding: 4px 10px;
+        top: 8px;
+        right: 8px;
+    }
+
+    .game-tag {
+        font-size: 0.8em;
+        padding: 3px 8px;
+    }
+}
