@@ -16,15 +16,24 @@ class AdminPanel {
     this.renderGifts();
   }
   
-  // 加载配置（始终从JSON读取）
+  // 加载配置（优先读取本地存储）
   async loadConfig() {
     try {
+      // 先尝试从本地存储读取
+      const localConfig = localStorage.getItem('lottery_config');
+      if (localConfig) {
+        this.config = JSON.parse(localConfig);
+        console.log('从本地存储加载配置:', this.config);
+        return;
+      }
+
+      // 如果本地存储没有，才从JSON读取
       const response = await fetch('config/gifts.json?' + Date.now()); // 加时间戳防缓存
       if (!response.ok) {
         throw new Error('HTTP error: ' + response.status);
       }
       this.config = await response.json();
-      console.log('配置加载成功:', this.config);
+      console.log('从JSON文件加载配置:', this.config);
     } catch (error) {
       console.error('加载配置失败:', error);
       this.showToast('加载配置失败: ' + error.message, 'error');
@@ -67,6 +76,7 @@ class AdminPanel {
       statExpectedValue: document.getElementById('statExpectedValue'),
       
       // 按钮
+      btnSaveLocal: document.getElementById('btnSaveLocal'),
       btnSave: document.getElementById('btnSave'),
       btnExport: document.getElementById('btnExport'),
       btnImport: document.getElementById('btnImport'),
@@ -86,7 +96,10 @@ class AdminPanel {
       window.location.href = 'index.html';
     });
     
-    // 保存配置
+    // 保存到本地存储
+    this.elements.btnSaveLocal.addEventListener('click', () => this.saveConfigToLocalStorage());
+    
+    // 保存配置（下载JSON）
     this.elements.btnSave.addEventListener('click', () => this.saveConfig());
     
     // 导出配置
@@ -324,7 +337,31 @@ class AdminPanel {
     }
   }
   
-  // 保存配置（导出JSON文件，用户需手动替换）
+  // 保存配置到本地存储
+  saveConfigToLocalStorage() {
+    try {
+      this.updateSettings();
+      
+      // 验证数据
+      if (!this.validateConfig()) {
+        return;
+      }
+      
+      // 保存到本地存储
+      localStorage.setItem('lottery_config', JSON.stringify(this.config));
+      
+      // 同时更新主页的HTML title
+      document.title = this.config.settings.title;
+      
+      this.showToast('配置已保存到本地存储！游戏页面将使用此配置。', 'success');
+      console.log('配置已保存到本地存储:', this.config);
+    } catch (error) {
+      console.error('保存配置失败:', error);
+      this.showToast('保存失败：' + error.message, 'error');
+    }
+  }
+  
+  // 保存配置（下载JSON文件）
   saveConfig() {
     try {
       this.updateSettings();
@@ -334,7 +371,7 @@ class AdminPanel {
         return;
       }
       
-      // 直接导出文件
+      // 导出JSON文件
       const dataStr = JSON.stringify(this.config, null, 2);
       const blob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -384,7 +421,7 @@ class AdminPanel {
     
     return true;
   }
-  
+
   // 导出配置
   exportConfig() {
     this.updateSettings();

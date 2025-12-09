@@ -35,15 +35,24 @@ class LotteryMachine {
     }
   }
   
-  // 加载配置文件（始终从JSON读取）
+  // 加载配置文件（优先读取本地存储）
   async loadConfig() {
     try {
+      // 先尝试从本地存储读取
+      const localConfig = localStorage.getItem('lottery_config');
+      if (localConfig) {
+        this.config = JSON.parse(localConfig);
+        console.log('从本地存储加载配置:', this.config);
+        return;
+      }
+
+      // 如果本地存储没有，才从JSON读取
       const response = await fetch('config/gifts.json?' + Date.now()); // 加时间戳防缓存
       if (!response.ok) {
         throw new Error('HTTP error: ' + response.status);
       }
       this.config = await response.json();
-      console.log('配置加载成功:', this.config);
+      console.log('从JSON文件加载配置:', this.config);
     } catch (error) {
       console.error('加载配置失败:', error);
       alert('加载配置文件失败，请检查 config/gifts.json 是否存在');
@@ -70,6 +79,9 @@ class LotteryMachine {
     // 更新标题
     document.querySelector('.main-title').textContent = this.config.settings.title;
     document.querySelector('.subtitle').innerHTML = this.config.settings.subtitle.replace('船船', '<span>船船</span>');
+    
+    // 同时更新HTML的title标签
+    document.title = this.config.settings.title;
   }
   
   // 绑定事件
