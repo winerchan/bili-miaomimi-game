@@ -63,6 +63,7 @@ class AdminPanel {
       settingSubtitle: document.getElementById('settingSubtitle'),
       settingSpinDuration: document.getElementById('settingSpinDuration'),
       settingAdminClicks: document.getElementById('settingAdminClicks'),
+      settingPassword: document.getElementById('settingPassword'),
       settingLegendaryMin: document.getElementById('settingLegendaryMin'),
       settingRareMin: document.getElementById('settingRareMin'),
       
@@ -118,7 +119,7 @@ class AdminPanel {
     // 设置变更
     const settingInputs = [
       'settingTitle', 'settingSubtitle', 'settingSpinDuration',
-      'settingAdminClicks', 'settingLegendaryMin', 'settingRareMin'
+      'settingAdminClicks', 'settingPassword', 'settingLegendaryMin', 'settingRareMin'
     ];
     
     settingInputs.forEach(id => {
@@ -134,6 +135,7 @@ class AdminPanel {
     this.elements.settingSubtitle.value = this.config.settings.subtitle;
     this.elements.settingSpinDuration.value = this.config.settings.spinDuration;
     this.elements.settingAdminClicks.value = this.config.settings.adminClickCount;
+    this.elements.settingPassword.value = this.config.settings.adminPassword || '123456';
     this.elements.settingLegendaryMin.value = this.config.giftTiers.legendary.minBattery;
     this.elements.settingRareMin.value = this.config.giftTiers.rare.minBattery;
   }
@@ -144,6 +146,7 @@ class AdminPanel {
     this.config.settings.subtitle = this.elements.settingSubtitle.value;
     this.config.settings.spinDuration = parseInt(this.elements.settingSpinDuration.value) || 4000;
     this.config.settings.adminClickCount = parseInt(this.elements.settingAdminClicks.value) || 5;
+    this.config.settings.adminPassword = this.elements.settingPassword.value || '123456';
     this.config.giftTiers.legendary.minBattery = parseInt(this.elements.settingLegendaryMin.value) || 1000;
     this.config.giftTiers.rare.minBattery = parseInt(this.elements.settingRareMin.value) || 100;
   }
@@ -396,6 +399,11 @@ class AdminPanel {
     // 检查必要字段
     if (!this.config.settings.title) {
       this.showToast('请输入标题', 'error');
+      return false;
+    }
+    
+    if (!this.config.settings.adminPassword) {
+      this.showToast('请输入神秘口令', 'error');
       return false;
     }
     

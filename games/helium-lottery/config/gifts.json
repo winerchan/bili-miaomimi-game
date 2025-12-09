@@ -5,7 +5,8 @@
     "highValueThreshold": 1000,
     "mediumValueThreshold": 100,
     "spinDuration": 6500,
-    "adminClickCount": 8
+    "adminClickCount": 8,
+    "adminPassword": "歪比巴卜"
   },
   "giftTiers": {
     "legendary": {

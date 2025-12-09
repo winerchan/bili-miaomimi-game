@@ -463,11 +463,82 @@ class LotteryMachine {
       this.adminClickCount = 0;
     }, 2000);
     
-    // 达到点击次数，进入管理页面
+    // 达到点击次数，显示口令输入弹窗
     if (this.adminClickCount >= this.config.settings.adminClickCount) {
       this.adminClickCount = 0;
-      window.location.href = 'admin.html';
+      this.showPasswordDialog();
     }
+  }
+  
+  // 显示密码验证弹窗
+  showPasswordDialog() {
+    const password = this.config.settings.adminPassword || '123456';
+    
+    // 获取弹窗元素
+    const dialog = document.getElementById('passwordDialog');
+    const input = document.getElementById('passwordInput');
+    const submitBtn = document.getElementById('passwordSubmit');
+    const cancelBtn = document.getElementById('passwordCancel');
+    const card = dialog.querySelector('.password-card');
+    
+    // 显示弹窗
+    dialog.classList.add('show');
+    input.value = '';
+    input.focus();
+    
+    // 移除之前可能存在的错误类
+    card.classList.remove('error');
+    input.classList.remove('error');
+    
+    // 验证密码的函数
+    const verifyPassword = () => {
+      const userInput = input.value;
+      
+      if (userInput === password) {
+        // 密码正确，关闭弹窗并跳转
+        this.closePasswordDialog();
+        window.location.href = 'admin.html';
+      } else {
+        // 密码错误，显示错误状态
+        this.showPasswordError(card, input);
+      }
+    };
+    
+    // 提交按钮点击
+    submitBtn.onclick = verifyPassword;
+    
+    // 回车键确认
+    input.onkeypress = (e) => {
+      if (e.key === 'Enter') {
+        verifyPassword();
+      }
+    };
+    
+    // 取消按钮点击
+    cancelBtn.onclick = () => this.closePasswordDialog();
+    
+    // 点击背景关闭
+    dialog.querySelector('.password-overlay').onclick = () => this.closePasswordDialog();
+  }
+  
+  // 显示密码错误
+  showPasswordError(card, input) {
+    card.classList.add('error');
+    input.classList.add('error');
+    input.value = '';
+    input.focus();
+    
+    // 500ms 后移除错误类
+    setTimeout(() => {
+      card.classList.remove('error');
+      input.classList.remove('error');
+    }, 500);
+  }
+  
+  // 关闭密码弹窗
+  closePasswordDialog() {
+    const dialog = document.getElementById('passwordDialog');
+    dialog.classList.remove('show');
   }
   
   // 工具函数

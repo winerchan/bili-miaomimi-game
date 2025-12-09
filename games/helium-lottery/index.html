@@ -80,6 +80,24 @@
     </div>
   </div>
   
+  <!-- 密码验证弹窗 -->
+  <div class="password-dialog" id="passwordDialog">
+    <div class="password-overlay"></div>
+    <div class="password-card">
+      <div class="password-header">
+        <h2 class="password-title">🔐 神秘口令</h2>
+        <p class="password-subtitle">请输入正确的口令</p>
+      </div>
+      <div class="password-body">
+        <input type="text" class="password-input" id="passwordInput" placeholder="输入口令" autocomplete="off">
+      </div>
+      <div class="password-footer">
+        <button class="password-btn cancel" id="passwordCancel">取消</button>
+        <button class="password-btn submit" id="passwordSubmit">确认</button>
+      </div>
+    </div>
+  </div>
+  
   <!-- 庆祝效果容器 -->
   <div class="confetti-container" id="confettiContainer"></div>
   
