@@ -98,6 +98,23 @@
       "players": "单人",
       "featured": true,
       "hidden": false
+    },
+    {
+      "id": "gashapon-machine",
+      "name": "喵喵扭蛋机",
+      "description": "经典扭蛋机体验！转动手柄，看看能扭出什么惊喜~",
+      "category": "互动",
+      "thumbnail": "assets/images/gashapon-machine-thumb.png",
+      "path": "games/gashapon-machine/index.html",
+      "tags": [
+        "扭蛋",
+        "互动",
+        "抽奖"
+      ],
+      "difficulty": "简单",
+      "players": "单人",
+      "featured": true,
+      "hidden": false
     }
   ],
   "categories": [

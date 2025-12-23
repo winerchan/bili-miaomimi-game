@@ -1,0 +1,947 @@
+/* ===========================================
+   喵喵扭蛋机 - 管理面板样式
+   =========================================== */
+
+/* 引入Google字体 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=ZCOOL+KuaiLe&display=swap');
+
+/* CSS变量定义 */
+:root {
+  /* 主色调 - B站风格 */
+  --primary-pink: #fb7299;
+  --primary-blue: #23ade5;
+  --secondary-pink: #ff9eb5;
+  --secondary-blue: #6ecff5;
+  
+  /* 背景色 */
+  --bg-dark: #1a1a2e;
+  --bg-medium: #16213e;
+  --bg-light: #0f3460;
+  
+  /* 文字色 */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  
+  /* 礼物等级色 */
+  --legendary-gold: #FFD700;
+  --legendary-orange: #FFA500;
+  --rare-purple: #9B59B6;
+  --rare-silver: #c0c0c0;
+  --common-blue: #3498DB;
+  --common-cyan: #00BCD4;
+  
+  /* 动画时间 */
+  --transition-fast: 0.2s;
+  --transition-normal: 0.3s;
+  --transition-slow: 0.5s;
+  
+  /* 圆角 */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  
+  /* 阴影 */
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-glow-pink: 0 0 30px rgba(251, 114, 153, 0.5);
+}
+
+/* 重置样式 */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* 背景 */
+.background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.background-gradient {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+.floating-shapes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.floating-shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
+  animation: floatShape 20s ease-in-out infinite;
+}
+
+.floating-shape:nth-child(1) {
+  width: 300px;
+  height: 300px;
+  background: var(--primary-pink);
+  top: 10%;
+  left: -5%;
+  animation-delay: 0s;
+}
+
+.floating-shape:nth-child(2) {
+  width: 200px;
+  height: 200px;
+  background: var(--primary-blue);
+  top: 60%;
+  right: -5%;
+  animation-delay: -7s;
+}
+
+.floating-shape:nth-child(3) {
+  width: 150px;
+  height: 150px;
+  background: var(--legendary-gold);
+  bottom: 10%;
+  left: 20%;
+  animation-delay: -14s;
+}
+
+@keyframes floatShape {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -30px) scale(1.1); }
+}
+
+/* 管理容器 */
+.admin-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  padding-bottom: 100px;
+}
+
+/* 头部 */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.admin-title {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.admin-back {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.admin-back:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-3px);
+}
+
+/* 设置区块 */
+.settings-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  padding: 25px;
+  margin-bottom: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-title {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--primary-pink);
+  display: inline-block;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.setting-input {
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all var(--transition-fast);
+}
+
+.setting-input:focus {
+  outline: none;
+  border-color: var(--primary-pink);
+  box-shadow: 0 0 10px rgba(251, 114, 153, 0.3);
+}
+
+.setting-hint {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(251, 114, 153, 0.1);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--primary-pink);
+}
+
+/* 统计面板 */
+.stats-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-md);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+}
+
+.stat-item.highlight {
+  background: linear-gradient(135deg, rgba(251, 114, 153, 0.2), rgba(35, 173, 229, 0.2));
+  border: 1px solid var(--primary-pink);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stat-item.highlight .stat-value {
+  color: var(--primary-pink);
+}
+
+/* 添加礼物选项 */
+.add-gift-options {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.btn-add-gift {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
+  border: none;
+  border-radius: var(--radius-sm);
+  color: white;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-add-gift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(251, 114, 153, 0.4);
+}
+
+.btn-add-gift.virtual {
+  background: linear-gradient(135deg, #9b59b6, #3498db);
+}
+
+/* 礼物列表 */
+.gifts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.gifts-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.gifts-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.gifts-list::-webkit-scrollbar-thumb {
+  background: var(--primary-pink);
+  border-radius: 4px;
+}
+
+/* 礼物卡片 */
+.gift-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 15px;
+  align-items: center;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.gift-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.gift-card.legendary {
+  border-color: var(--legendary-gold);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), transparent);
+}
+
+.gift-card.rare {
+  border-color: var(--rare-silver);
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), transparent);
+}
+
+.gift-card.common {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.gift-card.virtual {
+  border-color: #9b59b6;
+  background: linear-gradient(135deg, rgba(155, 89, 182, 0.15), transparent);
+  position: relative;
+}
+
+.gift-card.virtual::before {
+  content: "✨ 虚拟";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+/* 礼物图片/Emoji预览 */
+.gift-preview {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.gift-preview:hover {
+  transform: scale(1.1);
+}
+
+.gift-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.gift-preview .emoji-display {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+/* 礼物信息 */
+.gift-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gift-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.gift-row.image-row {
+  margin-top: 4px;
+}
+
+.gift-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.gift-field.id-field {
+  flex: 0 0 90px;
+}
+
+.gift-field.name-field {
+  flex: 1;
+}
+
+.gift-field.num-field {
+  flex: 0 0 90px;
+}
+
+.gift-field.weight-field {
+  flex: 0 0 120px;
+}
+
+.gift-field.image-field {
+  flex: 1;
+}
+
+.gift-field.switch-field {
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.gift-field.switch-field .switch-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  display: block;
+  text-align: center;
+}
+
+/* 滑动开关样式 */
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: linear-gradient(135deg, var(--primary-pink), #ff85a2);
+  border-color: var(--primary-pink);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+.toggle-switch:hover .toggle-slider {
+  border-color: var(--primary-pink);
+}
+
+.gift-field label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.gift-field input[type="text"],
+.gift-field input[type="number"] {
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.gift-field input:focus {
+  outline: none;
+  border-color: var(--primary-pink);
+}
+
+/* 图片输入框带Emoji按钮 */
+.image-input-wrapper {
+  display: flex;
+  gap: 6px;
+}
+
+.image-input-wrapper input {
+  flex: 1;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.image-input-wrapper input:focus {
+  outline: none;
+  border-color: var(--primary-pink);
+}
+
+.btn-emoji-picker {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-emoji-picker:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* 概率显示 */
+.gift-probability {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  padding: 12px 15px;
+  background: rgba(251, 114, 153, 0.15);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(251, 114, 153, 0.3);
+}
+
+.probability-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-pink);
+  line-height: 1.2;
+}
+
+.probability-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.probability-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 6px 0;
+}
+
+.draw-count {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary-blue);
+}
+
+.draw-hint {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+/* 礼物操作 */
+.gift-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.btn-delete {
+  padding: 8px 12px;
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid #e74c3c;
+  border-radius: 4px;
+  color: #e74c3c;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-delete:hover {
+  background: #e74c3c;
+  color: white;
+}
+
+/* 虚拟礼物标签 */
+.virtual-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: linear-gradient(135deg, #9b59b6, #3498db);
+  border-radius: 10px;
+  font-size: 0.7rem;
+  color: white;
+  margin-left: 5px;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-md);
+  position: sticky;
+  bottom: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.btn-primary {
+  flex: 1;
+  min-width: 200px;
+  padding: 15px 25px;
+  background: linear-gradient(135deg, var(--primary-pink), var(--primary-blue));
+  border: none;
+  border-radius: var(--radius-sm);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow-pink);
+}
+
+.btn-secondary {
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-danger {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.btn-danger:hover {
+  background: rgba(231, 76, 60, 0.2);
+}
+
+.file-upload {
+  position: relative;
+}
+
+.file-upload input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Emoji选择器 */
+.emoji-picker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-normal);
+}
+
+.emoji-picker-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.emoji-picker {
+  width: 90%;
+  max-width: 400px;
+  max-height: 80vh;
+  background: var(--bg-medium);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.emoji-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.emoji-picker-header h3 {
+  font-size: 1.1rem;
+}
+
+.emoji-picker-close {
+  width: 30px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.emoji-picker-close:hover {
+  background: #e74c3c;
+}
+
+.emoji-picker-search {
+  padding: 15px 20px;
+}
+
+.emoji-picker-search input {
+  width: 100%;
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.emoji-picker-search input:focus {
+  outline: none;
+  border-color: var(--primary-pink);
+}
+
+.emoji-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  padding: 10px 20px;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.emoji-item {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.emoji-item:hover {
+  background: rgba(251, 114, 153, 0.3);
+  transform: scale(1.1);
+}
+
+.emoji-item.selected {
+  background: var(--primary-pink);
+}
+
+.emoji-picker-footer {
+  display: flex;
+  gap: 10px;
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.emoji-picker-footer button {
+  flex: 1;
+}
+
+/* Toast提示 */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 15px 30px;
+  background: var(--bg-medium);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-soft);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-normal);
+  z-index: 1001;
+}
+
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success {
+  border-left: 4px solid #2ecc71;
+}
+
+.toast.error {
+  border-left: 4px solid #e74c3c;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 15px;
+  }
+  
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .admin-title {
+    font-size: 1.4rem;
+  }
+  
+  .gift-card {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  
+  .gift-preview {
+    grid-row: span 2;
+  }
+  
+  .gift-probability {
+    grid-column: 2;
+  }
+  
+  .gift-actions {
+    grid-column: span 2;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  
+  .stats-panel {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .emoji-picker-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .gift-card {
+    grid-template-columns: 1fr;
+  }
+  
+  .gift-preview {
+    justify-self: center;
+  }
+  
+  .gift-info {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .gift-probability {
+    justify-self: center;
+  }
+  
+  .gift-actions {
+    grid-column: 1;
+    justify-content: center;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .btn-primary, .btn-secondary {
+    width: 100%;
+  }
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="喵喵扭蛋机 - 管理面板">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>管理面板 - 喵喵扭蛋机</title>
+  
+  <!-- 预加载字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- 样式 -->
+  <link rel="stylesheet" href="css/admin.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+</head>
+<body>
+  <!-- 背景 -->
+  <div class="background-container">
+    <div class="background-gradient"></div>
+    <div class="floating-shapes">
+      <div class="floating-shape"></div>
+      <div class="floating-shape"></div>
+      <div class="floating-shape"></div>
+    </div>
+  </div>
+  
+  <!-- 管理容器 -->
+  <div class="admin-container">
+    <!-- 头部 -->
+    <header class="admin-header">
+      <h1 class="admin-title">⚙️ 扭蛋机管理面板</h1>
+      <button class="admin-back" id="btnBack">← 返回扭蛋机</button>
+    </header>
+    
+    <!-- 基础设置 -->
+    <section class="settings-section">
+      <h2 class="section-title">🎮 基础设置</h2>
+      <div class="settings-grid">
+        <div class="setting-item">
+          <label class="setting-label">扭蛋机标题</label>
+          <input type="text" class="setting-input" id="settingTitle" placeholder="喵喵扭蛋机">
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">副标题</label>
+          <input type="text" class="setting-input" id="settingSubtitle" placeholder="转动手柄，收获惊喜~">
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">扭蛋球数量</label>
+          <input type="number" class="setting-input" id="settingCapsuleCount" min="10" max="50" value="20">
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">摇晃时长（毫秒）</label>
+          <input type="number" class="setting-input" id="settingShakeTime" min="1000" max="10000" value="2500">
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">管理入口点击次数</label>
+          <input type="number" class="setting-input" id="settingAdminClicks" min="3" max="20" value="8">
+        </div>
+      </div>
+    </section>
+    
+    <!-- 礼物等级设置 -->
+    <section class="settings-section">
+      <h2 class="section-title">🏆 礼物等级设置</h2>
+      <div class="settings-grid">
+        <div class="setting-item">
+          <label class="setting-label">🌟 传说级最低电池</label>
+          <input type="number" class="setting-input" id="settingLegendaryMin" min="0" value="1000">
+        </div>
+        <div class="setting-item">
+          <label class="setting-label">💎 稀有级最低电池</label>
+          <input type="number" class="setting-input" id="settingRareMin" min="0" value="100">
+        </div>
+      </div>
+      <p class="setting-hint">
+        💡 提示：电池数 ≥ 传说级阈值 = 金色球（传说）；≥ 稀有级阈值 = 银色球（稀有）；其他 = 彩色球（普通）
+      </p>
+    </section>
+    
+    <!-- 礼物列表 -->
+    <section class="settings-section">
+      <h2 class="section-title">🎁 礼物列表</h2>
+      
+      <!-- 期望值统计 -->
+      <div class="stats-panel" id="statsPanel">
+        <div class="stat-item">
+          <span class="stat-label">礼物总数</span>
+          <span class="stat-value" id="statGiftCount">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">总权重</span>
+          <span class="stat-value" id="statTotalWeight">0</span>
+        </div>
+        <div class="stat-item highlight">
+          <span class="stat-label">单次期望电池</span>
+          <span class="stat-value" id="statExpectedBattery">0.00</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">期望价值(元)</span>
+          <span class="stat-value" id="statExpectedValue">¥0.00</span>
+        </div>
+      </div>
+      
+      <!-- 添加礼物按钮 -->
+      <div class="add-gift-options">
+        <button class="btn-add-gift" id="btnAddNormal">
+          🎁 添加礼物
+        </button>
+        <button class="btn-add-gift virtual" id="btnAddVirtual">
+          ✨ 添加虚拟奖励
+        </button>
+      </div>
+      
+      <div class="gifts-list" id="giftsList">
+        <!-- 礼物卡片会通过JS动态生成 -->
+      </div>
+    </section>
+    
+    <!-- 操作按钮 -->
+    <div class="action-buttons">
+      <button class="btn-primary" id="btnSave">
+        💾 保存并下载配置
+      </button>
+      <button class="btn-secondary" id="btnExport">
+        📥 导出配置
+      </button>
+      <div class="file-upload">
+        <button class="btn-secondary" id="btnImport">
+          📤 导入配置
+        </button>
+        <input type="file" id="fileImport" accept=".json">
+      </div>
+      <button class="btn-secondary btn-danger" id="btnReset">
+        🔄 重新加载
+      </button>
+    </div>
+  </div>
+  
+  <!-- Emoji选择器弹窗 -->
+  <div class="emoji-picker-overlay" id="emojiPickerOverlay">
+    <div class="emoji-picker">
+      <div class="emoji-picker-header">
+        <h3>选择Emoji</h3>
+        <button class="emoji-picker-close" id="emojiPickerClose">×</button>
+      </div>
+      <div class="emoji-picker-search">
+        <input type="text" id="emojiSearch" placeholder="搜索或直接输入emoji...">
+      </div>
+      <div class="emoji-picker-grid" id="emojiGrid">
+        <!-- Emoji会通过JS生成 -->
+      </div>
+      <div class="emoji-picker-footer">
+        <button class="btn-secondary" id="emojiPickerCancel">取消</button>
+        <button class="btn-primary" id="emojiPickerConfirm">确认</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 提示消息 -->
+  <div class="toast" id="toast"></div>
+  
+  <!-- 脚本 -->
+  <script src="js/admin.js"></script>
+</body>
+</html>

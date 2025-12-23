@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="喵喵扭蛋机 - B站直播互动扭蛋">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>喵喵扭蛋机</title>
+  
+  <!-- 预加载字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  
+  <!-- 样式 -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎱</text></svg>">
+</head>
+<body>
+  <!-- 背景 -->
+  <div class="background-container">
+    <div class="background-gradient"></div>
+    <div class="floating-shapes">
+      <div class="floating-shape"></div>
+      <div class="floating-shape"></div>
+      <div class="floating-shape"></div>
+    </div>
+  </div>
+  
+  <!-- 主容器 -->
+  <div class="main-container">
+    <!-- 标题 -->
+    <header class="header">
+      <h1 class="main-title">喵喵扭蛋机</h1>
+      <p class="subtitle">转动手柄，收获惊喜~</p>
+    </header>
+    
+    <!-- 扭蛋机主体 -->
+    <div class="gashapon-machine">
+      <!-- 扭蛋机顶部装饰 -->
+      <div class="machine-top">
+        <div class="machine-light"></div>
+        <div class="machine-light"></div>
+        <div class="machine-light"></div>
+      </div>
+      
+      <!-- 扭蛋球展示区 -->
+      <div class="capsule-container">
+        <div class="capsule-glass">
+          <!-- 扭蛋球会通过JS动态生成 -->
+          <div class="capsules-area" id="capsulesArea"></div>
+        </div>
+        <!-- 玻璃反光效果 -->
+        <div class="glass-reflection"></div>
+      </div>
+      
+      <!-- 扭蛋机出口 -->
+      <div class="machine-outlet">
+        <div class="outlet-tube"></div>
+        <div class="outlet-opening">
+          <div class="falling-capsule" id="fallingCapsule"></div>
+        </div>
+      </div>
+      
+      <!-- 扭蛋机底座 -->
+      <div class="machine-base">
+        <!-- 手柄区域 -->
+        <div class="handle-section">
+          <div class="coin-slot">
+            <span class="coin-text">投币口</span>
+          </div>
+          <button class="handle-button" id="handleButton">
+            <div class="handle-knob">
+              <div class="handle-grip"></div>
+            </div>
+            <span class="handle-text">扭一扭</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 历史记录 -->
+    <section class="history-section">
+      <h3 class="history-title">📦 扭蛋记录</h3>
+      <div class="history-list" id="historyList">
+        <!-- 历史记录会通过JS动态生成 -->
+      </div>
+    </section>
+  </div>
+  
+  <!-- 扭蛋掉落动画容器 -->
+  <div class="capsule-drop-container" id="capsuleDropContainer">
+    <div class="drop-capsule" id="dropCapsule">
+      <div class="capsule-top"></div>
+      <div class="capsule-bottom"></div>
+      <div class="capsule-shine"></div>
+    </div>
+  </div>
+  
+  <!-- 结果弹窗 -->
+  <div class="result-display" id="resultDisplay">
+    <div class="result-overlay"></div>
+    <div class="result-card" id="resultCard">
+      <!-- 扭蛋开启动画 -->
+      <div class="capsule-open-animation" id="capsuleOpenAnimation">
+        <div class="opening-capsule">
+          <div class="capsule-top-half"></div>
+          <div class="capsule-bottom-half"></div>
+          <div class="capsule-glow"></div>
+        </div>
+      </div>
+      <!-- 礼物展示 -->
+      <div class="gift-reveal" id="giftReveal">
+        <div class="result-tier-label" id="resultTierLabel">普通奖励</div>
+        <img src="" alt="奖励" class="result-image" id="resultImage">
+        <h2 class="result-name" id="resultName">奖励名称</h2>
+        <div class="result-battery" id="resultBattery">
+          <svg viewBox="0 0 24 24">
+            <path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/>
+          </svg>
+          0 电池
+        </div>
+        <button class="result-close" id="resultClose">太棒了！</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 庆祝效果容器 -->
+  <div class="confetti-container" id="confettiContainer"></div>
+  
+  <!-- 管理入口（隐藏的） -->
+  <div class="admin-trigger" id="adminTrigger" title="管理"></div>
+  
+  <!-- 脚本 -->
+  <script src="game.js"></script>
+</body>
+</html>
