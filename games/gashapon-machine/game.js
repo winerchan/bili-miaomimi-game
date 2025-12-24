@@ -291,26 +291,101 @@ class GashaponMachine {
     
     // 设置初始位置（从顶部掉落）
     const areaWidth = area.offsetWidth;
-    newCapsule.style.left = `${(areaWidth - 42) / 2 + (Math.random() - 0.5) * 60}px`;
+    newCapsule.style.left = `${(areaWidth - 42) / 2}px`;
     newCapsule.style.top = '-50px';
     newCapsule.style.opacity = '0';
-    newCapsule.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+    newCapsule.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
     
     area.appendChild(newCapsule);
     
-    // 延迟后让球掉落到位
+    // 延迟后让球出现
     setTimeout(() => {
-      const areaHeight = area.offsetHeight;
       newCapsule.style.opacity = '1';
-      newCapsule.style.top = `${areaHeight - 42 - 50 - Math.random() * 30}px`;
-      newCapsule.style.left = `${10 + Math.random() * (areaWidth - 62)}px`;
-      newCapsule.style.zIndex = '50';
+    }, 50);
+    
+    // 等新球出现后，重新定位所有球形成金字塔堆叠
+    setTimeout(() => {
+      this.repositionAllCapsules();
     }, 100);
+  }
+  
+  // 重新定位所有球（带动画）
+  repositionAllCapsules() {
+    const area = this.elements.capsulesArea;
+    const capsules = Array.from(area.querySelectorAll('.capsule'));
+    const areaWidth = area.offsetWidth;
+    const areaHeight = area.offsetHeight;
+    const capsuleSize = 42;
+    const overlap = 8;
+    
+    const baseY = areaHeight - capsuleSize - 5;
+    const effectiveSize = capsuleSize - overlap;
+    const bottomRowCount = Math.floor((areaWidth - 10) / effectiveSize);
+    
+    // 金字塔堆叠
+    const rows = [];
+    let count = bottomRowCount;
+    let y = baseY;
+    while (count >= 1 && rows.length < 6) {
+      rows.push({ count: count, y: y });
+      count--;
+      y -= capsuleSize * 0.75;
+    }
+    
+    // 设置过渡动画
+    capsules.forEach(capsule => {
+      capsule.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    });
+    
+    let capsuleIndex = 0;
+    
+    rows.forEach((row, rowIndex) => {
+      const rowWidth = row.count * effectiveSize;
+      const rowStartX = (areaWidth - rowWidth) / 2;
+      
+      for (let col = 0; col < row.count && capsuleIndex < capsules.length; col++) {
+        const capsule = capsules[capsuleIndex];
+        
+        let x = rowStartX + col * effectiveSize;
+        let yPos = row.y;
+        
+        // 只有顶层的球有较大随机偏移
+        if (rowIndex >= rows.length - 2) {
+          x += (Math.random() - 0.5) * 15;
+          yPos += (Math.random() - 0.5) * 8;
+        } else {
+          x += (Math.random() - 0.5) * 4;
+          yPos += (Math.random() - 0.5) * 3;
+        }
+        
+        capsule.style.left = `${Math.max(3, Math.min(x, areaWidth - capsuleSize - 3))}px`;
+        capsule.style.top = `${yPos}px`;
+        capsule.style.zIndex = 10 + rowIndex * 5 + col;
+        
+        capsuleIndex++;
+      }
+    });
+    
+    // 剩余的球放在最顶层
+    while (capsuleIndex < capsules.length) {
+      const capsule = capsules[capsuleIndex];
+      const lastRow = rows[rows.length - 1];
+      const x = (areaWidth - capsuleSize) / 2 + (Math.random() - 0.5) * 40;
+      const yPos = (lastRow ? lastRow.y - capsuleSize * 0.75 : baseY - capsuleSize) + (Math.random() - 0.5) * 10;
+      
+      capsule.style.left = `${Math.max(3, Math.min(x, areaWidth - capsuleSize - 3))}px`;
+      capsule.style.top = `${Math.max(10, yPos)}px`;
+      capsule.style.zIndex = 60 + capsuleIndex;
+      
+      capsuleIndex++;
+    }
     
     // 动画结束后清除transition
     setTimeout(() => {
-      newCapsule.style.transition = 'none';
-    }, 800);
+      capsules.forEach(capsule => {
+        capsule.style.transition = 'none';
+      });
+    }, 500);
   }
   
   // 开始抽奖
@@ -331,22 +406,25 @@ class GashaponMachine {
     const tier = this.getGiftTier(this.currentResult.battery);
     
     // 根据等级决定球的颜色：传说=金色，稀有=银色，普通=随机彩色
-    const capsuleColor = this.getCapsuleColorByTier(tier);
+    let capsuleColor = this.getCapsuleColorByTier(tier);
     
     // 播放扭蛋机动画
     await this.playMachineAnimation(tier, capsuleColor);
     
+    // 使用实际选中的球的颜色（在playMachineAnimation中设置）
+    const actualColor = this.selectedCapsuleColor || capsuleColor;
+    
     // 显示大扭蛋掉落动画
-    await this.playDropAnimation(tier, capsuleColor);
+    await this.playDropAnimation(tier, actualColor);
     
     // 显示结果
-    this.showResult(this.currentResult, capsuleColor);
+    this.showResult(this.currentResult, actualColor);
     
     // 添加到历史
     this.addToHistory(this.currentResult);
     
     // 补充一个新球替代滚出的球
-    this.replenishCapsule(capsuleColor);
+    this.replenishCapsule(actualColor);
     
     // 重置按钮状态
     this.isSpinning = false;
@@ -455,7 +533,7 @@ class GashaponMachine {
     
     await this.delay(100);
     
-    // 根据等级找到对应颜色的球
+    // 根据等级和颜色找到对应的球
     let selectedCapsule = null;
     
     if (tier === 'legendary') {
@@ -465,13 +543,19 @@ class GashaponMachine {
       // 稀有级：找银色球
       selectedCapsule = capsules.find(c => c.dataset.color === 'silver');
     } else {
-      // 普通级：随机找一个彩色球（排除金色和银色）
-      const coloredCapsules = capsules.filter(c => 
-        c.dataset.color !== 'gold' && c.dataset.color !== 'silver'
-      );
-      if (coloredCapsules.length > 0) {
-        const randomIndex = Math.floor(Math.random() * coloredCapsules.length);
-        selectedCapsule = coloredCapsules[randomIndex];
+      // 普通级：找与capsuleColor匹配的球
+      selectedCapsule = capsules.find(c => c.dataset.color === capsuleColor);
+      
+      // 如果没找到匹配的，找任意彩色球
+      if (!selectedCapsule) {
+        const coloredCapsules = capsules.filter(c => 
+          c.dataset.color !== 'gold' && c.dataset.color !== 'silver'
+        );
+        if (coloredCapsules.length > 0) {
+          selectedCapsule = coloredCapsules[0];
+          // 更新capsuleColor为实际选中的颜色
+          // 注意：这里我们需要通知调用者更新颜色
+        }
       }
     }
     
@@ -480,6 +564,9 @@ class GashaponMachine {
       const randomIndex = Math.floor(Math.random() * capsules.length);
       selectedCapsule = capsules[randomIndex];
     }
+    
+    // 记录实际选中的球的颜色，以便后续动画使用
+    this.selectedCapsuleColor = selectedCapsule ? selectedCapsule.dataset.color : capsuleColor;
     
     if (selectedCapsule) {
       // 球已经是对应颜色，不需要改变
