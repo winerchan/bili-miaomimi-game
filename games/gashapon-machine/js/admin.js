@@ -393,15 +393,6 @@ class AdminPanel {
             <label>名称</label>
             <input type="text" value="${gift.name || ''}" data-field="name" maxlength="20">
           </div>
-          <div class="gift-field switch-field">
-            <label class="switch-label">虚拟奖励</label>
-            <div class="toggle-switch">
-              <input type="checkbox" data-field="isVirtual" ${isVirtual ? 'checked' : ''}>
-              <span class="toggle-slider"></span>
-            </div>
-          </div>
-        </div>
-        <div class="gift-row">
           <div class="gift-field num-field">
             <label>电池</label>
             <input type="number" value="${gift.battery || 0}" data-field="battery" min="0">
@@ -409,6 +400,13 @@ class AdminPanel {
           <div class="gift-field weight-field">
             <label>权重</label>
             <input type="number" value="${gift.weight || 1}" data-field="weight" min="1" max="100000">
+          </div>
+          <div class="gift-field switch-field">
+            <label class="switch-label">虚拟奖励</label>
+            <div class="toggle-switch">
+              <input type="checkbox" data-field="isVirtual" ${isVirtual ? 'checked' : ''}>
+              <span class="toggle-slider"></span>
+            </div>
           </div>
         </div>
         <div class="gift-row image-row">
