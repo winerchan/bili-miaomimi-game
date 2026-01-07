@@ -1,0 +1,143 @@
+{
+  "settings": {
+    "title": "星喵幸运转盘",
+    "subtitle": "欢迎踏上喵喵的贼船~",
+    "spinCost": 0,
+    "spinCostText": "",
+    "buttonText": "开始抽奖",
+    "spinDuration": 8000,
+    "minSpins": 7,
+    "maxSpins": 10
+  },
+  "rarityConfig": {
+    "超稀有": {
+      "color": "#FFD700",
+      "bgColor": "linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6347 100%)",
+      "glowColor": "rgba(255, 215, 0, 0.8)",
+      "particleColors": [
+        "#FFD700",
+        "#FFA500",
+        "#FF6347",
+        "#FFFF00",
+        "#FF69B4"
+      ],
+      "effectType": "legendary",
+      "sound": "legendary"
+    },
+    "稀有": {
+      "color": "#A855F7",
+      "bgColor": "linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)",
+      "glowColor": "rgba(168, 85, 247, 0.8)",
+      "particleColors": [
+        "#A855F7",
+        "#7C3AED",
+        "#C084FC",
+        "#E879F9"
+      ],
+      "effectType": "rare",
+      "sound": "rare"
+    },
+    "普通": {
+      "color": "#60A5FA",
+      "bgColor": "linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%)",
+      "glowColor": "rgba(96, 165, 250, 0.6)",
+      "particleColors": [
+        "#60A5FA",
+        "#93C5FD",
+        "#BFDBFE"
+      ],
+      "effectType": "common",
+      "sound": "common"
+    }
+  },
+  "prizes": [
+    {
+      "id": 1,
+      "name": "648现金红包",
+      "rarity": "超稀有",
+      "probability": 1.0,
+      "icon": "💰",
+      "description": "超级大奖！648元现金红包"
+    },
+    {
+      "id": 2,
+      "name": "星喵给你上舰",
+      "rarity": "超稀有",
+      "probability": 2.0,
+      "icon": "🚢",
+      "description": "星喵直播间舰长一个月"
+    },
+    {
+      "id": 3,
+      "name": "手办",
+      "rarity": "稀有",
+      "probability": 4.0,
+      "icon": "🎭",
+      "description": "精美限定手办一个"
+    },
+    {
+      "id": 4,
+      "name": "V你50",
+      "rarity": "稀有",
+      "probability": 7.0,
+      "icon": "💸",
+      "description": "50元红包打给你"
+    },
+    {
+      "id": 5,
+      "name": "彩票",
+      "rarity": "稀有",
+      "probability": 8.0,
+      "icon": "🎫",
+      "description": "刮刮乐彩票一张"
+    },
+    {
+      "id": 6,
+      "name": "星喵常设周边",
+      "rarity": "普通",
+      "probability": 16.0,
+      "icon": "🎁",
+      "description": "星喵官方周边随机一件"
+    },
+    {
+      "id": 7,
+      "name": "星喵小夜灯",
+      "rarity": "普通",
+      "probability": 16.0,
+      "icon": "💡",
+      "description": "可爱的星喵造型小夜灯"
+    },
+    {
+      "id": 8,
+      "name": "奶茶",
+      "rarity": "普通",
+      "probability": 15.0,
+      "icon": "🧋",
+      "description": "奶茶券一张"
+    },
+    {
+      "id": 9,
+      "name": "定制语音包",
+      "rarity": "普通",
+      "probability": 16.0,
+      "icon": "🎵",
+      "description": "星喵专属语音包"
+    },
+    {
+      "id": 10,
+      "name": "特产饼饼",
+      "rarity": "普通",
+      "probability": 10.0,
+      "icon": "🥮",
+      "description": "美味的特产饼干"
+    },
+    {
+      "id": 11,
+      "name": "苹果",
+      "rarity": "普通",
+      "probability": 5.0,
+      "icon": "🍎",
+      "description": "平平安安吃苹果"
+    }
+  ]
+}

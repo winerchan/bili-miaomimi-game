@@ -35,6 +35,22 @@
       "hidden": true
     },
     {
+      "id": "wheel-lottery",
+      "name": "星喵幸运转盘",
+      "description": "欢迎踏上喵喵的贼船喵！",
+      "category": "互动",
+      "thumbnail_no": "assets/images/helium-lottery-thumb.png",
+      "path": "games/wheel-lottery/index.html",
+      "tags": [
+        "抽奖",
+        "趣味"
+      ],
+      "difficulty": "简单",
+      "players": "单人",
+      "featured": true,
+      "hidden": false
+    },
+    {
       "id": "star-cat-scratch",
       "name": "星喵刮刮乐",
       "description": "刮刮乐翻牌游戏，可以设置自己改概率和奖品~",
@@ -62,7 +78,7 @@
       ],
       "difficulty": "中等",
       "players": "多人",
-      "featured": true,
+      "featured": false,
       "hidden": false
     },
     {
@@ -104,7 +120,7 @@
       "name": "喵喵扭蛋机",
       "description": "经典扭蛋机体验！转动手柄，看看能扭出什么惊喜~",
       "category": "互动",
-      "thumbnail": "assets/images/gashapon-machine-thumb.png",
+      "thumbnail_no": "assets/images/gashapon-machine-thumb.png",
       "path": "games/gashapon-machine/index.html",
       "tags": [
         "扭蛋",

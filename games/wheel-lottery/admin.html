@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>转盘设置 - 管理后台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FB7299;
+            --primary-light: #FFD6E3;
+            --secondary: #00A1D6;
+            --bg: #f5f6fa;
+            --card-bg: #ffffff;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --border: #e0e0e0;
+            --success: #52c41a;
+            --warning: #faad14;
+            --danger: #ff4d4f;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        /* 顶部导航 */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, #E91E63 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-title {
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #fff;
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background: #45a515;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #e04545;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* 网格布局 */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(251, 114, 153, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* 奖品列表 */
+        .prize-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .prize-item {
+            display: grid;
+            grid-template-columns: 50px 1fr auto auto auto auto;
+            gap: 15px;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .prize-item:hover {
+            background: #f9f9f9;
+        }
+
+        .prize-item:last-child {
+            border-bottom: none;
+        }
+
+        .prize-icon-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.8rem;
+            padding: 5px;
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+
+        .prize-icon-input:focus {
+            border-style: solid;
+            border-color: var(--primary);
+        }
+
+        .prize-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .prize-name-input {
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 8px 12px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+        }
+
+        .prize-name-input:hover {
+            background: #f0f0f0;
+        }
+
+        .prize-name-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+        }
+
+        .prize-desc-input {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+        }
+
+        .prize-desc-input:hover {
+            background: #f0f0f0;
+        }
+
+        .prize-desc-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background: #fff;
+        }
+
+        .prize-rarity {
+            width: 100px;
+        }
+
+        .rarity-select {
+            padding: 8px 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .rarity-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .rarity-select.超稀有 {
+            border-color: #FFD700;
+            color: #B8860B;
+        }
+
+        .rarity-select.稀有 {
+            border-color: #A855F7;
+            color: #7C3AED;
+        }
+
+        .rarity-select.普通 {
+            border-color: #60A5FA;
+            color: #3B82F6;
+        }
+
+        .prize-probability {
+            width: 80px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .probability-input {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .probability-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .prize-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-icon.delete {
+            background: #fff0f0;
+            color: var(--danger);
+        }
+
+        .btn-icon.delete:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-icon.move {
+            background: #f0f0f0;
+            color: var(--text-secondary);
+            cursor: grab;
+        }
+
+        .btn-icon.move:hover {
+            background: #e0e0e0;
+        }
+
+        /* 添加奖品按钮 */
+        .add-prize-btn {
+            width: 100%;
+            padding: 15px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .add-prize-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        /* 稀有度设置 */
+        .rarity-settings {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .rarity-card {
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .rarity-card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .rarity-card.超稀有 {
+            border-color: #FFD700;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%);
+        }
+
+        .rarity-card.稀有 {
+            border-color: #A855F7;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+        }
+
+        .rarity-card.普通 {
+            border-color: #60A5FA;
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+        }
+
+        .rarity-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rarity-badge {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #fff;
+        }
+
+        .color-picker-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-picker input[type="color"] {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .color-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* JSON 预览 */
+        .json-preview {
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .json-header {
+            background: #333;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .json-title {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .json-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .json-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .json-btn.copy {
+            background: var(--secondary);
+            color: #fff;
+        }
+
+        .json-btn.copy:hover {
+            background: #0090c0;
+        }
+
+        .json-btn.download {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .json-btn.download:hover {
+            background: #45a515;
+        }
+
+        .json-content {
+            padding: 20px;
+            max-height: 400px;
+            overflow: auto;
+        }
+
+        .json-content pre {
+            color: #d4d4d4;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        /* 统计信息 */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #E91E63 100%);
+            border-radius: 12px;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .stat-card.blue {
+            background: linear-gradient(135deg, var(--secondary) 0%, #0084B4 100%);
+        }
+
+        .stat-card.green {
+            background: linear-gradient(135deg, var(--success) 0%, #389e0d 100%);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* 导入导出 */
+        .import-export {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        /* 全宽卡片 */
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <div class="navbar-title">
+            <span>⚙️</span>
+            <span>转盘抽奖 - 管理后台</span>
+        </div>
+        <div class="navbar-actions">
+            <a href="index.html" class="btn btn-secondary">
+                <span>🎡</span> 返回转盘
+            </a>
+            <button class="btn btn-primary" onclick="saveConfig()">
+                <span>💾</span> 保存配置
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 统计信息 -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalPrizes">11</div>
+                <div class="stat-label">奖品总数</div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-value" id="totalProbability">100%</div>
+                <div class="stat-label">总概率</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-value" id="rareProbability">22%</div>
+                <div class="stat-label">稀有+超稀有概率</div>
+            </div>
+        </div>
+
+        <!-- 导入导出 -->
+        <div class="import-export">
+            <input type="file" id="importFile" class="file-input" accept=".json" onchange="importConfig(event)">
+            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
+                <span>📤</span> 导入配置
+            </button>
+            <button class="btn btn-secondary" onclick="exportConfig()">
+                <span>📥</span> 导出配置
+            </button>
+            <button class="btn btn-danger" onclick="resetConfig()">
+                <span>🔄</span> 重置默认
+            </button>
+        </div>
+
+        <div class="grid">
+            <!-- 基本设置 -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><span>🎯</span> 基本设置</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">转盘标题</label>
+                        <input type="text" class="form-input" id="settingTitle" placeholder="星喵幸运转盘">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">副标题</label>
+                        <input type="text" class="form-input" id="settingSubtitle" placeholder="试试你的运气吧~">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">抽奖按钮文字</label>
+                        <input type="text" class="form-input" id="settingButtonText" placeholder="开始抽奖">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">转动时长 (毫秒)</label>
+                            <input type="number" class="form-input" id="settingDuration" placeholder="5000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">最少/最多圈数</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" class="form-input" id="settingMinSpins" placeholder="3" style="width: 50%;">
+                                <input type="number" class="form-input" id="settingMaxSpins" placeholder="5" style="width: 50%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 稀有度设置 -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><span>✨</span> 稀有度设置</h2>
+                </div>
+                <div class="card-body">
+                    <div class="rarity-settings" id="raritySettings">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 奖品列表 -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <h2 class="card-title"><span>🎁</span> 奖品列表</h2>
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;">
+                        提示：直接点击内容即可编辑
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="prize-list" id="prizeList">
+                        <!-- 动态生成 -->
+                    </div>
+                    <button class="add-prize-btn" onclick="addPrize()">
+                        <span>➕</span> 添加新奖品
+                    </button>
+                </div>
+            </div>
+
+            <!-- JSON 预览 -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <h2 class="card-title"><span>📄</span> JSON 配置预览</h2>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <div class="json-preview">
+                        <div class="json-header">
+                            <span class="json-title">config/prizes.json</span>
+                            <div class="json-actions">
+                                <button class="json-btn copy" onclick="copyJson()">📋 复制</button>
+                                <button class="json-btn download" onclick="downloadJson()">⬇️ 下载</button>
+                            </div>
+                        </div>
+                        <div class="json-content">
+                            <pre id="jsonPreview"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==================== 全局变量 ====================
+        let config = null;
+
+        // ==================== 初始化 ====================
+        async function init() {
+            await loadConfig();
+            renderSettings();
+            renderRaritySettings();
+            renderPrizeList();
+            updateJsonPreview();
+            updateStats();
+        }
+
+        // 加载配置
+        async function loadConfig() {
+            try {
+                const response = await fetch('config/prizes.json');
+                config = await response.json();
+            } catch (e) {
+                console.log('使用默认配置');
+                config = getDefaultConfig();
+            }
+        }
+
+        // 默认配置
+        function getDefaultConfig() {
+            return {
+                settings: {
+                    title: "星喵幸运转盘",
+                    subtitle: "试试你的运气吧~",
+                    buttonText: "开始抽奖",
+                    spinDuration: 5000,
+                    minSpins: 3,
+                    maxSpins: 5
+                },
+                rarityConfig: {
+                    "超稀有": {
+                        color: "#FFD700",
+                        bgColor: "linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6347 100%)",
+                        glowColor: "rgba(255, 215, 0, 0.8)",
+                        particleColors: ["#FFD700", "#FFA500", "#FF6347", "#FFFF00", "#FF69B4"],
+                        effectType: "legendary"
+                    },
+                    "稀有": {
+                        color: "#A855F7",
+                        bgColor: "linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)",
+                        glowColor: "rgba(168, 85, 247, 0.8)",
+                        particleColors: ["#A855F7", "#7C3AED", "#C084FC", "#E879F9"],
+                        effectType: "rare"
+                    },
+                    "普通": {
+                        color: "#60A5FA",
+                        bgColor: "linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%)",
+                        glowColor: "rgba(96, 165, 250, 0.6)",
+                        particleColors: ["#60A5FA", "#93C5FD", "#BFDBFE"],
+                        effectType: "common"
+                    }
+                },
+                prizes: [
+                    { id: 1, name: "648现金红包", rarity: "超稀有", probability: 1, icon: "💰", description: "超级大奖！648元现金红包" },
+                    { id: 2, name: "星喵给你上舰", rarity: "超稀有", probability: 2, icon: "🚢", description: "星喵直播间舰长一个月" },
+                    { id: 3, name: "手办", rarity: "稀有", probability: 4, icon: "🎭", description: "精美限定手办一个" },
+                    { id: 4, name: "V你50", rarity: "稀有", probability: 7, icon: "💸", description: "50元红包打给你" },
+                    { id: 5, name: "彩票", rarity: "稀有", probability: 8, icon: "🎫", description: "刮刮乐彩票一张" },
+                    { id: 6, name: "星喵常设周边", rarity: "普通", probability: 16, icon: "🎁", description: "星喵官方周边随机一件" },
+                    { id: 7, name: "星喵小夜灯", rarity: "普通", probability: 16, icon: "💡", description: "可爱的星喵造型小夜灯" },
+                    { id: 8, name: "奶茶", rarity: "普通", probability: 15, icon: "🧋", description: "奶茶券一张" },
+                    { id: 9, name: "定制语音包", rarity: "普通", probability: 16, icon: "🎵", description: "星喵专属语音包" },
+                    { id: 10, name: "特产饼饼", rarity: "普通", probability: 10, icon: "🥮", description: "美味的特产饼干" },
+                    { id: 11, name: "苹果", rarity: "普通", probability: 5, icon: "🍎", description: "平平安安吃苹果" }
+                ]
+            };
+        }
+
+        // ==================== 渲染函数 ====================
+        function renderSettings() {
+            document.getElementById('settingTitle').value = config.settings.title || '';
+            document.getElementById('settingSubtitle').value = config.settings.subtitle || '';
+            document.getElementById('settingButtonText').value = config.settings.buttonText || '';
+            document.getElementById('settingDuration').value = config.settings.spinDuration || 5000;
+            document.getElementById('settingMinSpins').value = config.settings.minSpins || 3;
+            document.getElementById('settingMaxSpins').value = config.settings.maxSpins || 5;
+        }
+
+        function renderRaritySettings() {
+            const container = document.getElementById('raritySettings');
+            const rarities = ['超稀有', '稀有', '普通'];
+            const badges = {
+                '超稀有': '🌟 传说级',
+                '稀有': '💎 稀有级',
+                '普通': '📦 普通级'
+            };
+
+            container.innerHTML = rarities.map(rarity => {
+                const rc = config.rarityConfig[rarity];
+                return `
+                    <div class="rarity-card ${rarity}">
+                        <div class="rarity-title">
+                            <span class="rarity-badge" style="background: ${rc.bgColor}">${badges[rarity]}</span>
+                            <span>${rarity}</span>
+                        </div>
+                        <div class="color-picker-group">
+                            <div class="color-picker">
+                                <input type="color" value="${rc.color}" onchange="updateRarityColor('${rarity}', 'color', this.value)">
+                                <span class="color-label">主色</span>
+                            </div>
+                            <div class="color-picker">
+                                <input type="color" value="${rc.glowColor.replace(/rgba?\([^)]+\)/, rc.color)}" onchange="updateRarityColor('${rarity}', 'glow', this.value)">
+                                <span class="color-label">发光色</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderPrizeList() {
+            const container = document.getElementById('prizeList');
+            
+            container.innerHTML = config.prizes.map((prize, index) => `
+                <div class="prize-item" data-id="${prize.id}">
+                    <input type="text" class="prize-icon-input" value="${prize.icon}" 
+                           onchange="updatePrize(${index}, 'icon', this.value)" maxlength="2">
+                    <div class="prize-info">
+                        <input type="text" class="prize-name-input" value="${prize.name}" 
+                               onchange="updatePrize(${index}, 'name', this.value)" placeholder="奖品名称">
+                        <input type="text" class="prize-desc-input" value="${prize.description}" 
+                               onchange="updatePrize(${index}, 'description', this.value)" placeholder="奖品描述">
+                    </div>
+                    <div class="prize-rarity">
+                        <select class="rarity-select ${prize.rarity}" onchange="updatePrize(${index}, 'rarity', this.value); this.className='rarity-select '+this.value">
+                            <option value="超稀有" ${prize.rarity === '超稀有' ? 'selected' : ''}>超稀有</option>
+                            <option value="稀有" ${prize.rarity === '稀有' ? 'selected' : ''}>稀有</option>
+                            <option value="普通" ${prize.rarity === '普通' ? 'selected' : ''}>普通</option>
+                        </select>
+                    </div>
+                    <div class="prize-probability">
+                        <input type="number" class="probability-input" value="${prize.probability}" 
+                               onchange="updatePrize(${index}, 'probability', parseFloat(this.value))" step="0.1" min="0" max="100">
+                        <span>%</span>
+                    </div>
+                    <div class="prize-actions">
+                        <button class="btn-icon delete" onclick="deletePrize(${index})" title="删除">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== 更新函数 ====================
+        function updatePrize(index, field, value) {
+            config.prizes[index][field] = value;
+            updateJsonPreview();
+            updateStats();
+        }
+
+        function updateRarityColor(rarity, type, value) {
+            if (type === 'color') {
+                config.rarityConfig[rarity].color = value;
+            } else if (type === 'glow') {
+                config.rarityConfig[rarity].glowColor = hexToRgba(value, 0.8);
+            }
+            updateJsonPreview();
+        }
+
+        function hexToRgba(hex, alpha) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function addPrize() {
+            const newId = Math.max(...config.prizes.map(p => p.id), 0) + 1;
+            config.prizes.push({
+                id: newId,
+                name: "新奖品",
+                rarity: "普通",
+                probability: 5,
+                icon: "🎁",
+                description: "新奖品描述"
+            });
+            renderPrizeList();
+            updateJsonPreview();
+            updateStats();
+            showToast('已添加新奖品', 'success');
+        }
+
+        function deletePrize(index) {
+            if (config.prizes.length <= 2) {
+                showToast('至少需要保留2个奖品', 'error');
+                return;
+            }
+            if (confirm('确定要删除这个奖品吗？')) {
+                config.prizes.splice(index, 1);
+                renderPrizeList();
+                updateJsonPreview();
+                updateStats();
+                showToast('已删除奖品', 'success');
+            }
+        }
+
+        function updateStats() {
+            const total = config.prizes.length;
+            const totalProb = config.prizes.reduce((sum, p) => sum + p.probability, 0);
+            const rareProb = config.prizes
+                .filter(p => p.rarity === '超稀有' || p.rarity === '稀有')
+                .reduce((sum, p) => sum + p.probability, 0);
+
+            document.getElementById('totalPrizes').textContent = total;
+            document.getElementById('totalProbability').textContent = totalProb.toFixed(1) + '%';
+            document.getElementById('rareProbability').textContent = rareProb.toFixed(1) + '%';
+
+            // 如果总概率不是100%，显示警告
+            if (Math.abs(totalProb - 100) > 0.1) {
+                document.getElementById('totalProbability').style.color = '#ff4d4f';
+            } else {
+                document.getElementById('totalProbability').style.color = '';
+            }
+        }
+
+        function updateJsonPreview() {
+            collectSettingsFromForm();
+            const json = JSON.stringify(config, null, 2);
+            document.getElementById('jsonPreview').textContent = json;
+        }
+
+        function collectSettingsFromForm() {
+            config.settings.title = document.getElementById('settingTitle').value;
+            config.settings.subtitle = document.getElementById('settingSubtitle').value;
+            config.settings.buttonText = document.getElementById('settingButtonText').value;
+            config.settings.spinDuration = parseInt(document.getElementById('settingDuration').value) || 5000;
+            config.settings.minSpins = parseInt(document.getElementById('settingMinSpins').value) || 3;
+            config.settings.maxSpins = parseInt(document.getElementById('settingMaxSpins').value) || 5;
+        }
+
+        // ==================== 保存和导出 ====================
+        function saveConfig() {
+            collectSettingsFromForm();
+            
+            // 由于是静态页面，实际保存需要下载 JSON
+            const json = JSON.stringify(config, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'prizes.json';
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            showToast('配置已下载，请将 prizes.json 放入 config 文件夹', 'success');
+        }
+
+        function exportConfig() {
+            collectSettingsFromForm();
+            const json = JSON.stringify(config, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'prizes-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            showToast('配置已导出', 'success');
+        }
+
+        function importConfig(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    
+                    // 验证配置格式
+                    if (!imported.settings || !imported.prizes || !imported.rarityConfig) {
+                        throw new Error('配置格式不正确');
+                    }
+
+                    config = imported;
+                    renderSettings();
+                    renderRaritySettings();
+                    renderPrizeList();
+                    updateJsonPreview();
+                    updateStats();
+                    showToast('配置导入成功', 'success');
+                } catch (err) {
+                    showToast('导入失败：' + err.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function resetConfig() {
+            if (confirm('确定要重置为默认配置吗？所有修改将丢失！')) {
+                config = getDefaultConfig();
+                renderSettings();
+                renderRaritySettings();
+                renderPrizeList();
+                updateJsonPreview();
+                updateStats();
+                showToast('已重置为默认配置', 'success');
+            }
+        }
+
+        function copyJson() {
+            const json = document.getElementById('jsonPreview').textContent;
+            navigator.clipboard.writeText(json).then(() => {
+                showToast('JSON 已复制到剪贴板', 'success');
+            }).catch(() => {
+                showToast('复制失败，请手动复制', 'error');
+            });
+        }
+
+        function downloadJson() {
+            collectSettingsFromForm();
+            const json = JSON.stringify(config, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'prizes.json';
+            a.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        // ==================== 工具函数 ====================
+        function showToast(message, type = '') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 监听输入变化
+        document.querySelectorAll('#settingTitle, #settingSubtitle, #settingButtonText, #settingDuration, #settingMinSpins, #settingMaxSpins')
+            .forEach(input => {
+                input.addEventListener('input', updateJsonPreview);
+            });
+
+        // 初始化
+        init();
+    </script>
+</body>
+</html>

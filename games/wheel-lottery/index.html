@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星喵幸运转盘</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bilibili-pink: #FB7299;
+            --bilibili-pink-light: #FFC0D0;
+            --bilibili-blue: #00A1D6;
+            --bilibili-blue-light: #7FD5F0;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #333;
+            --text-secondary: #666;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float-up 15s infinite linear;
+        }
+
+        @keyframes float-up {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-family: 'ZCOOL KuaiLe', 'Noto Sans SC', cursive;
+            font-size: clamp(2rem, 8vw, 3.2rem);
+            background: linear-gradient(135deg, #fb7299 0%, #23ade5 50%, #9B59B6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 6px;
+            margin-bottom: 12px;
+            animation: titleGlow 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(251, 114, 153, 0.5));
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(251, 114, 153, 0.5)); }
+            50% { filter: drop-shadow(0 0 40px rgba(35, 173, 229, 0.5)); }
+        }
+
+        .subtitle {
+            font-size: clamp(0.9rem, 3vw, 1.15rem);
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            letter-spacing: 3px;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: min(400px, 80vw);
+            height: min(400px, 80vw);
+            margin: 20px 0;
+        }
+
+        .wheel-frame {
+            position: absolute;
+            top: -4%;
+            left: -4%;
+            width: 108%;
+            height: 108%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6347 100%);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .wheel-lights {
+            position: absolute;
+            top: -4%;
+            left: -4%;
+            width: 108%;
+            height: 108%;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .light-bulb {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 10px currentColor;
+            animation: blink 0.5s infinite alternate;
+        }
+
+        @keyframes blink {
+            0% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        .wheel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.2), 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .wheel-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20%;
+            height: 20%;
+            min-width: 60px;
+            min-height: 60px;
+            z-index: 10;
+        }
+
+        .pointer-circle {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--bilibili-pink) 0%, #E91E63 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.5), inset 0 2px 10px rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 4px solid #fff;
+        }
+
+        .pointer-circle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(233, 30, 99, 0.6), inset 0 2px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .pointer-circle:active { transform: scale(0.98); }
+        .pointer-circle.disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .pointer-arrow {
+            position: absolute;
+            top: -25%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 24px solid var(--bilibili-pink);
+            filter: drop-shadow(0 -2px 5px rgba(0, 0, 0, 0.3));
+        }
+
+        .pointer-text {
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .spin-btn {
+            margin-top: 30px;
+            padding: 15px 60px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, var(--bilibili-pink) 0%, #E91E63 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(251, 114, 153, 0.4), inset 0 2px 10px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spin-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .spin-btn:hover::before { left: 100%; }
+        .spin-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(251, 114, 153, 0.5), inset 0 2px 10px rgba(255, 255, 255, 0.2); }
+        .spin-btn:active { transform: translateY(0); }
+        .spin-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .admin-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .admin-link:hover { background: rgba(255, 255, 255, 0.5); transform: scale(1.1); }
+
+        #effectCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .modal {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-overlay.active .modal { transform: scale(1); opacity: 1; }
+
+        .modal-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: bounce-in 0.6s ease-out;
+        }
+
+        @keyframes bounce-in {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .modal-rarity {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .modal-desc {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .modal-close {
+            padding: 12px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, var(--bilibili-blue) 0%, #0084B4 100%);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 161, 214, 0.4); }
+
+        /* 历史记录和概率面板样式 */
+        .history-toggle, .probability-toggle {
+            position: fixed;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 101;
+            transition: all 0.3s;
+            font-size: 1.3rem;
+        }
+
+        .history-toggle {
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, var(--bilibili-pink) 0%, #E91E63 100%);
+            box-shadow: 0 4px 15px rgba(251, 114, 153, 0.4);
+        }
+
+        .probability-toggle {
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, var(--bilibili-blue) 0%, #0084B4 100%);
+            box-shadow: 0 4px 15px rgba(0, 161, 214, 0.4);
+        }
+
+        .history-toggle:hover, .probability-toggle:hover { transform: scale(1.1); }
+
+        .history-toggle .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .history-panel, .probability-panel {
+            position: fixed;
+            top: 70px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            z-index: 100;
+            transform: scale(0.9) translateY(-10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .history-panel {
+            right: 15px;
+            width: 260px;
+            max-height: 350px;
+            transform-origin: top right;
+        }
+
+        .probability-panel {
+            left: 15px;
+            width: 220px;
+            max-height: 400px;
+            transform-origin: top left;
+        }
+
+        .history-panel.active, .probability-panel.active {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .history-header, .probability-header {
+            padding: 12px 15px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-header { background: linear-gradient(135deg, var(--bilibili-pink) 0%, #E91E63 100%); }
+        .probability-header { background: linear-gradient(135deg, var(--bilibili-blue) 0%, #0084B4 100%); }
+
+        .history-close, .probability-close {
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .history-close:hover, .probability-close:hover { opacity: 1; }
+
+        .history-list { max-height: 290px; overflow-y: auto; padding: 8px; }
+        .probability-list { max-height: 340px; overflow-y: auto; padding: 5px 0; }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            background: #f8f9fa;
+            animation: slide-in 0.3s ease-out;
+        }
+
+        @keyframes slide-in {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .history-icon { font-size: 1.3rem; margin-right: 10px; }
+        .history-info { flex: 1; }
+        .history-name { font-weight: 600; color: var(--text-primary); font-size: 0.85rem; }
+        .history-rarity { font-size: 0.65rem; padding: 2px 6px; border-radius: 8px; color: #fff; display: inline-block; margin-top: 2px; }
+        .history-empty { padding: 25px; text-align: center; color: var(--text-secondary); font-size: 0.9rem; }
+
+        .probability-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .probability-item:last-child { border-bottom: none; }
+        .probability-icon { font-size: 1.1rem; margin-right: 8px; }
+        .probability-name { flex: 1; font-size: 0.8rem; color: var(--text-primary); }
+        .probability-value { font-weight: 700; font-size: 0.8rem; }
+
+        @media (max-width: 500px) {
+            .title { font-size: 1.8rem; }
+            .pointer-text { font-size: 0.85rem; }
+            .spin-btn { padding: 12px 40px; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-particles" id="bgParticles"></div>
+    <canvas id="effectCanvas"></canvas>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title" id="gameTitle">星喵幸运转盘</h1>
+            <p class="subtitle" id="gameSubtitle">试试你的运气吧~</p>
+        </header>
+
+        <div class="wheel-container" id="wheelContainer">
+            <div class="wheel-frame"></div>
+            <div class="wheel-lights" id="wheelLights"></div>
+            <div class="wheel" id="wheel">
+                <canvas class="wheel-canvas" id="wheelCanvas"></canvas>
+            </div>
+            <div class="wheel-pointer" id="pointer">
+                <div class="pointer-arrow"></div>
+                <div class="pointer-circle" onclick="startSpin()">
+                    <span class="pointer-text">GO!</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="spin-btn" id="spinBtn" onclick="startSpin()">开始抽奖</button>
+    </div>
+
+    <div class="probability-toggle" onclick="toggleProbability()">🎯</div>
+    <div class="probability-panel" id="probabilityPanel">
+        <div class="probability-header">
+            <span>🎯 奖品概率</span>
+            <span class="probability-close" onclick="toggleProbability()">✕</span>
+        </div>
+        <div class="probability-list" id="probabilityList"></div>
+    </div>
+
+    <div class="history-toggle" onclick="toggleHistory()">
+        🎊
+        <span class="badge" id="historyBadge" style="display: none;">0</span>
+    </div>
+    <div class="history-panel" id="historyPanel">
+        <div class="history-header">
+            <span>🎊 抽奖记录</span>
+            <span class="history-close" onclick="toggleHistory()">✕</span>
+        </div>
+        <div class="history-list" id="historyList">
+            <div class="history-empty">还没有抽奖记录哦~</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-icon" id="modalIcon">🎉</div>
+            <div class="modal-rarity" id="modalRarity">稀有度</div>
+            <h2 class="modal-title" id="modalTitle">奖品名称</h2>
+            <p class="modal-desc" id="modalDesc">奖品描述</p>
+            <button class="modal-close" onclick="closeModal()">太棒了！</button>
+        </div>
+    </div>
+
+    <a href="admin.html" class="admin-link" title="管理设置">⚙️</a>
+
+    <script>
+        // ==================== 全局变量 ====================
+        let config = null;
+        let isSpinning = false;
+        let currentRotation = 0;  // 当前旋转角度（弧度）
+        let history = [];
+
+        // ==================== 初始化 ====================
+        async function init() {
+            await loadConfig();
+            createBackgroundParticles();
+            createWheelLights();
+            drawWheel();
+            updateProbabilityPanel();
+            updateUI();
+        }
+
+        async function loadConfig() {
+            try {
+                const response = await fetch('config/prizes.json');
+                config = await response.json();
+            } catch (e) {
+                config = getDefaultConfig();
+            }
+        }
+
+        function getDefaultConfig() {
+            return {
+                settings: {
+                    title: "星喵幸运转盘",
+                    subtitle: "试试你的运气吧~",
+                    buttonText: "开始抽奖",
+                    spinDuration: 5000,
+                    minSpins: 5,
+                    maxSpins: 8
+                },
+                rarityConfig: {
+                    "超稀有": {
+                        color: "#FFD700",
+                        bgColor: "linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6347 100%)",
+                        glowColor: "rgba(255, 215, 0, 0.8)",
+                        particleColors: ["#FFD700", "#FFA500", "#FF6347", "#FFFF00", "#FF69B4"]
+                    },
+                    "稀有": {
+                        color: "#A855F7",
+                        bgColor: "linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)",
+                        glowColor: "rgba(168, 85, 247, 0.8)",
+                        particleColors: ["#A855F7", "#7C3AED", "#C084FC", "#E879F9"]
+                    },
+                    "普通": {
+                        color: "#60A5FA",
+                        bgColor: "linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%)",
+                        glowColor: "rgba(96, 165, 250, 0.6)",
+                        particleColors: ["#60A5FA", "#93C5FD", "#BFDBFE"]
+                    }
+                },
+                prizes: [
+                    { id: 1, name: "648现金红包", rarity: "超稀有", probability: 1, icon: "💰", description: "超级大奖！" },
+                    { id: 2, name: "星喵给你上舰", rarity: "超稀有", probability: 2, icon: "🚢", description: "舰长一个月" },
+                    { id: 3, name: "手办", rarity: "稀有", probability: 4, icon: "🎭", description: "精美手办" },
+                    { id: 4, name: "V你50", rarity: "稀有", probability: 7, icon: "💸", description: "50元红包" },
+                    { id: 5, name: "彩票", rarity: "稀有", probability: 8, icon: "🎫", description: "刮刮乐" },
+                    { id: 6, name: "星喵常设周边", rarity: "普通", probability: 16, icon: "🎁", description: "官方周边" },
+                    { id: 7, name: "星喵小夜灯", rarity: "普通", probability: 16, icon: "💡", description: "小夜灯" },
+                    { id: 8, name: "奶茶", rarity: "普通", probability: 15, icon: "🧋", description: "奶茶券" },
+                    { id: 9, name: "定制语音包", rarity: "普通", probability: 16, icon: "🎵", description: "语音包" },
+                    { id: 10, name: "特产饼饼", rarity: "普通", probability: 10, icon: "🥮", description: "特产饼干" },
+                    { id: 11, name: "苹果", rarity: "普通", probability: 5, icon: "🍎", description: "平安果" }
+                ]
+            };
+        }
+
+        function updateUI() {
+            document.getElementById('gameTitle').textContent = config.settings.title;
+            document.getElementById('gameSubtitle').textContent = config.settings.subtitle;
+            document.getElementById('spinBtn').textContent = config.settings.buttonText;
+        }
+
+        // ==================== 背景效果 ====================
+        function createBackgroundParticles() {
+            const container = document.getElementById('bgParticles');
+            container.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'bg-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 10 + 5) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        function createWheelLights() {
+            const container = document.getElementById('wheelLights');
+            container.innerHTML = '';
+            const lightCount = 20;
+            const colors = ['#FFD700', '#FF69B4', '#00CED1', '#FF6347'];
+
+            for (let i = 0; i < lightCount; i++) {
+                const angle = (i / lightCount) * Math.PI * 2 - Math.PI / 2;
+                const x = 50 + Math.cos(angle) * 48;
+                const y = 50 + Math.sin(angle) * 48;
+
+                const light = document.createElement('div');
+                light.className = 'light-bulb';
+                light.style.left = x + '%';
+                light.style.top = y + '%';
+                light.style.transform = 'translate(-50%, -50%)';
+                light.style.color = colors[i % colors.length];
+                light.style.background = colors[i % colors.length];
+                light.style.animationDelay = (i * 0.08) + 's';
+                container.appendChild(light);
+            }
+        }
+
+        // ==================== 转盘绘制 ====================
+        function drawWheel() {
+            const canvas = document.getElementById('wheelCanvas');
+            const ctx = canvas.getContext('2d');
+            const prizes = config.prizes;
+            const prizeCount = prizes.length;
+
+            const container = document.getElementById('wheelContainer');
+            const size = container.offsetWidth;
+            canvas.width = size;
+            canvas.height = size;
+
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const radius = size / 2 - 5;
+            const anglePerPrize = (Math.PI * 2) / prizeCount;
+
+            // B站风格颜色
+            const colors = [
+                '#FB7299', '#00A1D6', '#FFB6C1', '#7FD5F0',
+                '#FFC0CB', '#87CEEB', '#FF69B4', '#00CED1',
+                '#FFB6D9', '#5BC0DE', '#FF85A2', '#4FC3F7'
+            ];
+
+            ctx.clearRect(0, 0, size, size);
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(currentRotation);
+
+            prizes.forEach((prize, index) => {
+                // 【关键】每个扇区从 index * anglePerPrize 开始
+                // 第0个扇区从0度（Canvas的右边，即3点钟方向）开始
+                const startAngle = index * anglePerPrize;
+                const endAngle = startAngle + anglePerPrize;
+
+                // 绘制扇区
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, radius, startAngle, endAngle);
+                ctx.closePath();
+
+                // 根据稀有度设置颜色
+                let fillColor;
+                if (prize.rarity === '超稀有') {
+                    fillColor = '#FFD700';
+                } else if (prize.rarity === '稀有') {
+                    fillColor = '#A855F7';
+                } else {
+                    fillColor = colors[index % colors.length];
+                }
+
+                ctx.fillStyle = fillColor;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // 绘制文字和图标
+                ctx.save();
+                ctx.rotate(startAngle + anglePerPrize / 2);
+
+                // 图标 - 更靠近边缘
+                ctx.font = `${Math.max(size * 0.07, 22)}px Arial`;
+                ctx.fillStyle = '#fff';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(prize.icon, radius * 0.78, 0);
+
+                // 名称 - 字体更大
+                ctx.font = `bold ${Math.max(size * 0.038, 13)}px "Noto Sans SC", sans-serif`;
+                ctx.fillStyle = '#fff';
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 2;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+                let name = prize.name;
+                if (name.length > 6) name = name.substring(0, 5) + '...';
+                ctx.fillText(name, radius * 0.48, 0);
+
+                ctx.restore();
+            });
+
+            // 绘制中心圆
+            ctx.beginPath();
+            ctx.arc(0, 0, size * 0.085, 0, Math.PI * 2);
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+            ctx.strokeStyle = '#FB7299';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        // ==================== 抽奖逻辑（核心修复） ====================
+        function startSpin() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            const spinBtn = document.getElementById('spinBtn');
+            const pointer = document.querySelector('.pointer-circle');
+            spinBtn.disabled = true;
+            pointer.classList.add('disabled');
+
+            // 1. 根据概率选择中奖奖品
+            const selectedPrize = selectPrizeByProbability();
+            const prizeIndex = config.prizes.findIndex(p => p.id === selectedPrize.id);
+            const prizeCount = config.prizes.length;
+
+            // 2. 计算角度（使用弧度）
+            const anglePerPrize = (Math.PI * 2) / prizeCount;
+            
+            // 奖品中心在坐标系中的角度
+            // 第 prizeIndex 个扇区的中心角度
+            const prizeCenterAngle = prizeIndex * anglePerPrize + anglePerPrize / 2;
+            
+            // 指针在屏幕上的位置（正上方 = 270度 = 3π/2）
+            const pointerAngle = (Math.PI * 3) / 2;
+
+            // 3. 【核心公式】计算目标旋转角度
+            // 原理：rotate(θ)后，坐标系中角度α的点在屏幕上显示为 α + θ
+            // 目标：让奖品中心对准指针
+            // 公式：prizeCenterAngle + rotation = pointerAngle
+            // 所以：rotation = pointerAngle - prizeCenterAngle
+            let targetAngle = pointerAngle - prizeCenterAngle;
+
+            // 4. 归一化到 0 ~ 2π
+            while (targetAngle < 0) {
+                targetAngle += Math.PI * 2;
+            }
+            targetAngle = targetAngle % (Math.PI * 2);
+
+            // 5. 计算从当前角度到目标角度需要旋转多少
+            const currentAngle = currentRotation % (Math.PI * 2);
+            let rotationNeeded = targetAngle - currentAngle;
+            
+            // 确保顺时针旋转（正值）
+            if (rotationNeeded < 0) {
+                rotationNeeded += Math.PI * 2;
+            }
+
+            // 6. 加上额外【整数】圈数（关键！必须是整数才能保证最终角度正确）
+            const minSpins = config.settings.minSpins || 5;
+            const maxSpins = config.settings.maxSpins || 8;
+            const extraSpins = Math.floor(minSpins + Math.random() * (maxSpins - minSpins + 1));
+            const totalRotation = Math.PI * 2 * extraSpins + rotationNeeded;
+
+            // 7. 计算最终角度
+            const finalRotation = currentRotation + totalRotation;
+
+            // === 调试验证 ===
+            console.log('=== 角度验证 ===');
+            console.log('中奖奖品:', selectedPrize.name);
+            console.log('奖品索引:', prizeIndex);
+            console.log('奖品中心角度(度):', (prizeCenterAngle * 180 / Math.PI).toFixed(2));
+            console.log('指针角度(度):', (pointerAngle * 180 / Math.PI).toFixed(2));
+            console.log('目标角度(度):', (targetAngle * 180 / Math.PI).toFixed(2));
+            console.log('需要旋转(度):', (rotationNeeded * 180 / Math.PI).toFixed(2));
+            console.log('总旋转(度):', (totalRotation * 180 / Math.PI).toFixed(2));
+            
+            // 验证：旋转后奖品应该在指针位置
+            const finalPrizePosition = (prizeCenterAngle + finalRotation) % (Math.PI * 2);
+            console.log('最终位置(度):', (finalPrizePosition * 180 / Math.PI).toFixed(2));
+            console.log('应该是270度:', Math.abs(finalPrizePosition - pointerAngle) < 0.01 ? '✅' : '❌');
+
+            // 8. 执行动画
+            animateWheel(finalRotation, selectedPrize);
+        }
+
+        function animateWheel(targetRotation, selectedPrize) {
+            const duration = config.settings.spinDuration || 5000;
+            const startTime = performance.now();
+            const startRotation = currentRotation;
+            const totalRotation = targetRotation - startRotation;
+
+            // 缓动函数 - 模拟物理减速
+            function easeOutQuart(t) {
+                return 1 - Math.pow(1 - t, 4);
+            }
+
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easedProgress = easeOutQuart(progress);
+
+                currentRotation = startRotation + totalRotation * easedProgress;
+                drawWheel();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // 动画结束
+                    currentRotation = targetRotation;
+                    drawWheel();
+                    
+                    isSpinning = false;
+                    document.getElementById('spinBtn').disabled = false;
+                    document.querySelector('.pointer-circle').classList.remove('disabled');
+
+                    showResult(selectedPrize);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        function selectPrizeByProbability() {
+            const prizes = config.prizes;
+            const totalProbability = prizes.reduce((sum, p) => sum + p.probability, 0);
+            let random = Math.random() * totalProbability;
+
+            for (const prize of prizes) {
+                random -= prize.probability;
+                if (random <= 0) return prize;
+            }
+            return prizes[prizes.length - 1];
+        }
+
+        // ==================== 结果展示 ====================
+        function showResult(prize) {
+            const rarityConfig = config.rarityConfig[prize.rarity];
+            addToHistory(prize);
+            playEffect(prize.rarity, rarityConfig);
+
+            setTimeout(() => {
+                showModal(prize, rarityConfig);
+            }, 500);
+        }
+
+        function showModal(prize, rarityConfig) {
+            document.getElementById('modalIcon').textContent = prize.icon;
+            document.getElementById('modalRarity').textContent = prize.rarity;
+            document.getElementById('modalRarity').style.background = rarityConfig.bgColor;
+            document.getElementById('modalTitle').textContent = prize.name;
+            document.getElementById('modalDesc').textContent = prize.description;
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            stopEffect();
+        }
+
+        function closeModalOutside(event) {
+            if (event.target === event.currentTarget) closeModal();
+        }
+
+        // ==================== 特效系统 ====================
+        let effectAnimationId = null;
+        let particles = [];
+
+        function playEffect(rarity, rarityConfig) {
+            const canvas = document.getElementById('effectCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            if (effectAnimationId) cancelAnimationFrame(effectAnimationId);
+            particles = [];
+
+            if (rarity === '超稀有') {
+                createLegendaryEffect(canvas, rarityConfig);
+            } else if (rarity === '稀有') {
+                createRareEffect(canvas, rarityConfig);
+            } else {
+                createCommonEffect(canvas, rarityConfig);
+            }
+
+            animateEffect(ctx, canvas);
+        }
+
+        function createLegendaryEffect(canvas, config) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const colors = config.particleColors;
+
+            for (let i = 0; i < 200; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 12;
+                particles.push({
+                    x: centerX, y: centerY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size: 3 + Math.random() * 8,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 1, decay: 0.008 + Math.random() * 0.008,
+                    type: 'explosion'
+                });
+            }
+
+            for (let i = 0; i < 100; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: 2 + Math.random() * 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: Math.random(), decay: 0.003,
+                    type: 'star', twinkle: Math.random() * Math.PI * 2
+                });
+            }
+
+            for (let i = 0; i < 12; i++) {
+                particles.push({
+                    x: centerX, y: centerY,
+                    angle: (i / 12) * Math.PI * 2,
+                    length: 0, maxLength: 300 + Math.random() * 200,
+                    speed: 15 + Math.random() * 10,
+                    width: 3 + Math.random() * 5,
+                    color: '#FFD700', alpha: 0.8, decay: 0.015,
+                    type: 'ray'
+                });
+            }
+        }
+
+        function createRareEffect(canvas, config) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const colors = config.particleColors;
+
+            for (let i = 0; i < 80; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 8;
+                particles.push({
+                    x: centerX, y: centerY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size: 3 + Math.random() * 6,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 1, decay: 0.01,
+                    type: 'star',
+                    rotation: Math.random() * Math.PI * 2,
+                    rotationSpeed: (Math.random() - 0.5) * 0.15
+                });
+            }
+
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: centerX, y: centerY,
+                    angle: (i / 50) * Math.PI * 2,
+                    radius: 0, maxRadius: 150 + Math.random() * 100,
+                    speed: 3 + Math.random() * 3,
+                    size: 4 + Math.random() * 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 1, decay: 0.012,
+                    type: 'ring'
+                });
+            }
+        }
+
+        function createCommonEffect(canvas, config) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const colors = config.particleColors;
+
+            for (let i = 0; i < 50; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 1 + Math.random() * 5;
+                particles.push({
+                    x: centerX, y: centerY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size: 2 + Math.random() * 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 1, decay: 0.015,
+                    type: 'circle'
+                });
+            }
+        }
+
+        function animateEffect(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles = particles.filter(p => p.alpha > 0);
+
+            particles.forEach(p => {
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+
+                if (p.type === 'explosion' || p.type === 'circle') {
+                    ctx.fillStyle = p.color;
+                    ctx.shadowColor = p.color;
+                    ctx.shadowBlur = 10;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.1;
+                    p.alpha -= p.decay;
+                }
+                else if (p.type === 'star') {
+                    if (p.twinkle !== undefined) {
+                        p.twinkle += 0.1;
+                        p.alpha = 0.3 + Math.sin(p.twinkle) * 0.7;
+                        if (p.twinkle > Math.PI * 4) p.alpha = 0;
+                        drawStar(ctx, p.x, p.y, 5, p.size, p.size / 2, p.color);
+                    } else {
+                        drawStar(ctx, p.x, p.y, 5, p.size, p.size / 2, p.color, p.rotation);
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.05;
+                        p.rotation += p.rotationSpeed;
+                        p.alpha -= p.decay;
+                    }
+                }
+                else if (p.type === 'ray') {
+                    p.length = Math.min(p.length + p.speed, p.maxLength);
+                    const gradient = ctx.createLinearGradient(
+                        p.x, p.y,
+                        p.x + Math.cos(p.angle) * p.length,
+                        p.y + Math.sin(p.angle) * p.length
+                    );
+                    gradient.addColorStop(0, p.color);
+                    gradient.addColorStop(1, 'transparent');
+                    ctx.strokeStyle = gradient;
+                    ctx.lineWidth = p.width;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(p.x + Math.cos(p.angle) * p.length, p.y + Math.sin(p.angle) * p.length);
+                    ctx.stroke();
+                    if (p.length >= p.maxLength) p.alpha -= p.decay;
+                }
+                else if (p.type === 'ring') {
+                    p.radius = Math.min(p.radius + p.speed, p.maxRadius);
+                    const x = p.x + Math.cos(p.angle) * p.radius;
+                    const y = p.y + Math.sin(p.angle) * p.radius;
+                    ctx.fillStyle = p.color;
+                    ctx.shadowColor = p.color;
+                    ctx.shadowBlur = 8;
+                    ctx.beginPath();
+                    ctx.arc(x, y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    if (p.radius >= p.maxRadius) p.alpha -= p.decay;
+                }
+
+                ctx.restore();
+            });
+
+            if (particles.length > 0) {
+                effectAnimationId = requestAnimationFrame(() => animateEffect(ctx, canvas));
+            }
+        }
+
+        function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius, color, rotation = 0) {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(rotation);
+            ctx.fillStyle = color;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 5;
+            ctx.beginPath();
+            
+            for (let i = 0; i < spikes * 2; i++) {
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const angle = (i * Math.PI) / spikes - Math.PI / 2;
+                if (i === 0) {
+                    ctx.moveTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+                } else {
+                    ctx.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+                }
+            }
+            
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function stopEffect() {
+            if (effectAnimationId) {
+                cancelAnimationFrame(effectAnimationId);
+                effectAnimationId = null;
+            }
+            particles = [];
+            const canvas = document.getElementById('effectCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // ==================== 历史记录 ====================
+        function addToHistory(prize) {
+            history.unshift(prize);
+            if (history.length > 20) history.pop();
+            updateHistoryPanel();
+            updateHistoryBadge();
+        }
+
+        function updateHistoryPanel() {
+            const list = document.getElementById('historyList');
+            if (history.length === 0) {
+                list.innerHTML = '<div class="history-empty">还没有抽奖记录哦~</div>';
+                return;
+            }
+            list.innerHTML = history.map(prize => {
+                const rarityConfig = config.rarityConfig[prize.rarity];
+                return `
+                    <div class="history-item">
+                        <span class="history-icon">${prize.icon}</span>
+                        <div class="history-info">
+                            <div class="history-name">${prize.name}</div>
+                            <span class="history-rarity" style="background: ${rarityConfig.bgColor}">${prize.rarity}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateHistoryBadge() {
+            const badge = document.getElementById('historyBadge');
+            if (history.length > 0) {
+                badge.textContent = history.length;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function toggleHistory() {
+            document.getElementById('historyPanel').classList.toggle('active');
+            document.getElementById('probabilityPanel').classList.remove('active');
+        }
+
+        // ==================== 概率面板 ====================
+        function updateProbabilityPanel() {
+            const list = document.getElementById('probabilityList');
+            const sortedPrizes = [...config.prizes].sort((a, b) => {
+                const order = {'超稀有': 0, '稀有': 1, '普通': 2};
+                return order[a.rarity] - order[b.rarity];
+            });
+
+            list.innerHTML = sortedPrizes.map(prize => {
+                const rarityConfig = config.rarityConfig[prize.rarity];
+                return `
+                    <div class="probability-item">
+                        <span class="probability-icon">${prize.icon}</span>
+                        <span class="probability-name">${prize.name}</span>
+                        <span class="probability-value" style="color: ${rarityConfig.color}">${prize.probability}%</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleProbability() {
+            document.getElementById('probabilityPanel').classList.toggle('active');
+            document.getElementById('historyPanel').classList.remove('active');
+        }
+
+        // ==================== 窗口事件 ====================
+        window.addEventListener('resize', () => {
+            drawWheel();
+            createWheelLights();
+            const canvas = document.getElementById('effectCanvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        document.addEventListener('click', (e) => {
+            const historyPanel = document.getElementById('historyPanel');
+            const historyToggle = document.querySelector('.history-toggle');
+            const probabilityPanel = document.getElementById('probabilityPanel');
+            const probabilityToggle = document.querySelector('.probability-toggle');
+
+            if (!historyPanel.contains(e.target) && !historyToggle.contains(e.target)) {
+                historyPanel.classList.remove('active');
+            }
+            if (!probabilityPanel.contains(e.target) && !probabilityToggle.contains(e.target)) {
+                probabilityPanel.classList.remove('active');
+            }
+        });
+
+        // 初始化
+        init();
+    </script>
+</body>
+</html>
