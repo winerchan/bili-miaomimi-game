@@ -746,7 +746,7 @@
                 ctx.fillStyle = '#fff';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(prize.icon, radius * 0.78, 0);
+                ctx.fillText(prize.icon, radius * 0.83, 0);
 
                 // 名称 - 字体更大
                 ctx.font = `bold ${Math.max(size * 0.038, 13)}px "Noto Sans SC", sans-serif`;
@@ -756,7 +756,7 @@
                 ctx.shadowOffsetX = 1;
                 ctx.shadowOffsetY = 1;
                 let name = prize.name;
-                if (name.length > 6) name = name.substring(0, 5) + '...';
+                if (name.length > 7) name = name.substring(0, 5) + '...';
                 ctx.fillText(name, radius * 0.48, 0);
 
                 ctx.restore();
