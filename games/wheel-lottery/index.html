@@ -391,6 +391,74 @@
 
         .history-toggle:hover, .probability-toggle:hover { transform: scale(1.1); }
 
+        .rigged-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 20px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 101;
+            transition: all 0.3s;
+        }
+
+        .rigged-mode-toggle:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .mode-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            user-select: none;
+        }
+
+        .mode-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #ccc;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .mode-switch.active {
+            background: linear-gradient(135deg, #FFD700 0%, #FF6347 100%);
+        }
+
+        .mode-switch-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .mode-switch.active .mode-switch-slider {
+            transform: translateX(24px);
+        }
+
+        .mode-indicator {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .mode-indicator.rigged {
+            color: #FF6347;
+            font-weight: 700;
+        }
+
         .history-toggle .badge {
             position: absolute;
             top: -5px;
@@ -537,6 +605,14 @@
         <div class="probability-list" id="probabilityList"></div>
     </div>
 
+    <div class="rigged-mode-toggle">
+        <span class="mode-label">抽奖模式</span>
+        <div class="mode-switch" id="modeSwitch" onclick="toggleRiggedMode()">
+            <div class="mode-switch-slider"></div>
+        </div>
+        <span class="mode-indicator" id="modeIndicator">正常</span>
+    </div>
+
     <div class="history-toggle" onclick="toggleHistory()">
         🎊
         <span class="badge" id="historyBadge" style="display: none;">0</span>
@@ -569,6 +645,7 @@
         let isSpinning = false;
         let currentRotation = 0;  // 当前旋转角度（弧度）
         let history = [];
+        let isRiggedMode = false;  // 黑幕模式状态
 
         // ==================== 初始化 ====================
         async function init() {
@@ -887,7 +964,13 @@
         }
 
         function selectPrizeByProbability() {
-            const prizes = config.prizes;
+            let prizes = config.prizes;
+            
+            // 黑幕模式:只选择超稀有和稀有奖品
+            if (isRiggedMode) {
+                prizes = prizes.filter(p => p.rarity === '超稀有' || p.rarity === '稀有');
+            }
+            
             const totalProbability = prizes.reduce((sum, p) => sum + p.probability, 0);
             let random = Math.random() * totalProbability;
 
@@ -1204,7 +1287,26 @@
         // ==================== 概率面板 ====================
         function updateProbabilityPanel() {
             const list = document.getElementById('probabilityList');
-            const sortedPrizes = [...config.prizes].sort((a, b) => {
+            let prizes = [...config.prizes];
+            
+            // 黑幕模式:只显示超稀有和稀有奖品,并重新计算概率
+            if (isRiggedMode) {
+                prizes = prizes.filter(p => p.rarity === '超稀有' || p.rarity === '稀有');
+                const totalProb = prizes.reduce((sum, p) => sum + p.probability, 0);
+                
+                // 创建新的奖品数组,重新计算概率
+                prizes = prizes.map(p => ({
+                    ...p,
+                    displayProbability: ((p.probability / totalProb) * 100).toFixed(2)
+                }));
+            } else {
+                prizes = prizes.map(p => ({
+                    ...p,
+                    displayProbability: p.probability.toFixed(2)
+                }));
+            }
+            
+            const sortedPrizes = prizes.sort((a, b) => {
                 const order = {'超稀有': 0, '稀有': 1, '普通': 2};
                 return order[a.rarity] - order[b.rarity];
             });
@@ -1215,7 +1317,7 @@
                     <div class="probability-item">
                         <span class="probability-icon">${prize.icon}</span>
                         <span class="probability-name">${prize.name}</span>
-                        <span class="probability-value" style="color: ${rarityConfig.color}">${prize.probability}%</span>
+                        <span class="probability-value" style="color: ${rarityConfig.color}">${prize.displayProbability}%</span>
                     </div>
                 `;
             }).join('');
@@ -1224,6 +1326,26 @@
         function toggleProbability() {
             document.getElementById('probabilityPanel').classList.toggle('active');
             document.getElementById('historyPanel').classList.remove('active');
+        }
+
+        // ==================== 黑幕模式 ====================
+        function toggleRiggedMode() {
+            isRiggedMode = !isRiggedMode;
+            const modeSwitch = document.getElementById('modeSwitch');
+            const modeIndicator = document.getElementById('modeIndicator');
+            
+            if (isRiggedMode) {
+                modeSwitch.classList.add('active');
+                modeIndicator.textContent = '黑幕';
+                modeIndicator.classList.add('rigged');
+            } else {
+                modeSwitch.classList.remove('active');
+                modeIndicator.textContent = '正常';
+                modeIndicator.classList.remove('rigged');
+            }
+            
+            // 更新概率面板显示
+            updateProbabilityPanel();
         }
 
         // ==================== 窗口事件 ====================
