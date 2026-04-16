@@ -16,7 +16,7 @@ async function loadGames() {
         const response = await fetch('games.json');
         const data = await response.json();
         // 过滤掉隐藏的游戏
-        allGames = data.games.filter(game => !game.hidden);
+        allGames = sortGamesByFeatured(data.games.filter(game => !game.hidden));
         filteredGames = [...allGames];
         
         // 初始化分类选择器
@@ -73,7 +73,7 @@ function filterGames() {
     const searchText = document.getElementById('searchInput').value.toLowerCase();
     const selectedCategory = document.getElementById('categoryFilter').value;
     
-    filteredGames = allGames.filter(game => {
+    filteredGames = sortGamesByFeatured(allGames.filter(game => {
         // 分类筛选
         const categoryMatch = selectedCategory === '全部' || game.category === selectedCategory;
         
@@ -84,9 +84,16 @@ function filterGames() {
             game.tags.some(tag => tag.toLowerCase().includes(searchText));
         
         return categoryMatch && searchMatch;
-    });
+    }));
     
     renderGames(filteredGames);
+}
+
+/**
+ * 将推荐游戏排在前面，其他游戏保持在后面
+ */
+function sortGamesByFeatured(games) {
+    return [...games].sort((leftGame, rightGame) => Number(Boolean(rightGame.featured)) - Number(Boolean(leftGame.featured)));
 }
 
 /**
