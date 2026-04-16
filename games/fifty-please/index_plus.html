@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1f0d0d">
+    <title>疯狂星期四 - V我50模拟器</title>
+    <style>
+        :root {
+            --bg-top: #2a0c0c;
+            --bg-bottom: #110f1c;
+            --panel: rgba(18, 20, 33, 0.86);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --text: #fff4de;
+            --muted: #d4c7b5;
+            --accent: #ff7b2f;
+            --accent-strong: #ffb02e;
+            --success: #37c978;
+            --info: #4db3ff;
+            --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 24px 16px 40px;
+            color: var(--text);
+            font-family: "Microsoft YaHei", sans-serif;
+            background:
+                radial-gradient(circle at top, rgba(255, 143, 31, 0.18), transparent 30%),
+                radial-gradient(circle at 20% 20%, rgba(255, 65, 65, 0.2), transparent 25%),
+                linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: auto;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            filter: blur(16px);
+            pointer-events: none;
+            opacity: 0.35;
+        }
+
+        body::before {
+            top: -60px;
+            right: -50px;
+            background: rgba(255, 157, 61, 0.35);
+        }
+
+        body::after {
+            left: -70px;
+            bottom: 60px;
+            background: rgba(58, 111, 255, 0.2);
+        }
+
+        .container {
+            width: min(100%, 560px);
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            padding: 28px 20px 22px;
+            backdrop-filter: blur(14px);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            color: #ffe6bf;
+            background: rgba(255, 154, 46, 0.16);
+            border: 1px solid rgba(255, 176, 46, 0.22);
+        }
+
+        h1 {
+            margin-top: 16px;
+            font-size: clamp(32px, 7vw, 44px);
+            line-height: 1.08;
+            letter-spacing: 0.02em;
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .money-panel {
+            margin-top: 22px;
+            padding: 22px 18px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(255, 141, 0, 0.18), rgba(255, 66, 66, 0.12));
+            border: 1px solid rgba(255, 204, 116, 0.2);
+        }
+
+        .money-label {
+            color: #ffd8ae;
+            font-size: 14px;
+            letter-spacing: 0.08em;
+        }
+
+        .money {
+            margin-top: 8px;
+            font-size: clamp(42px, 10vw, 56px);
+            font-weight: 700;
+            color: #ffe15a;
+            text-shadow: 0 0 24px rgba(255, 211, 59, 0.22);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .stat-card {
+            padding: 14px 12px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .stat-value {
+            margin-top: 6px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .action-zone {
+            position: relative;
+            margin-top: 22px;
+            padding-top: 12px;
+        }
+
+        .v-btn {
+            width: 100%;
+            border: none;
+            border-radius: 24px;
+            padding: 22px 20px;
+            font-size: 26px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            background: linear-gradient(135deg, #ff672b, #ff8e2b 55%, #ffc14d);
+            box-shadow: 0 18px 30px rgba(255, 115, 41, 0.3);
+            transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .v-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 22px 36px rgba(255, 115, 41, 0.35);
+            filter: saturate(1.05);
+        }
+
+        .v-btn:active {
+            transform: scale(0.97);
+        }
+
+        .click-burst {
+            position: absolute;
+            left: 50%;
+            top: 18px;
+            transform: translateX(-50%);
+            color: #ffe572;
+            font-weight: 700;
+            font-size: 22px;
+            pointer-events: none;
+            animation: riseFade 0.8s ease forwards;
+            text-shadow: 0 6px 20px rgba(255, 229, 114, 0.24);
+        }
+
+        @keyframes riseFade {
+            0% { opacity: 0; transform: translate(-50%, 12px) scale(0.88); }
+            25% { opacity: 1; }
+            100% { opacity: 0; transform: translate(-50%, -48px) scale(1.08); }
+        }
+
+        .upgrades {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+        .upgrade {
+            text-align: left;
+            border-radius: 22px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .upgrade-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .upgrade-desc {
+            margin-top: 8px;
+            min-height: 42px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .upgrade-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+            gap: 10px;
+        }
+
+        .upgrade-cost {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 76px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            color: #ffe4a9;
+            background: rgba(255, 169, 79, 0.14);
+        }
+
+        .upgrade button,
+        .copy-btn {
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: transform 0.15s ease, opacity 0.2s ease, background 0.2s ease;
+        }
+
+        .upgrade button {
+            padding: 10px 14px;
+            color: white;
+            background: linear-gradient(135deg, #39bb73, #1f9d59);
+            font-weight: 700;
+        }
+
+        .upgrade button:disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+        }
+
+        .copy-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px 18px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2994f4, #35c0ff);
+        }
+
+        .copy-btn:active,
+        .upgrade button:active {
+            transform: scale(0.97);
+        }
+
+        .joke {
+            margin-top: 16px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            min-height: 72px;
+            color: #fff2bd;
+            line-height: 1.65;
+            font-size: 15px;
+            background: rgba(255, 222, 105, 0.08);
+            border: 1px solid rgba(255, 222, 105, 0.12);
+        }
+
+        .status {
+            margin-top: 16px;
+            min-height: 24px;
+            font-size: 14px;
+            color: #ffd6ac;
+        }
+
+        @media (max-width: 560px) {
+            .hero {
+                padding: 22px 16px 18px;
+                border-radius: 24px;
+            }
+
+            .stats,
+            .upgrades {
+                grid-template-columns: 1fr;
+            }
+
+            .v-btn {
+                font-size: 22px;
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main class="hero">
+            <div class="eyebrow">🍗 疯狂星期四专用筹款器</div>
+            <h1>V 我 50 模拟器</h1>
+            <p class="subtitle">快来攒钱，攒够了记得V喵50</p>
+
+            <section class="money-panel">
+                <div class="money-label">当前到账金额</div>
+                <div class="money" id="money">0</div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-label">装逼指数</div>
+                        <div class="stat-value" id="level">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">单次点击</div>
+                        <div class="stat-value" id="clickPower">1</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">每秒收益</div>
+                        <div class="stat-value" id="autoPower">0</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="action-zone" id="actionZone">
+                <button class="v-btn" id="mainButton" onclick="clickMoney()">👉 V 我 50 👈</button>
+            </div>
+
+            <div class="upgrades">
+                <div class="upgrade">
+                    <div class="upgrade-title">自动 V50</div>
+                    <div class="upgrade-desc">挂机每秒自动到账 1 元，适合长线蹭饭流。</div>
+                    <div class="upgrade-meta">
+                        <span class="upgrade-cost">50 ¥</span>
+                        <button id="buyAutoButton" onclick="buyAuto()">购买</button>
+                    </div>
+                </div>
+
+                <div class="upgrade">
+                    <div class="upgrade-title">点击翻倍</div>
+                    <div class="upgrade-desc">每次购买都把单击收益乘以 2，适合短线爆发流。</div>
+                    <div class="upgrade-meta">
+                        <span class="upgrade-cost">100 ¥</span>
+                        <button id="buyDoubleButton" onclick="buyDouble()">购买</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="copy-btn" onclick="copyJoke()">📝 复制装逼文案发群</button>
+            <div class="joke" id="jokeText">还没复制文案。先攒点钱，再挑一条最顺嘴的发出去。</div>
+            <div class="status" id="statusText">点击主按钮开始营业。</div>
+        </main>
+    </div>
+
+    <script>
+        let money = 0;
+        let clickPower = 1;
+        let autoPower = 0;
+        let level = 0;
+
+        const autoCost = 50;
+        const doubleCost = 100;
+        const actionZone = document.getElementById("actionZone");
+        const buyAutoButton = document.getElementById("buyAutoButton");
+        const buyDoubleButton = document.getElementById("buyDoubleButton");
+        const statusText = document.getElementById("statusText");
+        const clickAudio = new Audio("https://qiniu.www.funpy.com/funny/ding.mp3");
+        clickAudio.preload = "auto";
+
+        function clickMoney() {
+            money += clickPower;
+            showBurst(`+${clickPower}`);
+            setStatus(`本次到账 ${clickPower} 元，继续冲。`);
+            updateUI();
+            playSound();
+        }
+
+        setInterval(() => {
+            if (autoPower > 0) {
+                money += autoPower;
+                setStatus(`自动 V50 正在运行，每秒到账 ${autoPower} 元。`);
+                updateUI();
+            }
+        }, 1000);
+
+        function buyAuto() {
+            if (money >= autoCost) {
+                money -= autoCost;
+                autoPower += 1;
+                level += 1;
+                setStatus("已购入自动 V50，挂机收益提升。", "success");
+                updateUI();
+            } else {
+                setStatus("余额不够，先继续点几下。", "warn");
+            }
+        }
+
+        function buyDouble() {
+            if (money >= doubleCost) {
+                money -= doubleCost;
+                clickPower *= 2;
+                level += 2;
+                setStatus("点击收益翻倍，手动流正式起飞。", "success");
+                updateUI();
+            } else {
+                setStatus("还差一点钱，翻倍按钮先按兵不动。", "warn");
+            }
+        }
+
+        function updateUI() {
+            document.getElementById("money").innerText = money.toFixed(0);
+            document.getElementById("level").innerText = level;
+            document.getElementById("clickPower").innerText = clickPower;
+            document.getElementById("autoPower").innerText = autoPower;
+            buyAutoButton.disabled = money < autoCost;
+            buyDoubleButton.disabled = money < doubleCost;
+        }
+
+        function playSound() {
+            clickAudio.currentTime = 0;
+            clickAudio.play().catch(() => {});
+        }
+
+        function showBurst(text) {
+            const burst = document.createElement("div");
+            burst.className = "click-burst";
+            burst.innerText = text;
+            actionZone.appendChild(burst);
+            setTimeout(() => burst.remove(), 800);
+        }
+
+        function setStatus(text) {
+            statusText.innerText = text;
+        }
+
+        const jokes = [
+            "今天是肯德基疯狂星期四，谁V我50，我把命给你！",
+            "疯狂星期四，v我50，这辈子没求过人。",
+            "肯德基疯狂星期四，我想吃香辣鸡翅，v我50谢谢。",
+            "今天谁不V我50，我就闹到你发疯！",
+            "疯狂星期四，v我50，以后你就是我大哥！",
+            "肯德基疯狂星期四，v我50，我给你当牛做马。"
+        ];
+
+        async function copyJoke() {
+            let text = jokes[Math.floor(Math.random() * jokes.length)];
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    const textarea = document.createElement("textarea");
+                    textarea.value = text;
+                    textarea.style.position = "fixed";
+                    textarea.style.opacity = "0";
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand("copy");
+                    textarea.remove();
+                }
+                document.getElementById("jokeText").innerText = "✅ 已复制：" + text;
+                setStatus("文案已复制，可以直接发群。", "success");
+            } catch (error) {
+                document.getElementById("jokeText").innerText = "复制失败，手动抄一句也能用：" + text;
+                setStatus("浏览器拦截了复制，已把文案显示在下方。", "warn");
+            }
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>

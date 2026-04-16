@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>疯狂星期四 - V我50模拟器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background: #1a1a1d;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .new-link {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #ff5722;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 6px 18px rgba(255, 87, 34, 0.35);
+            opacity: 0.92;
+        }
+
+        .new-link:active {
+            transform: scale(0.96);
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #ff5722;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .money {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffdf00;
+            margin: 20px 0;
+        }
+
+        .v-btn {
+            background: #ff5722;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 22px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: 0.2s;
+        }
+
+        .v-btn:active {
+            transform: scale(0.95);
+        }
+
+        .upgrades {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .upgrade {
+            background: #2e2e38;
+            padding: 10px;
+            border-radius: 10px;
+            width: 45%;
+        }
+
+        .upgrade button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        .copy-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .joke {
+            margin-top: 20px;
+            color: #ffdf00;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <a class="new-link" href="index_plus.html">New</a>
+    <div class="container">
+        <h1>🍗 疯狂星期四 V我50 模拟器</h1>
+        <div class="money" id="money">0</div>
+        <div>当前装逼指数：<span id="level">0</span></div>
+
+        <button class="v-btn" onclick="clickMoney()">👉 V 我 50 👈</button>
+
+        <div class="upgrades">
+            <div class="upgrade">
+                <div>自动V50（每秒+1）</div>
+                <button onclick="buyAuto()">购买（50¥）</button>
+            </div>
+            <div class="upgrade">
+                <div>点击翻倍 x2</div>
+                <button onclick="buyDouble()">购买（100¥）</button>
+            </div>
+        </div>
+
+        <button class="copy-btn" onclick="copyJoke()">📝 复制装逼文案发群</button>
+        <div class="joke" id="jokeText"></div>
+    </div>
+
+    <script>
+        let money = 0;
+        let clickPower = 1;
+        let autoPower = 0;
+        let level = 0;
+
+        function clickMoney() {
+            money += clickPower;
+            updateUI();
+            playSound();
+        }
+
+        setInterval(() => {
+            money += autoPower;
+            updateUI();
+        }, 1000);
+
+        function buyAuto() {
+            if (money >= 50) {
+                money -= 50;
+                autoPower += 1;
+                level += 1;
+                updateUI();
+            }
+        }
+
+        function buyDouble() {
+            if (money >= 100) {
+                money -= 100;
+                clickPower *= 2;
+                level += 2;
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            document.getElementById("money").innerText = money.toFixed(0);
+            document.getElementById("level").innerText = level;
+        }
+
+        function playSound() {
+            let audio = new Audio("https://qiniu.www.funpy.com/funny/ding.mp3");
+            audio.play().catch(() => {});
+        }
+
+        const jokes = [
+            "今天是肯德基疯狂星期四，谁V我50，我把命给你！",
+            "疯狂星期四，v我50，这辈子没求过人。",
+            "肯德基疯狂星期四，我想吃香辣鸡翅，v我50谢谢。",
+            "今天谁不V我50，我就闹到你发疯！",
+            "疯狂星期四，v我50，以后你就是我大哥！",
+            "肯德基疯狂星期四，v我50，我给你当牛做马。"
+        ];
+
+        function copyJoke() {
+            let text = jokes[Math.floor(Math.random() * jokes.length)];
+            navigator.clipboard.writeText(text);
+            document.getElementById("jokeText").innerText = "✅ 已复制：" + text;
+        }
+    </script>
+</body>
+</html>

@@ -62,7 +62,7 @@
       ],
       "difficulty": "简单",
       "players": "多人",
-      "featured": true,
+      "featured": false,
       "hidden": false
     },
     {
@@ -126,6 +126,38 @@
         "扭蛋",
         "互动",
         "抽奖"
+      ],
+      "difficulty": "简单",
+      "players": "单人",
+      "featured": true,
+      "hidden": false
+    },
+    {
+      "id": "fifty-please",
+      "name": "疯狂星期四 V我50 模拟器",
+      "description": "一边点击 V 我 50，一边解锁自动收益和群聊文案。",
+      "category": "休闲",
+      "path": "games/fifty-please/index.html",
+      "tags": [
+        "休闲",
+        "点击",
+        "趣味"
+      ],
+      "difficulty": "简单",
+      "players": "单人",
+      "featured": true,
+      "hidden": false
+    },
+    {
+      "id": "bucket-gacha",
+      "name": "疯狂星期四 V50抽卡",
+      "description": "用 V50 预算来一场肯德基主题抽卡，看看能不能抽到终极贵人。",
+      "category": "互动",
+      "path": "games/bucket-gacha/index.html",
+      "tags": [
+        "抽卡",
+        "趣味",
+        "互动"
       ],
       "difficulty": "简单",
       "players": "单人",

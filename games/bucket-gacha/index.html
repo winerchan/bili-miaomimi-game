@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>疯狂星期四 · V50抽卡游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #6b0000, #220000);
+            min-height: 100vh;
+            color: #fff;
+            text-align: center;
+            padding: 20px 10px;
+        }
+        .new-link {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #ff5722;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 6px 18px rgba(255, 87, 34, 0.35);
+            opacity: 0.92;
+        }
+        .new-link:active {
+            transform: scale(0.96);
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #ffcc00;
+            font-size: 26px;
+            margin-bottom: 10px;
+        }
+        .money-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+        .money {
+            color: #ffdd00;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-v50 {
+            background: #ff3c3c;
+            color: #fff;
+        }
+        .btn-ten {
+            background: #ff9500;
+            color: #fff;
+        }
+        .btn-get-money {
+            background: #22c55e;
+            color: #fff;
+        }
+        .btn:active {
+            transform: scale(0.96);
+        }
+        .card-wrap {
+            margin: 20px auto;
+            min-height: 220px;
+        }
+        .card-item {
+            width: 160px;
+            margin: 0 auto;
+            padding: 16px;
+            border-radius: 16px;
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255,204,0,0.6);
+            animation: cardShow 0.6s ease;
+        }
+        @keyframes cardShow {
+            0% { transform: scale(0.2) rotate(180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .rank-1 { border: 5px solid #999; }
+        .rank-2 { border: 5px solid #409eff; }
+        .rank-3 { border: 5px solid #a855f7; }
+        .rank-4 { border: 5px solid #ff9500; box-shadow: 0 0 40px #ff9500; }
+        .rank-5 { border: 5px solid #ff0055; box-shadow: 0 0 60px #ff0055; }
+        .rank-name {
+            font-size: 14px;
+            margin: 6px 0;
+        }
+        .card-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .tip-text {
+            margin-top: 16px;
+            color: #ccc;
+            font-size: 14px;
+        }
+        .count-box {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <a class="new-link" href="index_plus.html">New</a>
+    <div class="container">
+        <h1>🍗 疯狂星期四 V50抽卡</h1>
+        <div class="money-box">
+            余额：<span class="money" id="money">100</span> 元
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-v50" onclick="drawOne()">单抽 50¥</button>
+            <button class="btn btn-ten" onclick="drawTen()">十连 200¥</button>
+        </div>
+        <button class="btn btn-get-money" onclick="addMoney()">V我50 领取资金</button>
+
+        <div class="card-wrap" id="cardWrap">
+            <div class="tip-text">点击按钮开始抽卡</div>
+        </div>
+
+        <div class="count-box">
+            <div>已抽次数：<span id="drawCount">0</span></div>
+            <div>隐藏保底：<span id="hiddenCount">0</span>/30</div>
+        </div>
+    </div>
+
+    <script>
+        let money = 100;
+        let drawCount = 0;
+        let hiddenCount = 0;
+
+        const cardPool = [
+            { name: "原味鸡块", rank: 1, desc: "平平无奇，星期四常客" },
+            { name: "基础薯条", rank: 1, desc: "便宜管饱，凑数专用" },
+            { name: "白开水", rank: 1, desc: "穷鬼套餐必备单品" },
+            { name: "香辣鸡翅", rank: 2, desc: "经典单品，疯狂星期四招牌" },
+            { name: "老北京鸡肉卷", rank: 2, desc: "性价比之王" },
+            { name: "土豆泥", rank: 2, desc: "暖胃小食" },
+            { name: "黄金脆皮鸡", rank: 3, desc: "当年神作，回味无穷" },
+            { name: "九珍果汁", rank: 3, desc: "解腻神器" },
+            { name: "葡式蛋挞", rank: 3, desc: "甜品天花板" },
+            { name: "疯狂星期四文案大师", rank: 4, desc: "出口就是50经典文案" },
+            { name: "全款拿下套餐大佬", rank: 4, desc: "财力雄厚，从不赊账" },
+            { name: "V我50终极贵人", rank: 5, desc: "传说级贵人，随手v50" },
+            { name: "肯德基终身VIP", rank: 5, desc: "全网稀缺，30抽保底出" }
+        ];
+
+        const rankText = {
+            1: "普通",
+            2: "稀有",
+            3: "史诗",
+            4: "传说",
+            5: "秘制隐藏"
+        };
+
+        function updateMoney() {
+            document.getElementById("money").innerText = money;
+            document.getElementById("drawCount").innerText = drawCount;
+            document.getElementById("hiddenCount").innerText = hiddenCount;
+        }
+
+        function addMoney() {
+            money += 50;
+            updateMoney();
+            showTip("✅ 成功V你50，余额+50");
+        }
+
+        function getRandomCard() {
+            hiddenCount++;
+
+            if (hiddenCount >= 30) {
+                hiddenCount = 0;
+                return cardPool.filter((card) => card.rank === 5)[Math.floor(Math.random() * 2)];
+            }
+
+            let rand = Math.random() * 100;
+            if (rand < 2) {
+                return cardPool.filter((card) => card.rank === 5)[Math.floor(Math.random() * 2)];
+            } else if (rand < 10) {
+                return cardPool.filter((card) => card.rank === 4)[Math.floor(Math.random() * 2)];
+            } else if (rand < 30) {
+                return cardPool.filter((card) => card.rank === 3)[Math.floor(Math.random() * 3)];
+            } else if (rand < 60) {
+                return cardPool.filter((card) => card.rank === 2)[Math.floor(Math.random() * 3)];
+            } else {
+                return cardPool.filter((card) => card.rank === 1)[Math.floor(Math.random() * 3)];
+            }
+        }
+
+        function drawOne() {
+            if (money < 50) {
+                showTip("❌ 余额不足，快点击 V我50 领钱！");
+                return;
+            }
+
+            money -= 50;
+            drawCount++;
+            const card = getRandomCard();
+            renderCard(card);
+            updateMoney();
+        }
+
+        function drawTen() {
+            if (money < 200) {
+                showTip("❌ 余额不足，无法十连！");
+                return;
+            }
+
+            money -= 200;
+            let list = [];
+            for (let i = 0; i < 10; i++) {
+                drawCount++;
+                list.push(getRandomCard());
+            }
+
+            list.sort((a, b) => b.rank - a.rank);
+            renderCard(list[0], true);
+            updateMoney();
+        }
+
+        function renderCard(card, isTen = false) {
+            const wrap = document.getElementById("cardWrap");
+            wrap.innerHTML = `
+                <div class="card-item rank-${card.rank}">
+                    <div class="rank-name">【${rankText[card.rank]}】</div>
+                    <div class="card-name">${card.name}</div>
+                    <div style="font-size:13px;color:#666;">${card.desc}</div>
+                </div>
+                <div class="tip-text">${isTen ? "十连最高产出" : "单抽结果"}</div>
+            `;
+        }
+
+        function showTip(txt) {
+            const wrap = document.getElementById("cardWrap");
+            wrap.innerHTML = `<div class="tip-text">${txt}</div>`;
+        }
+
+        updateMoney();
+    </script>
+</body>
+</html>

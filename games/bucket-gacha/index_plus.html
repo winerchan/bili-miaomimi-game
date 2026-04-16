@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#54110d" />
+    <title>疯狂星期四 · V50抽卡游戏</title>
+    <style>
+        :root {
+            --bg-top: #52140f;
+            --bg-bottom: #1b0908;
+            --panel: rgba(33, 16, 13, 0.82);
+            --panel-border: rgba(255, 219, 156, 0.12);
+            --gold: #ffcc58;
+            --gold-soft: #ffe7a2;
+            --text: #fff6e4;
+            --muted: #f0d8c0;
+            --shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            color: var(--text);
+            font-family: "Microsoft YaHei", sans-serif;
+            background:
+                radial-gradient(circle at top, rgba(255, 176, 46, 0.18), transparent 32%),
+                radial-gradient(circle at 80% 20%, rgba(255, 78, 78, 0.16), transparent 24%),
+                linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            padding: 24px 14px 44px;
+        }
+
+        .container {
+            width: min(100%, 560px);
+            margin: 0 auto;
+        }
+
+        .shell {
+            padding: 24px 18px 20px;
+            border-radius: 28px;
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 204, 88, 0.12);
+            border: 1px solid rgba(255, 204, 88, 0.18);
+            color: var(--gold-soft);
+            font-size: 13px;
+        }
+
+        h1 {
+            margin-top: 14px;
+            font-size: clamp(30px, 7vw, 42px);
+            color: var(--gold);
+            letter-spacing: 0.02em;
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .dashboard {
+            margin-top: 22px;
+            padding: 18px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, rgba(255, 203, 88, 0.12), rgba(255, 90, 59, 0.08));
+            border: 1px solid rgba(255, 230, 175, 0.1);
+        }
+
+        .balance-label {
+            color: #ffdca2;
+            font-size: 14px;
+        }
+
+        .money {
+            margin-top: 8px;
+            color: #ffe673;
+            font-size: clamp(38px, 9vw, 52px);
+            font-weight: 700;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .stat-card {
+            padding: 14px 12px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .stat-value {
+            margin-top: 6px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .pity-track {
+            margin-top: 16px;
+        }
+
+        .pity-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .pity-bar {
+            margin-top: 8px;
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .pity-fill {
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #ffb347, #ff5f4d);
+            transition: width 0.25s ease;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin: 20px 0 12px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 18px;
+            padding: 16px 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-v50 {
+            background: linear-gradient(135deg, #ff5144, #ff7c3e);
+            box-shadow: 0 14px 28px rgba(255, 90, 68, 0.24);
+        }
+
+        .btn-ten {
+            background: linear-gradient(135deg, #f08a18, #ffb82d);
+            box-shadow: 0 14px 28px rgba(240, 138, 24, 0.24);
+        }
+
+        .btn-get-money {
+            width: 100%;
+            background: linear-gradient(135deg, #22b965, #3fd68b);
+            box-shadow: 0 14px 28px rgba(37, 199, 109, 0.24);
+        }
+
+        .result-panel {
+            margin-top: 20px;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 20px 16px;
+        }
+
+        .result-empty {
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .card-item {
+            width: min(100%, 220px);
+            padding: 18px 16px;
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 248, 235, 0.98));
+            color: #241b18;
+            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
+            animation: cardShow 0.6s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-item::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.58), transparent 45%);
+            pointer-events: none;
+        }
+
+        @keyframes cardShow {
+            0% { transform: translateY(18px) scale(0.85) rotate(6deg); opacity: 0; }
+            100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .rank-1 { border: 4px solid #8f939f; }
+        .rank-2 { border: 4px solid #409eff; }
+        .rank-3 { border: 4px solid #9d58ff; }
+        .rank-4 { border: 4px solid #ff9b24; box-shadow: 0 18px 50px rgba(255, 155, 36, 0.32); }
+        .rank-5 { border: 4px solid #ff336f; box-shadow: 0 18px 56px rgba(255, 51, 111, 0.34); }
+
+        .rank-name {
+            font-size: 14px;
+            color: #6b5449;
+            margin-bottom: 10px;
+        }
+
+        .card-name {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .card-desc {
+            margin-top: 10px;
+            color: #6c625c;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .tip-text {
+            margin-top: 16px;
+            color: var(--gold-soft);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .status-text {
+            margin-top: 14px;
+            min-height: 22px;
+            color: #ffd7a4;
+            font-size: 14px;
+        }
+
+        @media (max-width: 520px) {
+            .shell {
+                padding: 20px 14px 18px;
+                border-radius: 24px;
+            }
+
+            .btn-group,
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .result-panel {
+                min-height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main class="shell">
+            <div class="badge">🍗 桶餐主题抽卡机</div>
+            <h1>疯狂星期四 V50 抽卡</h1>
+            <p class="subtitle">今天吃哪个好呢？</p>
+
+            <section class="dashboard">
+                <div class="balance-label">当前预算</div>
+                <div class="money"><span id="money">100</span> 元</div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-label">已抽次数</div>
+                        <div class="stat-value" id="drawCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">隐藏保底</div>
+                        <div class="stat-value"><span id="hiddenCount">0</span>/30</div>
+                    </div>
+                </div>
+
+                <div class="pity-track">
+                    <div class="pity-head">
+                        <span>秘制隐藏进度</span>
+                        <span id="pityText">0 / 30</span>
+                    </div>
+                    <div class="pity-bar">
+                        <div class="pity-fill" id="pityFill"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="btn-group">
+                <button class="btn btn-v50" id="drawOneButton" onclick="drawOne()">单抽 50¥</button>
+                <button class="btn btn-ten" id="drawTenButton" onclick="drawTen()">十连 200¥</button>
+            </div>
+
+            <button class="btn btn-get-money" onclick="addMoney()">V我50 领取资金</button>
+
+            <div class="result-panel" id="cardWrap">
+                <div class="result-empty">点击按钮开始抽卡。<br>十连依然只展示最高稀有度结果。</div>
+            </div>
+
+            <div class="status-text" id="statusText">准备就绪，先看看今天的预算能撑几抽。</div>
+        </main>
+    </div>
+
+    <script>
+        let money = 100;
+        let drawCount = 0;
+        let hiddenCount = 0;
+
+        const cardPool = [
+            { name: "原味鸡块", rank: 1, desc: "平平无奇，星期四常客" },
+            { name: "基础薯条", rank: 1, desc: "便宜管饱，凑数专用" },
+            { name: "白开水", rank: 1, desc: "穷鬼套餐必备单品" },
+            { name: "香辣鸡翅", rank: 2, desc: "经典单品，疯狂星期四招牌" },
+            { name: "老北京鸡肉卷", rank: 2, desc: "性价比之王" },
+            { name: "土豆泥", rank: 2, desc: "暖胃小食" },
+            { name: "黄金脆皮鸡", rank: 3, desc: "当年神作，回味无穷" },
+            { name: "九珍果汁", rank: 3, desc: "解腻神器" },
+            { name: "葡式蛋挞", rank: 3, desc: "甜品天花板" },
+            { name: "疯狂星期四文案大师", rank: 4, desc: "出口就是50经典文案" },
+            { name: "全款拿下套餐大佬", rank: 4, desc: "财力雄厚，从不赊账" },
+            { name: "V我50终极贵人", rank: 5, desc: "传说级贵人，随手v50" },
+            { name: "肯德基终身VIP", rank: 5, desc: "全网稀缺，30抽保底出" }
+        ];
+
+        const cardsByRank = {
+            1: cardPool.filter((card) => card.rank === 1),
+            2: cardPool.filter((card) => card.rank === 2),
+            3: cardPool.filter((card) => card.rank === 3),
+            4: cardPool.filter((card) => card.rank === 4),
+            5: cardPool.filter((card) => card.rank === 5)
+        };
+
+        const rankText = {
+            1: "普通",
+            2: "稀有",
+            3: "史诗",
+            4: "传说",
+            5: "秘制隐藏"
+        };
+
+        function getRandomFromRank(rank) {
+            const pool = cardsByRank[rank];
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+
+        function updateMoney() {
+            document.getElementById("money").innerText = money;
+            document.getElementById("drawCount").innerText = drawCount;
+            document.getElementById("hiddenCount").innerText = hiddenCount;
+            document.getElementById("pityText").innerText = `${hiddenCount} / 30`;
+            document.getElementById("pityFill").style.width = `${(hiddenCount / 30) * 100}%`;
+            document.getElementById("drawOneButton").disabled = money < 50;
+            document.getElementById("drawTenButton").disabled = money < 200;
+        }
+
+        function setStatus(text) {
+            document.getElementById("statusText").innerText = text;
+        }
+
+        function addMoney() {
+            money += 50;
+            updateMoney();
+            setStatus("✅ 成功 V 你 50，预算又能续一口了。");
+        }
+
+        function getRandomCard() {
+            hiddenCount++;
+
+            if (hiddenCount >= 30) {
+                hiddenCount = 0;
+                return getRandomFromRank(5);
+            }
+
+            let rand = Math.random() * 100;
+            if (rand < 2) {
+                return getRandomFromRank(5);
+            } else if (rand < 10) {
+                return getRandomFromRank(4);
+            } else if (rand < 30) {
+                return getRandomFromRank(3);
+            } else if (rand < 60) {
+                return getRandomFromRank(2);
+            } else {
+                return getRandomFromRank(1);
+            }
+        }
+
+        function drawOne() {
+            if (money < 50) {
+                setStatus("❌ 余额不足，快点击 V 我 50 领钱。 ");
+                return;
+            }
+
+            money -= 50;
+            drawCount++;
+            const card = getRandomCard();
+            renderCard(card);
+            updateMoney();
+            setStatus(`单抽完成，抽到了 ${rankText[card.rank]} 卡。`);
+        }
+
+        function drawTen() {
+            if (money < 200) {
+                setStatus("❌ 余额不足，当前预算还不够十连。 ");
+                return;
+            }
+
+            money -= 200;
+            let list = [];
+            for (let index = 0; index < 10; index++) {
+                drawCount++;
+                list.push(getRandomCard());
+            }
+
+            list.sort((a, b) => b.rank - a.rank);
+            renderCard(list[0], true);
+            updateMoney();
+            setStatus(`十连结束，最高产出是 ${rankText[list[0].rank]} 卡。`);
+        }
+
+        function renderCard(card, isTen = false) {
+            const wrap = document.getElementById("cardWrap");
+            wrap.innerHTML = `
+                <div>
+                    <div class="card-item rank-${card.rank}">
+                        <div class="rank-name">【${rankText[card.rank]}】</div>
+                        <div class="card-name">${card.name}</div>
+                        <div class="card-desc">${card.desc}</div>
+                    </div>
+                    <div class="tip-text">${isTen ? "十连最高产出" : "单抽结果"}</div>
+                </div>
+            `;
+        }
+
+        updateMoney();
+    </script>
+</body>
+</html>
