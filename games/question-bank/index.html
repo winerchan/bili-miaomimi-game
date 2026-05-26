@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>喵喵抽题机</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffeff6, #fce1ec);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px 35px;
+            border-radius: 25px;
+            box-shadow: 0 8px 30px rgba(255, 155, 195, 0.2);
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 28px;
+            color: #ff5a95;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #999;
+            margin-bottom: 30px;
+        }
+
+        .question-box {
+            min-height: 120px;
+            background: #fff7fc;
+            border: 2px dashed #ffb6c1;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            font-size: 18px;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: #ff5a95;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #ff3575;
+            transform: scale(1.05);
+        }
+
+        .tip {
+            margin-top: 15px;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">🐱 喵喵抽题机 🐱</div>
+        <div class="subtitle">点击按钮随机抽题，已抽题目不会重复哦～</div>
+        <div class="question-box" id="question">题目将会显示在这里</div>
+        <button class="btn" onclick="drawQuestion()">开始抽题</button>
+        <div class="tip">主播互动专用 | 萌系直播间必备</div>
+    </div>
+
+    <script>
+        // 题库（60题完整版）
+        const questions = [
+            "1. 主播能现场学汪汪叫吗?",
+            "2. 如果观众送你100万SC，你会怎么花?",
+            "3. 用一句话让观众瞬间破防!",
+            "4. 如果必须选一个观众结婚，你会选谁?",
+            "5. 用三种不同的声线说'我爱你'!",
+            "6. 请用萝莉音和御姐音分开说'嘤嘤嘤妈妈救我!'",
+            "7. 弹幕突然刷'你背后有人'时你会怎么办?",
+            "8. 用本音说'这才是我的真实声线'!",
+            "9. 什么内容是你绝对不敢直播的?",
+            "10. 如果榜一要求删好友你会怎么办?",
+            "11. 考虑过转行做真人主播吗?",
+            "12. 用一句话让所有观众同时取关!",
+            "13. 如果你是游戏角色，你觉得自己值几个648？请现场拍卖自己!",
+            "14. 用一句话得罪所有同行!",
+            "15. 要100个舰长还是1个真爱粉?",
+            "16. 请用营业声线朗读你中学时期的QQ签名!",
+            "17. 展示你最想销毁的早期直播录像!",
+            "18. 制定一条本场直播观众必须遵守的奇葩规定",
+            "19. 用病娇语气说'要永远在一起哦~'!",
+            "20. 现在，立刻，马上!向榜一求婚!",
+            "21. 现在，请立刻用你的方式证明你不是AI!",
+            "22. 大喊:我只喜欢SC虚空舰长!!",
+            "23. 挑战被直播间观众锐评1分钟不破防不红温!",
+            "24. 你会有概率答应同性的追求吗?",
+            "25. 如果重来你还会选择做虚拟主播吗?",
+            "26. 会觉得什么样的观众很下头!?",
+            "27. 如果心动了，会接受跟观众谈恋爱吗?",
+            "28. 如果观众能进入你的虚拟世界一天，想带TA去哪?",
+            "29. 观众集体刷'取关'威胁时你会怎么撒娇挽留呢?",
+            "30. 看到观众为你起争执时会怎么温柔调解呢?",
+            "31. 你觉得自己最萌的特点和反差萌是?",
+            "32. 观众集体打赏目标达成后会挑战什么?",
+            "33. 想对观望犹豫支持的观众说什么?",
+            "34. 最喜欢吃什么食物?",
+            "35. 最想和观众一起完成的直播挑战是?",
+            "36. 未来想尝试的直播内容?",
+            "37. 直播时一定要放在身边的幸运物是?",
+            "38. 哪种SC内容最容易让你破防?",
+            "39. 每次开播时一定会说的元气满满开场白是?",
+            "40. 下播前对观众们会说什么甜甜的话呢?",
+            "41. 绝对不能碰的小禁忌话题是?",
+            "42. 给可爱粉丝们起的专属爱称是?",
+            "43. 你的虚拟形象是什么设定?",
+            "44. 最喜欢被观众怎么甜甜地称呼呀?",
+            "45. 你通常直播什么内容?(杂谈/唱歌/奥数/游戏/其他)",
+            "46. 你是内向I人还是外向E人?",
+            "47. 每周固定和大家见面几天呢？每次陪伴时长是?",
+            "48. 粉丝的二创作品你最喜欢哪类?",
+            "49. 你喜欢的游戏/动漫/影视作品?",
+            "50. 如果众筹新衣服会设计什么主题?",
+            "51. 观众集体打赏到某个金额会解锁什么隐藏内容?",
+            "52. 会配合观众玩'主播反向宠粉'的角色扮演吗?",
+            "53. 最近一次哭/大笑是因为什么事?",
+            "54. 绝对不能接受的可怕食物是?",
+            "55. 会为特别宠你的观众准备'反向惊喜'吗?",
+            "56. 用三个可可爱爱的词形容自己吧~",
+            "57. 用营业音对观众说'请继续宠我'会是哪种语气呢?",
+            "58. 真心话!你觉得自己的异性缘如何?",
+            "59. 如果不幸被开盒了，会怎么办?",
+            "60. 你有测过智商超过80吗?"
+        ];
+
+        // 已抽题目记录
+        let used = [];
+
+        function drawQuestion() {
+            // 全部抽完重置
+            if (used.length >= questions.length) {
+                alert("所有题目都抽完啦，即将重置～");
+                used = [];
+            }
+
+            let available = questions.filter((q, idx) => !used.includes(idx));
+            let randomIdx = Math.floor(Math.random() * available.length);
+            let selected = available[randomIdx];
+            let realIndex = questions.indexOf(selected);
+
+            used.push(realIndex);
+            document.getElementById("question").innerText = selected;
+        }
+    </script>
+</body>
+</html>

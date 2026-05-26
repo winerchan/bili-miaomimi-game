@@ -163,6 +163,22 @@
       "players": "单人",
       "featured": true,
       "hidden": false
+    },
+    {
+      "id": "question-bank",
+      "name": "喵喵互动题库",
+      "description": "点击随机抽题，已抽题目不重复，适合直播互动使用。",
+      "category": "互动",
+      "path": "games/question-bank/index.html",
+      "tags": [
+        "互动",
+        "题库",
+        "直播"
+      ],
+      "difficulty": "简单",
+      "players": "单人或多人",
+      "featured": true,
+      "hidden": false
     }
   ],
   "categories": [
