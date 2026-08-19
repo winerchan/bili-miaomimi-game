@@ -357,7 +357,7 @@
             border-color: var(--primary);
         }
 
-        .probability-input.last-probability {
+        .probability-input.auto-adjusted {
             border-color: var(--secondary);
             background: #f0fbff;
         }
@@ -1377,7 +1377,7 @@
                         </select>
                     </div>
                     <div class="prize-probability">
-                        <input type="number" class="probability-input ${index === lastPrizeIndex ? 'last-probability' : ''}" data-prize-index="${index}" value="${formatProbability(prize.probability)}"
+                        <input type="number" class="probability-input" data-prize-index="${index}" value="${formatProbability(prize.probability)}"
                                oninput="updatePrize(${index}, 'probability', this.value)" onchange="validateManualLastProbability(${index})" step="0.1" min="0" max="100" ${index === lastPrizeIndex ? 'title="最后一项可手动修改，但总概率必须为100%"' : ''}>
                         <span>%</span>
                     </div>
@@ -1393,14 +1393,17 @@
             if (!config.prizes[index]) return;
 
             if (field === 'probability') {
+                clearAutoAdjustedInput(index);
                 const parsedValue = parseFloat(value);
                 config.prizes[index][field] = Number.isFinite(parsedValue)
                     ? Math.max(0, Math.min(100, roundProbability(parsedValue)))
                     : 0;
 
                 if (index !== config.prizes.length - 1) {
-                    recalculateLastProbability();
-                    updateLastProbabilityInput();
+                    const autoAdjustedIndexes = recalculateLastProbability();
+                    updateProbabilityInputs(autoAdjustedIndexes.filter(autoIndex => autoIndex !== index));
+                } else {
+                    updateProbabilityInputs();
                 }
             } else {
                 config.prizes[index][field] = value;
@@ -1426,14 +1429,23 @@
             if (!config || !Array.isArray(config.prizes) || config.prizes.length === 0) return;
 
             const lastIndex = config.prizes.length - 1;
+            const changedIndexes = [];
+            const setProbability = (index, value) => {
+                const nextValue = roundProbability(Math.max(0, value));
+                const currentValue = roundProbability(Number(config.prizes[index].probability) || 0);
+                if (Math.abs(currentValue - nextValue) > 0.001) {
+                    changedIndexes.push(index);
+                }
+                config.prizes[index].probability = nextValue;
+            };
             const precedingTotal = config.prizes
                 .slice(0, lastIndex)
                 .reduce((sum, prize) => sum + (Number(prize.probability) || 0), 0);
 
             // 前面的总和没有超出时，最后一项直接补足到100%。
             if (precedingTotal <= 100) {
-                config.prizes[lastIndex].probability = roundProbability(Math.max(0, 100 - precedingTotal));
-                return;
+                setProbability(lastIndex, 100 - precedingTotal);
+                return changedIndexes;
             }
 
             // 超出100%时，从最后一项开始向前逐项扣减，避免只改最后一项仍然不够。
@@ -1441,18 +1453,29 @@
             for (let index = lastIndex; index >= 0 && excess > 0; index--) {
                 const currentProbability = Number(config.prizes[index].probability) || 0;
                 const deduction = Math.min(currentProbability, excess);
-                config.prizes[index].probability = roundProbability(currentProbability - deduction);
+                setProbability(index, currentProbability - deduction);
                 excess = roundProbability(excess - deduction);
             }
+
+            return changedIndexes;
         }
 
-        function updateLastProbabilityInput() {
+        function updateProbabilityInputs(autoAdjustedIndexes = []) {
+            const autoAdjustedSet = new Set(autoAdjustedIndexes);
             document.querySelectorAll('.probability-input[data-prize-index]').forEach(input => {
                 const index = Number(input.dataset.prizeIndex);
                 if (config.prizes[index]) {
                     input.value = formatProbability(config.prizes[index].probability);
+                    if (autoAdjustedSet.has(index)) {
+                        input.classList.add('auto-adjusted');
+                    }
                 }
             });
+        }
+
+        function clearAutoAdjustedInput(index) {
+            const input = document.querySelector(`.probability-input[data-prize-index="${index}"]`);
+            if (input) input.classList.remove('auto-adjusted');
         }
 
         function validateManualLastProbability(index) {
