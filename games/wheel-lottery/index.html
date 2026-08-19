@@ -562,6 +562,34 @@
         .probability-name { flex: 1; font-size: 0.8rem; color: var(--text-primary); }
         .probability-value { font-weight: 700; font-size: 0.8rem; }
 
+        .config-notice {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: min(92vw, 420px);
+            padding: 10px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            border-radius: 24px;
+            color: #fff;
+            background: linear-gradient(135deg, rgba(251, 114, 153, 0.95) 0%, rgba(0, 161, 214, 0.95) 100%);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            font-size: 0.85rem;
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -140%);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .config-notice.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
         @media (max-width: 500px) {
             .title { font-size: 1.8rem; }
             .pointer-text { font-size: 0.85rem; }
@@ -572,6 +600,10 @@
 <body>
     <div class="bg-particles" id="bgParticles"></div>
     <canvas id="effectCanvas"></canvas>
+    <div class="config-notice" id="configNotice" role="status" aria-live="polite">
+        <span>💾</span>
+        <span id="configNoticeText"></span>
+    </div>
 
     <div class="container">
         <header class="header">
@@ -646,6 +678,8 @@
         let currentRotation = 0;  // 当前旋转角度（弧度）
         let history = [];
         let isRiggedMode = false;  // 黑幕模式状态
+        const CONFIG_STORAGE_KEY = 'wheel-lottery-config';
+        let loadedFromStorage = false;
 
         // ==================== 初始化 ====================
         async function init() {
@@ -655,15 +689,48 @@
             drawWheel();
             updateProbabilityPanel();
             updateUI();
+            if (loadedFromStorage) {
+                showConfigNotice(config.settings.title || '当前转盘');
+            }
         }
 
         async function loadConfig() {
+            const savedConfig = getStoredConfig();
+            if (savedConfig) {
+                config = savedConfig;
+                loadedFromStorage = true;
+                return;
+            }
+
             try {
                 const response = await fetch('config/prizes.json');
                 config = await response.json();
             } catch (e) {
                 config = getDefaultConfig();
             }
+        }
+
+        function getStoredConfig() {
+            try {
+                const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
+                if (!saved) return null;
+                const parsed = JSON.parse(saved);
+                if (!parsed.settings || !Array.isArray(parsed.prizes) || !parsed.rarityConfig) {
+                    throw new Error('配置格式不正确');
+                }
+                return parsed;
+            } catch (error) {
+                try { localStorage.removeItem(CONFIG_STORAGE_KEY); } catch (removeError) { /* 忽略不可用的存储 */ }
+                return null;
+            }
+        }
+
+        function showConfigNotice(title) {
+            const notice = document.getElementById('configNotice');
+            const text = document.getElementById('configNoticeText');
+            text.textContent = `已加载“${title}”的本地配置`;
+            requestAnimationFrame(() => notice.classList.add('show'));
+            setTimeout(() => notice.classList.remove('show'), 3500);
         }
 
         function getDefaultConfig() {
@@ -700,14 +767,14 @@
                     { id: 1, name: "648现金红包", rarity: "超稀有", probability: 1, icon: "💰", description: "超级大奖！" },
                     { id: 2, name: "星喵给你上舰", rarity: "超稀有", probability: 2, icon: "🚢", description: "舰长一个月" },
                     { id: 3, name: "手办", rarity: "稀有", probability: 4, icon: "🎭", description: "精美手办" },
+                    { id: 11, name: "苹果", rarity: "普通", probability: 5, icon: "🍎", description: "平安果" },
                     { id: 4, name: "V你50", rarity: "稀有", probability: 7, icon: "💸", description: "50元红包" },
                     { id: 5, name: "彩票", rarity: "稀有", probability: 8, icon: "🎫", description: "刮刮乐" },
+                    { id: 10, name: "特产饼饼", rarity: "普通", probability: 10, icon: "🥮", description: "特产饼干" },
+                    { id: 8, name: "奶茶", rarity: "普通", probability: 15, icon: "🧋", description: "奶茶券" },
                     { id: 6, name: "星喵常设周边", rarity: "普通", probability: 16, icon: "🎁", description: "官方周边" },
                     { id: 7, name: "星喵小夜灯", rarity: "普通", probability: 16, icon: "💡", description: "小夜灯" },
-                    { id: 8, name: "奶茶", rarity: "普通", probability: 15, icon: "🧋", description: "奶茶券" },
-                    { id: 9, name: "定制语音包", rarity: "普通", probability: 16, icon: "🎵", description: "语音包" },
-                    { id: 10, name: "特产饼饼", rarity: "普通", probability: 10, icon: "🥮", description: "特产饼干" },
-                    { id: 11, name: "苹果", rarity: "普通", probability: 5, icon: "🍎", description: "平安果" }
+                    { id: 9, name: "定制语音包", rarity: "普通", probability: 16, icon: "🎵", description: "语音包" }
                 ]
             };
         }

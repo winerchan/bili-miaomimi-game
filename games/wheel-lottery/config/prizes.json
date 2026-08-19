@@ -76,6 +76,14 @@
       "description": "精美手办一个，好耶"
     },
     {
+      "id": 11,
+      "name": "苹果",
+      "rarity": "普通",
+      "probability": 5.0,
+      "icon": "🍎",
+      "description": "平平安安吃苹果"
+    },
+    {
       "id": 4,
       "name": "V你50",
       "rarity": "稀有",
@@ -90,6 +98,22 @@
       "probability": 8.0,
       "icon": "🎫",
       "description": "据说大奖是500万"
+    },
+    {
+      "id": 10,
+      "name": "特产饼饼",
+      "rarity": "普通",
+      "probability": 10.0,
+      "icon": "🥮",
+      "description": "美味的神秘小特产"
+    },
+    {
+      "id": 8,
+      "name": "奶茶",
+      "rarity": "普通",
+      "probability": 15.0,
+      "icon": "🧋",
+      "description": "奶茶券一张，今天想喝点啥"
     },
     {
       "id": 6,
@@ -108,36 +132,12 @@
       "description": "可爱的星喵小夜灯"
     },
     {
-      "id": 8,
-      "name": "奶茶",
-      "rarity": "普通",
-      "probability": 15.0,
-      "icon": "🧋",
-      "description": "奶茶券一张，今天想喝点啥"
-    },
-    {
       "id": 9,
       "name": "定制语音包",
       "rarity": "普通",
       "probability": 16.0,
       "icon": "🎵",
       "description": "饱含喵喵的爱哟~"
-    },
-    {
-      "id": 10,
-      "name": "特产饼饼",
-      "rarity": "普通",
-      "probability": 10.0,
-      "icon": "🥮",
-      "description": "美味的神秘小特产"
-    },
-    {
-      "id": 11,
-      "name": "苹果",
-      "rarity": "普通",
-      "probability": 5.0,
-      "icon": "🍎",
-      "description": "平平安安吃苹果"
     }
   ]
 }

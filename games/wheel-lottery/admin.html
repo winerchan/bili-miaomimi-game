@@ -237,6 +237,28 @@
             border-color: var(--primary);
         }
 
+        .prize-icon-picker {
+            width: 50px;
+            height: 50px;
+            padding: 5px;
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            background: #f9f9f9;
+            cursor: pointer;
+            font-size: 1.8rem;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+
+        .prize-icon-picker:hover,
+        .prize-icon-picker:focus {
+            outline: none;
+            border-style: solid;
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: scale(1.04);
+        }
+
         .prize-info {
             display: flex;
             flex-direction: column;
@@ -333,6 +355,11 @@
         .probability-input:focus {
             outline: none;
             border-color: var(--primary);
+        }
+
+        .probability-input.last-probability {
+            border-color: var(--secondary);
+            background: #f0fbff;
         }
 
         .prize-actions {
@@ -582,6 +609,27 @@
             margin-bottom: 20px;
         }
 
+        .import-export .btn-secondary {
+            color: #fff;
+            background: linear-gradient(135deg, var(--secondary) 0%, #0084B4 100%);
+            box-shadow: 0 4px 12px rgba(0, 161, 214, 0.25);
+        }
+
+        .import-export .btn-secondary:hover {
+            background: linear-gradient(135deg, #00B5E5 0%, #00749E 100%);
+            box-shadow: 0 6px 16px rgba(0, 161, 214, 0.35);
+        }
+
+        .import-export .btn-secondary:nth-of-type(2) {
+            background: linear-gradient(135deg, var(--success) 0%, #389e0d 100%);
+            box-shadow: 0 4px 12px rgba(82, 196, 26, 0.25);
+        }
+
+        .import-export .btn-secondary:nth-of-type(2):hover {
+            background: linear-gradient(135deg, #73D13D 0%, #2F850B 100%);
+            box-shadow: 0 6px 16px rgba(82, 196, 26, 0.35);
+        }
+
         .file-input {
             display: none;
         }
@@ -613,6 +661,212 @@
 
         .toast.error {
             background: var(--danger);
+        }
+
+        /* Emoji 选择器 */
+        .emoji-picker-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(4px);
+        }
+
+        .emoji-picker-overlay.show {
+            display: flex;
+        }
+
+        .emoji-picker {
+            width: min(520px, 100%);
+            max-height: min(650px, 90vh);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            animation: emoji-picker-in 0.25s ease-out;
+        }
+
+        @keyframes emoji-picker-in {
+            from { opacity: 0; transform: translateY(12px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .emoji-picker-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary) 0%, #E91E63 100%);
+        }
+
+        .emoji-picker-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .emoji-picker-close {
+            border: none;
+            background: transparent;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.85;
+        }
+
+        .emoji-picker-close:hover { opacity: 1; }
+
+        .emoji-picker-search {
+            margin: 16px 20px 10px;
+            padding: 11px 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font: inherit;
+        }
+
+        .emoji-picker-search:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(251, 114, 153, 0.1);
+        }
+
+        .emoji-picker-categories {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px 8px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .emoji-category {
+            flex: 0 0 auto;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #fff;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font: inherit;
+            font-size: 0.82rem;
+            transition: all 0.2s;
+        }
+
+        .emoji-category:hover,
+        .emoji-category.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .emoji-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            padding: 10px 20px 18px;
+            min-height: 120px;
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+        .emoji-item {
+            min-width: 0;
+            aspect-ratio: 1;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            background: #f7f7f7;
+            cursor: pointer;
+            font-size: 1.7rem;
+            transition: all 0.2s;
+        }
+
+        .emoji-item:hover,
+        .emoji-item.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: scale(1.06);
+        }
+
+        .emoji-empty {
+            grid-column: 1 / -1;
+            padding: 30px 10px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .emoji-picker-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 20px 14px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .emoji-page-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .emoji-page-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .emoji-page-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+        }
+
+        .emoji-picker-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .emoji-picker-current {
+            flex: 1;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .emoji-picker-footer button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .emoji-picker-cancel {
+            background: #f0f0f0;
+            color: var(--text-secondary);
+        }
+
+        .emoji-picker-confirm {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .emoji-picker-grid { grid-template-columns: repeat(6, 1fr); }
+            .emoji-picker-footer { flex-wrap: wrap; }
+            .emoji-picker-current { flex-basis: 100%; }
+            .emoji-picker-categories { padding-left: 14px; padding-right: 14px; }
         }
 
         /* 全宽卡片 */
@@ -742,7 +996,7 @@
                 <div class="card-header">
                     <h2 class="card-title"><span>🎁</span> 奖品列表</h2>
                     <span style="color: var(--text-secondary); font-size: 0.9rem;">
-                        提示：直接点击内容即可编辑
+                        前面奖项变动时，最后一项会自动补足到 100%
                     </span>
                 </div>
                 <div class="card-body">
@@ -781,13 +1035,196 @@
     <!-- Toast 提示 -->
     <div class="toast" id="toast"></div>
 
+    <!-- Emoji 选择弹窗 -->
+    <div class="emoji-picker-overlay" id="emojiPickerOverlay" onclick="closeEmojiPickerOutside(event)">
+        <div class="emoji-picker" onclick="event.stopPropagation()">
+            <div class="emoji-picker-header">
+                <span class="emoji-picker-title">选择奖品 Emoji</span>
+                <button type="button" class="emoji-picker-close" onclick="closeEmojiPicker()" aria-label="关闭">✕</button>
+            </div>
+            <input type="search" class="emoji-picker-search" id="emojiSearch" placeholder="搜索 emoji，例如：红包、礼物、动物">
+            <div class="emoji-picker-categories" id="emojiCategories"></div>
+            <div class="emoji-picker-grid" id="emojiGrid"></div>
+            <div class="emoji-picker-pagination">
+                <button type="button" class="emoji-page-btn" id="emojiPrevPage" onclick="changeEmojiPage(-1)">上一页</button>
+                <span id="emojiPageInfo">第 1 / 1 页</span>
+                <button type="button" class="emoji-page-btn" id="emojiNextPage" onclick="changeEmojiPage(1)">下一页</button>
+            </div>
+            <div class="emoji-picker-footer">
+                <span class="emoji-picker-current" id="emojiPickerCurrent">当前选择：🎁</span>
+                <button type="button" class="emoji-picker-cancel" onclick="closeEmojiPicker()">取消</button>
+                <button type="button" class="emoji-picker-confirm" onclick="confirmEmojiSelection()">确定</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==================== 全局变量 ====================
         let config = null;
+        const CONFIG_STORAGE_KEY = 'wheel-lottery-config';
+        let emojiPickerPrizeIndex = -1;
+        let selectedEmoji = '';
+        let emojiPickerCategory = '全部';
+        let emojiPickerPage = 1;
+        const EMOJIS_PER_PAGE = 48;
+
+        const emojiCategoryRules = {
+            '全部': () => true,
+            '奖励': option => /礼物|奖品|红包|钱|金币|钻石|皇冠|奖杯|彩票|幸运|冠军/.test(option.keywords),
+            '庆祝': option => /庆祝|派对|彩带|气球|闪耀|星星|爱心|烟花|干杯|生日/.test(option.keywords),
+            '美食': option => /水果|甜品|月饼|饼|奶茶|饮料|咖啡|糖果|食物|料理|蔬菜|肉|海鲜/.test(option.keywords),
+            '动物': option => /动物|猫|狗|兔|熊|狐狸|青蛙|鲸|鱼|鸟|虫|龙|海洋|昆虫/.test(option.keywords),
+            '自然': option => /花|植物|幸运|彩虹|月亮|夜晚|太阳|天气|雪|冰|火|闪电|海洋|地球|树/.test(option.keywords),
+            '表情': option => /表情|开心|笑|爱|惊讶|思考|困|生气|哭|酷|派对|害羞/.test(option.keywords),
+            '手势': option => /手势|欢迎|鼓掌|加油|祈祷|力量|挥手|指向|击掌|握拳/.test(option.keywords),
+            '符号': option => /符号|正确|错误|警告|问题|禁止|设置|标记|电话|邮件/.test(option.keywords),
+            '娱乐': option => /音乐|歌曲|语音|麦克风|耳机|游戏|手柄|电影|乐器|娱乐|阅读|照片/.test(option.keywords),
+            '运动': option => /足球|篮球|橄榄球|棒球|网球|排球|乒乓|羽毛球|拳击|台球|运动/.test(option.keywords),
+            '交通': option => /汽车|出租|公交|警车|救护|消防|自行车|飞机|火车|地铁|轮船|交通/.test(option.keywords),
+            '物品': option => /手机|灯|水晶球|钥匙|电脑|手表|铃铛|锁|购物|文具|书|相机|背包/.test(option.keywords)
+        };
+
+        const emojiOptions = [
+            { emoji: '🎁', keywords: '礼物 奖品 盒子' }, { emoji: '🎉', keywords: '庆祝 派对' },
+            { emoji: '🎊', keywords: '庆祝 彩带' }, { emoji: '🎈', keywords: '气球' },
+            { emoji: '💰', keywords: '钱 现金 红包 金币' }, { emoji: '💸', keywords: '红包 钱 飞钱' },
+            { emoji: '🧧', keywords: '红包 新年' }, { emoji: '💎', keywords: '钻石 宝石 稀有' },
+            { emoji: '👑', keywords: '皇冠 国王 奖杯' }, { emoji: '🏆', keywords: '奖杯 冠军' },
+            { emoji: '⭐', keywords: '星星 五角星' }, { emoji: '🌟', keywords: '星星 闪耀' },
+            { emoji: '✨', keywords: '闪耀 星光' }, { emoji: '💖', keywords: '爱心 粉色 爱' },
+            { emoji: '❤️', keywords: '爱心 红色 爱' }, { emoji: '💙', keywords: '爱心 蓝色' },
+            { emoji: '🎫', keywords: '票 彩票 入场券' }, { emoji: '🎟️', keywords: '票 门票' },
+            { emoji: '🚢', keywords: '船 上舰 舰长' }, { emoji: '🚀', keywords: '火箭' },
+            { emoji: '🎭', keywords: '手办 面具 戏剧' }, { emoji: '🧸', keywords: '玩偶 手办 熊' },
+            { emoji: '🪆', keywords: '玩偶 套娃' }, { emoji: '🎵', keywords: '音乐 歌曲 语音' },
+            { emoji: '🎤', keywords: '麦克风 唱歌' }, { emoji: '🎧', keywords: '耳机 音乐' },
+            { emoji: '🎮', keywords: '游戏 手柄' }, { emoji: '📱', keywords: '手机' },
+            { emoji: '💡', keywords: '灯 灯泡 创意' }, { emoji: '🔮', keywords: '水晶球 魔法' },
+            { emoji: '🍎', keywords: '苹果 水果' }, { emoji: '🍊', keywords: '橙子 水果' },
+            { emoji: '🍉', keywords: '西瓜 水果' }, { emoji: '🍓', keywords: '草莓 水果' },
+            { emoji: '🍰', keywords: '蛋糕 甜品' }, { emoji: '🍪', keywords: '饼干 甜品' },
+            { emoji: '🥮', keywords: '月饼 饼 特产' }, { emoji: '🍭', keywords: '棒棒糖 糖果' },
+            { emoji: '🧋', keywords: '奶茶 饮料' }, { emoji: '☕', keywords: '咖啡 饮料' },
+            { emoji: '🍀', keywords: '幸运 四叶草' }, { emoji: '🌈', keywords: '彩虹 幸运' },
+            { emoji: '🐱', keywords: '猫 喵 星喵 动物' }, { emoji: '🐶', keywords: '狗 动物' },
+            { emoji: '🐰', keywords: '兔子 动物' }, { emoji: '🦊', keywords: '狐狸 动物' },
+            { emoji: '🐼', keywords: '熊猫 动物' }, { emoji: '🐻', keywords: '熊 动物' },
+            { emoji: '🐸', keywords: '青蛙 动物' }, { emoji: '🐳', keywords: '鲸鱼 海洋 动物' },
+            { emoji: '🦄', keywords: '独角兽 魔法 动物' }, { emoji: '🐲', keywords: '龙 动物' },
+            { emoji: '🌸', keywords: '花 樱花' }, { emoji: '🌹', keywords: '玫瑰 花' },
+            { emoji: '🌻', keywords: '向日葵 花' }, { emoji: '🌙', keywords: '月亮 夜晚' },
+            { emoji: '☀️', keywords: '太阳 天气' }, { emoji: '❄️', keywords: '雪 冰 天气' },
+            { emoji: '🔥', keywords: '火 热' }, { emoji: '⚡', keywords: '闪电 能量' },
+            { emoji: '🔑', keywords: '钥匙' },
+            { emoji: '🪙', keywords: '金币 钱 奖励' }, { emoji: '🤑', keywords: '有钱 开心 钱' },
+            { emoji: '💵', keywords: '美元 现金 钱' }, { emoji: '💴', keywords: '日元 现金 钱' },
+            { emoji: '💳', keywords: '银行卡 钱 购物' }, { emoji: '🥇', keywords: '金牌 冠军 奖励' },
+            { emoji: '🥈', keywords: '银牌 奖励' }, { emoji: '🥉', keywords: '铜牌 奖励' },
+            { emoji: '🎖️', keywords: '勋章 奖励' }, { emoji: '💯', keywords: '满分 奖励' },
+            { emoji: '🥳', keywords: '派对 庆祝 开心 表情' }, { emoji: '🥂', keywords: '干杯 庆祝' },
+            { emoji: '🍾', keywords: '香槟 庆祝' }, { emoji: '🎆', keywords: '烟花 庆祝' },
+            { emoji: '🎇', keywords: '烟花 庆祝' }, { emoji: '🎂', keywords: '生日 蛋糕 庆祝' },
+            { emoji: '🎗️', keywords: '丝带 庆祝' }, { emoji: '🪅', keywords: '派对 庆祝' },
+            { emoji: '🍇', keywords: '葡萄 水果' }, { emoji: '🍒', keywords: '樱桃 水果' },
+            { emoji: '🍑', keywords: '桃子 水果' }, { emoji: '🍍', keywords: '菠萝 水果' },
+            { emoji: '🌽', keywords: '玉米 蔬菜' }, { emoji: '🍔', keywords: '汉堡 食物' },
+            { emoji: '🍟', keywords: '薯条 食物' }, { emoji: '🍕', keywords: '披萨 食物' },
+            { emoji: '🍣', keywords: '寿司 海鲜 食物' }, { emoji: '🍜', keywords: '面条 料理 食物' },
+            { emoji: '🍩', keywords: '甜甜圈 甜品' }, { emoji: '🍫', keywords: '巧克力 甜品' },
+            { emoji: '🍬', keywords: '糖果 甜品' }, { emoji: '🍯', keywords: '蜂蜜 甜品' },
+            { emoji: '🍗', keywords: '鸡腿 肉 食物' }, { emoji: '🍤', keywords: '虾 海鲜 食物' },
+            { emoji: '🍙', keywords: '饭团 料理 食物' }, { emoji: '🍚', keywords: '米饭 料理 食物' },
+            { emoji: '🐭', keywords: '老鼠 动物' }, { emoji: '🐹', keywords: '仓鼠 动物' },
+            { emoji: '🦁', keywords: '狮子 动物' }, { emoji: '🐯', keywords: '老虎 动物' },
+            { emoji: '🐨', keywords: '考拉 动物' }, { emoji: '🐵', keywords: '猴子 动物' },
+            { emoji: '🙈', keywords: '捂眼 猴子 动物 表情' }, { emoji: '🙉', keywords: '捂耳 猴子 动物 表情' },
+            { emoji: '🙊', keywords: '捂嘴 猴子 动物 表情' }, { emoji: '🐔', keywords: '鸡 动物' },
+            { emoji: '🐧', keywords: '企鹅 鸟 动物' }, { emoji: '🦉', keywords: '猫头鹰 鸟 动物' },
+            { emoji: '🦋', keywords: '蝴蝶 昆虫 动物' }, { emoji: '🐝', keywords: '蜜蜂 昆虫 动物' },
+            { emoji: '🐢', keywords: '乌龟 动物' }, { emoji: '🐍', keywords: '蛇 动物' },
+            { emoji: '🦖', keywords: '恐龙 动物' }, { emoji: '🐙', keywords: '章鱼 海洋 动物' },
+            { emoji: '🦀', keywords: '螃蟹 海鲜 动物' }, { emoji: '🐠', keywords: '热带鱼 海洋 动物' },
+            { emoji: '🐟', keywords: '鱼 海洋 动物' }, { emoji: '🐬', keywords: '海豚 海洋 动物' },
+            { emoji: '🦈', keywords: '鲨鱼 海洋 动物' }, { emoji: '🐊', keywords: '鳄鱼 动物' },
+            { emoji: '🌍', keywords: '地球 自然' }, { emoji: '🌞', keywords: '太阳 自然 天气' },
+            { emoji: '🌝', keywords: '月亮 自然 夜晚' }, { emoji: '🌧️', keywords: '下雨 天气 自然' },
+            { emoji: '⛈️', keywords: '雷雨 天气 自然' }, { emoji: '🌪️', keywords: '龙卷风 天气 自然' },
+            { emoji: '🌊', keywords: '海浪 海洋 自然' }, { emoji: '🌲', keywords: '树 植物 自然' },
+            { emoji: '🌳', keywords: '树 植物 自然' }, { emoji: '🌴', keywords: '棕榈树 植物 自然' },
+            { emoji: '🌵', keywords: '仙人掌 植物 自然' }, { emoji: '🍁', keywords: '枫叶 植物 自然' },
+            { emoji: '🍂', keywords: '落叶 植物 自然' }, { emoji: '🍃', keywords: '树叶 植物 自然' },
+            { emoji: '🌿', keywords: '叶子 植物 自然' }, { emoji: '🌱', keywords: '幼苗 植物 自然' },
+            { emoji: '😀', keywords: '开心 笑 表情' }, { emoji: '😃', keywords: '开心 笑 表情' },
+            { emoji: '😄', keywords: '开心 笑 表情' }, { emoji: '😆', keywords: '大笑 表情' },
+            { emoji: '😉', keywords: '眨眼 表情' }, { emoji: '😊', keywords: '害羞 开心 表情' },
+            { emoji: '😍', keywords: '爱心 喜欢 表情' }, { emoji: '😘', keywords: '亲亲 爱 表情' },
+            { emoji: '😎', keywords: '酷 表情' }, { emoji: '🤩', keywords: '星星 惊喜 表情' },
+            { emoji: '😂', keywords: '大笑 哭 表情' }, { emoji: '🤔', keywords: '思考 表情' },
+            { emoji: '😴', keywords: '困 睡觉 表情' }, { emoji: '😡', keywords: '生气 表情' },
+            { emoji: '🤯', keywords: '惊讶 表情' }, { emoji: '🤗', keywords: '开心 表情' },
+            { emoji: '🥰', keywords: '爱心 开心 表情' }, { emoji: '😱', keywords: '惊讶 表情' },
+            { emoji: '🎬', keywords: '电影 娱乐' }, { emoji: '🎹', keywords: '钢琴 乐器 音乐' },
+            { emoji: '🎸', keywords: '吉他 乐器 音乐' }, { emoji: '🎻', keywords: '小提琴 乐器 音乐' },
+            { emoji: '🎷', keywords: '萨克斯 乐器 音乐' }, { emoji: '🥁', keywords: '鼓 乐器 音乐' },
+            { emoji: '🎲', keywords: '骰子 游戏 娱乐' }, { emoji: '🧩', keywords: '拼图 游戏 娱乐' },
+            { emoji: '🃏', keywords: '扑克牌 游戏 娱乐' }, { emoji: '📚', keywords: '书 阅读 娱乐' },
+            { emoji: '✏️', keywords: '铅笔 文具' }, { emoji: '📝', keywords: '笔记 文具' },
+            { emoji: '📸', keywords: '相机 照片 娱乐' }, { emoji: '💻', keywords: '电脑 物品' },
+            { emoji: '⌚', keywords: '手表 物品' }, { emoji: '🔔', keywords: '铃铛 物品' },
+            { emoji: '🔒', keywords: '锁 物品' }, { emoji: '🛒', keywords: '购物 物品' },
+            { emoji: '🛍️', keywords: '购物 物品' }, { emoji: '🎒', keywords: '背包 物品' },
+            // 以下为较早版本的基础 Emoji，避免组合字符、肤色变体和较新的 Unicode 字符。
+            { emoji: '😅', keywords: '尴尬 开心 表情' }, { emoji: '😋', keywords: '好吃 开心 表情' },
+            { emoji: '😐', keywords: '无语 表情' }, { emoji: '😶', keywords: '沉默 表情' },
+            { emoji: '😏', keywords: '得意 表情' }, { emoji: '😒', keywords: '无奈 表情' },
+            { emoji: '😓', keywords: '流汗 表情' }, { emoji: '😔', keywords: '难过 表情' },
+            { emoji: '😖', keywords: '难受 表情' }, { emoji: '😞', keywords: '失望 表情' },
+            { emoji: '😟', keywords: '担心 表情' }, { emoji: '😕', keywords: '疑惑 表情' },
+            { emoji: '🙄', keywords: '白眼 表情' }, { emoji: '😬', keywords: '尴尬 表情' },
+            { emoji: '😮', keywords: '惊讶 表情' }, { emoji: '😯', keywords: '惊讶 表情' },
+            { emoji: '😲', keywords: '震惊 表情' }, { emoji: '😳', keywords: '害羞 惊讶 表情' },
+            { emoji: '😵', keywords: '晕 表情' }, { emoji: '😷', keywords: '口罩 表情' },
+            { emoji: '😇', keywords: '天使 开心 表情' }, { emoji: '😌', keywords: '安心 表情' },
+            { emoji: '👋', keywords: '挥手 欢迎 手势' }, { emoji: '👍', keywords: '赞 加油 手势' },
+            { emoji: '👎', keywords: '踩 手势' }, { emoji: '👌', keywords: '好的 正确 手势' },
+            { emoji: '✌', keywords: '胜利 手势' }, { emoji: '👏', keywords: '鼓掌 庆祝 手势' },
+            { emoji: '🙌', keywords: '欢呼 庆祝 手势' }, { emoji: '🙏', keywords: '祈祷 感谢 手势' },
+            { emoji: '💪', keywords: '力量 加油 手势' }, { emoji: '☝', keywords: '指向 手势' },
+            { emoji: '✊', keywords: '握拳 加油 手势' },
+            { emoji: '💔', keywords: '心碎 爱心' }, { emoji: '💕', keywords: '爱心 粉色' },
+            { emoji: '💞', keywords: '爱心 粉色' }, { emoji: '💓', keywords: '爱心 心跳' },
+            { emoji: '💗', keywords: '爱心 粉色' }, { emoji: '💝', keywords: '爱心 礼物' },
+            { emoji: '💟', keywords: '爱心 符号' }, { emoji: '❣', keywords: '爱心 符号' },
+            { emoji: '✅', keywords: '正确 勾选 符号' }, { emoji: '❌', keywords: '错误 叉号 符号' },
+            { emoji: '❗', keywords: '感叹号 警告 符号' }, { emoji: '❓', keywords: '问号 问题 符号' },
+            { emoji: '⭕', keywords: '圆圈 正确 符号' }, { emoji: '🚫', keywords: '禁止 符号' },
+            { emoji: '⚠', keywords: '警告 符号' }, { emoji: '☑', keywords: '勾选 正确 符号' },
+            { emoji: '✓', keywords: '正确 勾选 符号' }, { emoji: '✗', keywords: '错误 叉号 符号' },
+            { emoji: '⚙', keywords: '设置 齿轮 符号' }, { emoji: '☎', keywords: '电话 符号' },
+            { emoji: '✉', keywords: '邮件 信件 符号' }, { emoji: '📌', keywords: '图钉 标记 物品' },
+            { emoji: '📍', keywords: '位置 标记 物品' }, { emoji: '📎', keywords: '回形针 文具 物品' },
+            { emoji: '🔗', keywords: '链接 物品' }, { emoji: '✂', keywords: '剪刀 文具 物品' },
+            { emoji: '⚽', keywords: '足球 运动' }, { emoji: '🏀', keywords: '篮球 运动' },
+            { emoji: '🏈', keywords: '橄榄球 运动' }, { emoji: '⚾', keywords: '棒球 运动' },
+            { emoji: '🎾', keywords: '网球 运动' }, { emoji: '🏐', keywords: '排球 运动' },
+            { emoji: '🏉', keywords: '橄榄球 运动' }, { emoji: '🎱', keywords: '台球 运动 游戏' },
+            { emoji: '🚗', keywords: '汽车 交通' }, { emoji: '🚕', keywords: '出租车 交通' },
+            { emoji: '🚌', keywords: '公交车 交通' }, { emoji: '🚓', keywords: '警车 交通' },
+            { emoji: '🚑', keywords: '救护车 交通' }, { emoji: '🚒', keywords: '消防车 交通' },
+            { emoji: '🚲', keywords: '自行车 交通' }, { emoji: '✈', keywords: '飞机 交通' },
+            { emoji: '🚁', keywords: '直升机 交通' }, { emoji: '🚂', keywords: '火车 交通' },
+            { emoji: '🚆', keywords: '列车 交通' }, { emoji: '🚇', keywords: '地铁 交通' },
+            { emoji: '🚉', keywords: '车站 交通' }, { emoji: '⛵', keywords: '帆船 轮船 交通' },
+            { emoji: '🏠', keywords: '房子 物品' }, { emoji: '🏫', keywords: '学校 物品' },
+            { emoji: '🏥', keywords: '医院 物品' }, { emoji: '🏪', keywords: '商店 购物 物品' },
+            { emoji: '🎩', keywords: '帽子 物品' }, { emoji: '👒', keywords: '帽子 物品' },
+            { emoji: '👓', keywords: '眼镜 物品' }, { emoji: '👟', keywords: '鞋子 物品' }
+        ];
 
         // ==================== 初始化 ====================
         async function init() {
             await loadConfig();
+            recalculateLastProbability();
             renderSettings();
             renderRaritySettings();
             renderPrizeList();
@@ -797,12 +1234,33 @@
 
         // 加载配置
         async function loadConfig() {
+            const savedConfig = getStoredConfig();
+            if (savedConfig) {
+                config = savedConfig;
+                return;
+            }
+
             try {
                 const response = await fetch('config/prizes.json');
                 config = await response.json();
             } catch (e) {
                 console.log('使用默认配置');
                 config = getDefaultConfig();
+            }
+        }
+
+        function getStoredConfig() {
+            try {
+                const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
+                if (!saved) return null;
+                const parsed = JSON.parse(saved);
+                if (!parsed.settings || !Array.isArray(parsed.prizes) || !parsed.rarityConfig) {
+                    throw new Error('配置格式不正确');
+                }
+                return parsed;
+            } catch (error) {
+                try { localStorage.removeItem(CONFIG_STORAGE_KEY); } catch (removeError) { /* 忽略不可用的存储 */ }
+                return null;
             }
         }
 
@@ -844,14 +1302,14 @@
                     { id: 1, name: "648现金红包", rarity: "超稀有", probability: 1, icon: "💰", description: "超级大奖！648元现金红包" },
                     { id: 2, name: "星喵给你上舰", rarity: "超稀有", probability: 2, icon: "🚢", description: "星喵直播间舰长一个月" },
                     { id: 3, name: "手办", rarity: "稀有", probability: 4, icon: "🎭", description: "精美限定手办一个" },
+                    { id: 11, name: "苹果", rarity: "普通", probability: 5, icon: "🍎", description: "平平安安吃苹果" },
                     { id: 4, name: "V你50", rarity: "稀有", probability: 7, icon: "💸", description: "50元红包打给你" },
                     { id: 5, name: "彩票", rarity: "稀有", probability: 8, icon: "🎫", description: "刮刮乐彩票一张" },
+                    { id: 10, name: "特产饼饼", rarity: "普通", probability: 10, icon: "🥮", description: "美味的特产饼干" },
+                    { id: 8, name: "奶茶", rarity: "普通", probability: 15, icon: "🧋", description: "奶茶券一张" },
                     { id: 6, name: "星喵常设周边", rarity: "普通", probability: 16, icon: "🎁", description: "星喵官方周边随机一件" },
                     { id: 7, name: "星喵小夜灯", rarity: "普通", probability: 16, icon: "💡", description: "可爱的星喵造型小夜灯" },
-                    { id: 8, name: "奶茶", rarity: "普通", probability: 15, icon: "🧋", description: "奶茶券一张" },
-                    { id: 9, name: "定制语音包", rarity: "普通", probability: 16, icon: "🎵", description: "星喵专属语音包" },
-                    { id: 10, name: "特产饼饼", rarity: "普通", probability: 10, icon: "🥮", description: "美味的特产饼干" },
-                    { id: 11, name: "苹果", rarity: "普通", probability: 5, icon: "🍎", description: "平平安安吃苹果" }
+                    { id: 9, name: "定制语音包", rarity: "普通", probability: 16, icon: "🎵", description: "星喵专属语音包" }
                 ]
             };
         }
@@ -901,10 +1359,10 @@
         function renderPrizeList() {
             const container = document.getElementById('prizeList');
             
+            const lastPrizeIndex = config.prizes.length - 1;
             container.innerHTML = config.prizes.map((prize, index) => `
                 <div class="prize-item" data-id="${prize.id}">
-                    <input type="text" class="prize-icon-input" value="${prize.icon}" 
-                           onchange="updatePrize(${index}, 'icon', this.value)" maxlength="2">
+                    <button type="button" class="prize-icon-picker" onclick="openEmojiPicker(${index})" title="点击选择 Emoji" aria-label="选择${prize.name}的 Emoji">${prize.icon || '🎁'}</button>
                     <div class="prize-info">
                         <input type="text" class="prize-name-input" value="${prize.name}" 
                                onchange="updatePrize(${index}, 'name', this.value)" placeholder="奖品名称">
@@ -919,8 +1377,8 @@
                         </select>
                     </div>
                     <div class="prize-probability">
-                        <input type="number" class="probability-input" value="${prize.probability}" 
-                               onchange="updatePrize(${index}, 'probability', parseFloat(this.value))" step="0.1" min="0" max="100">
+                        <input type="number" class="probability-input ${index === lastPrizeIndex ? 'last-probability' : ''}" data-prize-index="${index}" value="${formatProbability(prize.probability)}"
+                               oninput="updatePrize(${index}, 'probability', this.value)" onchange="validateManualLastProbability(${index})" step="0.1" min="0" max="100" ${index === lastPrizeIndex ? 'title="最后一项可手动修改，但总概率必须为100%"' : ''}>
                         <span>%</span>
                     </div>
                     <div class="prize-actions">
@@ -932,9 +1390,193 @@
 
         // ==================== 更新函数 ====================
         function updatePrize(index, field, value) {
-            config.prizes[index][field] = value;
+            if (!config.prizes[index]) return;
+
+            if (field === 'probability') {
+                const parsedValue = parseFloat(value);
+                config.prizes[index][field] = Number.isFinite(parsedValue)
+                    ? Math.max(0, Math.min(100, roundProbability(parsedValue)))
+                    : 0;
+
+                if (index !== config.prizes.length - 1) {
+                    recalculateLastProbability();
+                    updateLastProbabilityInput();
+                }
+            } else {
+                config.prizes[index][field] = value;
+            }
+
             updateJsonPreview();
             updateStats();
+        }
+
+        function roundProbability(value) {
+            return Math.round((Number(value) + Number.EPSILON) * 10) / 10;
+        }
+
+        function formatProbability(value) {
+            return roundProbability(Number(value) || 0).toFixed(1);
+        }
+
+        function getTotalProbability() {
+            return roundProbability(config.prizes.reduce((sum, prize) => sum + (Number(prize.probability) || 0), 0));
+        }
+
+        function recalculateLastProbability() {
+            if (!config || !Array.isArray(config.prizes) || config.prizes.length === 0) return;
+
+            const lastIndex = config.prizes.length - 1;
+            const precedingTotal = config.prizes
+                .slice(0, lastIndex)
+                .reduce((sum, prize) => sum + (Number(prize.probability) || 0), 0);
+
+            // 前面的总和没有超出时，最后一项直接补足到100%。
+            if (precedingTotal <= 100) {
+                config.prizes[lastIndex].probability = roundProbability(Math.max(0, 100 - precedingTotal));
+                return;
+            }
+
+            // 超出100%时，从最后一项开始向前逐项扣减，避免只改最后一项仍然不够。
+            let excess = roundProbability(getTotalProbability() - 100);
+            for (let index = lastIndex; index >= 0 && excess > 0; index--) {
+                const currentProbability = Number(config.prizes[index].probability) || 0;
+                const deduction = Math.min(currentProbability, excess);
+                config.prizes[index].probability = roundProbability(currentProbability - deduction);
+                excess = roundProbability(excess - deduction);
+            }
+        }
+
+        function updateLastProbabilityInput() {
+            document.querySelectorAll('.probability-input[data-prize-index]').forEach(input => {
+                const index = Number(input.dataset.prizeIndex);
+                if (config.prizes[index]) {
+                    input.value = formatProbability(config.prizes[index].probability);
+                }
+            });
+        }
+
+        function validateManualLastProbability(index) {
+            if (index !== config.prizes.length - 1) return;
+            const total = getTotalProbability();
+            if (Math.abs(total - 100) > 0.001) {
+                showToast(`总概率为 ${total.toFixed(1)}%，请确保总概率为 100%`, 'error');
+            }
+        }
+
+        // ==================== Emoji 选择器 ====================
+        function getFilteredEmojiOptions() {
+            const query = document.getElementById('emojiSearch').value.trim().toLowerCase();
+            const categoryRule = emojiCategoryRules[emojiPickerCategory] || emojiCategoryRules['全部'];
+
+            return emojiOptions.filter(option => {
+                const matchesCategory = categoryRule(option);
+                const matchesSearch = !query
+                    || option.emoji.includes(query)
+                    || option.keywords.toLowerCase().includes(query);
+                return matchesCategory && matchesSearch;
+            });
+        }
+
+        function renderEmojiCategories() {
+            const container = document.getElementById('emojiCategories');
+            container.innerHTML = Object.keys(emojiCategoryRules).map(category => `
+                <button type="button" class="emoji-category ${category === emojiPickerCategory ? 'active' : ''}">${category}</button>
+            `).join('');
+
+            container.querySelectorAll('.emoji-category').forEach(button => {
+                button.addEventListener('click', () => setEmojiPickerCategory(button.textContent));
+            });
+        }
+
+        function setEmojiPickerCategory(category) {
+            if (!emojiCategoryRules[category]) return;
+            emojiPickerCategory = category;
+            emojiPickerPage = 1;
+            renderEmojiPicker();
+        }
+
+        function updateEmojiPagination(pageCount) {
+            const pageInfo = document.getElementById('emojiPageInfo');
+            const prevButton = document.getElementById('emojiPrevPage');
+            const nextButton = document.getElementById('emojiNextPage');
+            pageInfo.textContent = `第 ${emojiPickerPage} / ${pageCount} 页`;
+            prevButton.disabled = emojiPickerPage <= 1;
+            nextButton.disabled = emojiPickerPage >= pageCount;
+        }
+
+        function changeEmojiPage(delta) {
+            const pageCount = Math.max(1, Math.ceil(getFilteredEmojiOptions().length / EMOJIS_PER_PAGE));
+            emojiPickerPage = Math.max(1, Math.min(pageCount, emojiPickerPage + delta));
+            renderEmojiPicker();
+        }
+
+        function openEmojiPicker(index) {
+            if (!config.prizes[index]) return;
+            emojiPickerPrizeIndex = index;
+            selectedEmoji = config.prizes[index].icon || '🎁';
+            emojiPickerCategory = '全部';
+            emojiPickerPage = 1;
+            document.getElementById('emojiSearch').value = '';
+            updateEmojiPickerCurrent();
+            renderEmojiPicker();
+            document.getElementById('emojiPickerOverlay').classList.add('show');
+            setTimeout(() => document.getElementById('emojiSearch').focus(), 0);
+        }
+
+        function renderEmojiPicker() {
+            renderEmojiCategories();
+            const options = getFilteredEmojiOptions();
+            const pageCount = Math.max(1, Math.ceil(options.length / EMOJIS_PER_PAGE));
+            emojiPickerPage = Math.min(emojiPickerPage, pageCount);
+            const grid = document.getElementById('emojiGrid');
+            const pageStart = (emojiPickerPage - 1) * EMOJIS_PER_PAGE;
+            const pageOptions = options.slice(pageStart, pageStart + EMOJIS_PER_PAGE);
+
+            if (options.length === 0) {
+                grid.innerHTML = '<div class="emoji-empty">没有找到匹配的 Emoji</div>';
+                updateEmojiPagination(pageCount);
+                return;
+            }
+
+            grid.innerHTML = pageOptions.map(option => `
+                <button type="button" class="emoji-item ${option.emoji === selectedEmoji ? 'selected' : ''}" data-emoji="${option.emoji}" title="${option.keywords}">${option.emoji}</button>
+            `).join('');
+
+            updateEmojiPagination(pageCount);
+
+            grid.querySelectorAll('.emoji-item').forEach(item => {
+                item.addEventListener('click', () => selectEmoji(item.dataset.emoji));
+            });
+        }
+
+        function selectEmoji(emoji) {
+            selectedEmoji = emoji;
+            updateEmojiPickerCurrent();
+            renderEmojiPicker();
+        }
+
+        function updateEmojiPickerCurrent() {
+            document.getElementById('emojiPickerCurrent').textContent = `当前选择：${selectedEmoji || '🎁'}`;
+        }
+
+        function confirmEmojiSelection() {
+            if (emojiPickerPrizeIndex < 0 || !config.prizes[emojiPickerPrizeIndex]) return;
+            config.prizes[emojiPickerPrizeIndex].icon = selectedEmoji || '🎁';
+            renderPrizeList();
+            updateJsonPreview();
+            closeEmojiPicker();
+            showToast('Emoji 已更新', 'success');
+        }
+
+        function closeEmojiPicker() {
+            document.getElementById('emojiPickerOverlay').classList.remove('show');
+            emojiPickerPrizeIndex = -1;
+        }
+
+        function closeEmojiPickerOutside(event) {
+            if (event.target === document.getElementById('emojiPickerOverlay')) {
+                closeEmojiPicker();
+            }
         }
 
         function updateRarityColor(rarity, type, value) {
@@ -963,6 +1605,7 @@
                 icon: "🎁",
                 description: "新奖品描述"
             });
+            recalculateLastProbability();
             renderPrizeList();
             updateJsonPreview();
             updateStats();
@@ -976,6 +1619,7 @@
             }
             if (confirm('确定要删除这个奖品吗？')) {
                 config.prizes.splice(index, 1);
+                recalculateLastProbability();
                 renderPrizeList();
                 updateJsonPreview();
                 updateStats();
@@ -985,17 +1629,17 @@
 
         function updateStats() {
             const total = config.prizes.length;
-            const totalProb = config.prizes.reduce((sum, p) => sum + p.probability, 0);
+            const totalProb = getTotalProbability();
             const rareProb = config.prizes
                 .filter(p => p.rarity === '超稀有' || p.rarity === '稀有')
-                .reduce((sum, p) => sum + p.probability, 0);
+                .reduce((sum, p) => sum + (Number(p.probability) || 0), 0);
 
             document.getElementById('totalPrizes').textContent = total;
             document.getElementById('totalProbability').textContent = totalProb.toFixed(1) + '%';
             document.getElementById('rareProbability').textContent = rareProb.toFixed(1) + '%';
 
             // 如果总概率不是100%，显示警告
-            if (Math.abs(totalProb - 100) > 0.1) {
+            if (Math.abs(totalProb - 100) > 0.001) {
                 document.getElementById('totalProbability').style.color = '#ff4d4f';
             } else {
                 document.getElementById('totalProbability').style.color = '';
@@ -1020,19 +1664,20 @@
         // ==================== 保存和导出 ====================
         function saveConfig() {
             collectSettingsFromForm();
-            
-            // 由于是静态页面，实际保存需要下载 JSON
-            const json = JSON.stringify(config, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'prizes.json';
-            a.click();
-            
-            URL.revokeObjectURL(url);
-            showToast('配置已下载，请将 prizes.json 放入 config 文件夹', 'success');
+
+            const total = getTotalProbability();
+            if (Math.abs(total - 100) > 0.001) {
+                updateStats();
+                showToast(`保存失败：总概率为 ${total.toFixed(1)}%，请修改为 100%`, 'error');
+                return;
+            }
+
+            try {
+                localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(config));
+                showToast(`“${config.settings.title || '当前转盘'}”配置已保存到浏览器`, 'success');
+            } catch (error) {
+                showToast('保存失败：浏览器本地存储不可用', 'error');
+            }
         }
 
         function exportConfig() {
@@ -1065,6 +1710,7 @@
                     }
 
                     config = imported;
+                    recalculateLastProbability();
                     renderSettings();
                     renderRaritySettings();
                     renderPrizeList();
@@ -1082,6 +1728,7 @@
         function resetConfig() {
             if (confirm('确定要重置为默认配置吗？所有修改将丢失！')) {
                 config = getDefaultConfig();
+                localStorage.removeItem(CONFIG_STORAGE_KEY);
                 renderSettings();
                 renderRaritySettings();
                 renderPrizeList();
@@ -1131,6 +1778,14 @@
             .forEach(input => {
                 input.addEventListener('input', updateJsonPreview);
             });
+
+        document.getElementById('emojiSearch').addEventListener('input', () => {
+            emojiPickerPage = 1;
+            renderEmojiPicker();
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') closeEmojiPicker();
+        });
 
         // 初始化
         init();
