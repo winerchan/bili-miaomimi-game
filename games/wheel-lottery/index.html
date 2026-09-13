@@ -595,6 +595,11 @@
             .pointer-text { font-size: 0.85rem; }
             .spin-btn { padding: 12px 40px; font-size: 1.1rem; }
         }
+        .wheel-chooser { color:#fff; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:10px; margin:0 auto 18px; max-width:540px; }
+        .wheel-chooser select { min-width:0; max-width:100%; padding:10px 14px; border:1px solid #a855f7; border-radius:12px; background:#241b36; color:#fff; font:inherit; }
+        .wheel-chooser select:disabled { opacity:.6; }
+        #wheelSource { font-size:.85rem; color:#c4b5fd; }
+        #wheelLoadStatus { flex-basis:100%; font-size:.85rem; color:#fcd34d; margin:0; }
     </style>
 </head>
 <body>
@@ -611,6 +616,12 @@
             <p class="subtitle" id="gameSubtitle">试试你的运气吧~</p>
         </header>
 
+        <div class="wheel-chooser">
+            <label for="wheelSelect">选择转盘</label>
+            <select id="wheelSelect" aria-label="选择转盘" onchange="changeWheel(this.value)" disabled></select>
+            <span id="wheelSource"></span>
+            <p id="wheelLoadStatus" role="status"></p>
+        </div>
         <div class="wheel-container" id="wheelContainer">
             <div class="wheel-frame"></div>
             <div class="wheel-lights" id="wheelLights"></div>
@@ -671,6 +682,8 @@
 
     <a href="admin.html" class="admin-link" title="管理设置">⚙️</a>
 
+    <script src="js/wheel-store.js"></script>
+    <script src="js/wheel-library.js"></script>
     <script>
         // ==================== 全局变量 ====================
         let config = null;
@@ -678,57 +691,13 @@
         let currentRotation = 0;  // 当前旋转角度（弧度）
         let history = [];
         let isRiggedMode = false;  // 黑幕模式状态
-        const CONFIG_STORAGE_KEY = 'wheel-lottery-config';
-        let loadedFromStorage = false;
+
 
         // ==================== 初始化 ====================
-        async function init() {
-            await loadConfig();
-            createBackgroundParticles();
-            createWheelLights();
-            drawWheel();
-            updateProbabilityPanel();
-            updateUI();
-            if (loadedFromStorage) {
-                showConfigNotice(config.settings.title || '当前转盘');
-            }
-        }
-
-        async function loadConfig() {
-            const savedConfig = getStoredConfig();
-            if (savedConfig) {
-                config = savedConfig;
-                loadedFromStorage = true;
-                return;
-            }
-
-            try {
-                const response = await fetch('config/prizes.json');
-                config = await response.json();
-            } catch (e) {
-                config = getDefaultConfig();
-            }
-        }
-
-        function getStoredConfig() {
-            try {
-                const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
-                if (!saved) return null;
-                const parsed = JSON.parse(saved);
-                if (!parsed.settings || !Array.isArray(parsed.prizes) || !parsed.rarityConfig) {
-                    throw new Error('配置格式不正确');
-                }
-                return parsed;
-            } catch (error) {
-                try { localStorage.removeItem(CONFIG_STORAGE_KEY); } catch (removeError) { /* 忽略不可用的存储 */ }
-                return null;
-            }
-        }
-
-        function showConfigNotice(title) {
+        function showConfigNotice(message) {
             const notice = document.getElementById('configNotice');
             const text = document.getElementById('configNoticeText');
-            text.textContent = `已加载“${title}”的本地配置`;
+            text.textContent = message;
             requestAnimationFrame(() => notice.classList.add('show'));
             setTimeout(() => notice.classList.remove('show'), 3500);
         }
@@ -826,6 +795,7 @@
 
         // ==================== 转盘绘制 ====================
         function drawWheel() {
+            if (!config) return;
             const canvas = document.getElementById('wheelCanvas');
             const ctx = canvas.getContext('2d');
             const prizes = config.prizes;
@@ -920,8 +890,10 @@
 
         // ==================== 抽奖逻辑（核心修复） ====================
         function startSpin() {
-            if (isSpinning) return;
+            if (isSpinning || awaitingWheelResult || !config) return;
             isSpinning = true;
+            awaitingWheelResult = true;
+            document.getElementById('wheelSelect').disabled = true;
 
             const spinBtn = document.getElementById('spinBtn');
             const pointer = document.querySelector('.pointer-circle');
@@ -1069,8 +1041,12 @@
         }
 
         function closeModal() {
+            if (isSpinning) return;
+            awaitingWheelResult = false;
+            document.getElementById('wheelSelect').disabled = isSpinning;
             document.getElementById('modalOverlay').classList.remove('active');
             stopEffect();
+            if (pendingLibraryRefresh) refreshWheelLibrary();
         }
 
         function closeModalOutside(event) {
@@ -1326,10 +1302,10 @@
                 const rarityConfig = config.rarityConfig[prize.rarity];
                 return `
                     <div class="history-item">
-                        <span class="history-icon">${prize.icon}</span>
+                        <span class="history-icon">${escapeWheelText(prize.icon)}</span>
                         <div class="history-info">
-                            <div class="history-name">${prize.name}</div>
-                            <span class="history-rarity" style="background: ${rarityConfig.bgColor}">${prize.rarity}</span>
+                            <div class="history-name">${escapeWheelText(prize.name)}</div>
+                            <span class="history-rarity" style="background: ${escapeWheelText(rarityConfig.bgColor)}">${prize.rarity}</span>
                         </div>
                     </div>
                 `;
@@ -1382,9 +1358,9 @@
                 const rarityConfig = config.rarityConfig[prize.rarity];
                 return `
                     <div class="probability-item">
-                        <span class="probability-icon">${prize.icon}</span>
-                        <span class="probability-name">${prize.name}</span>
-                        <span class="probability-value" style="color: ${rarityConfig.color}">${prize.displayProbability}%</span>
+                        <span class="probability-icon">${escapeWheelText(prize.icon)}</span>
+                        <span class="probability-name">${escapeWheelText(prize.name)}</span>
+                        <span class="probability-value" style="color: ${escapeWheelText(rarityConfig.color)}">${prize.displayProbability}%</span>
                     </div>
                 `;
             }).join('');

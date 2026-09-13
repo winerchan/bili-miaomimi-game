@@ -1,0 +1,14 @@
+{
+  "wheels": [
+    {
+      "id": "classic",
+      "name": "星喵幸运转盘",
+      "file": "prizes.json"
+    },
+    {
+      "id": "challenge",
+      "name": "不怕死挑战",
+      "file": "challenge.json"
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "settings": {
+    "title": "不怕死挑战",
+    "subtitle": "尽情来刁难我喵",
+    "buttonText": "开始抽奖",
+    "spinDuration": 5000,
+    "minSpins": 3,
+    "maxSpins": 5
+  },
+  "rarityConfig": {
+    "超稀有": {
+      "color": "#FFD700",
+      "bgColor": "linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6347 100%)",
+      "glowColor": "rgba(255, 215, 0, 0.8)",
+      "particleColors": [
+        "#FFD700",
+        "#FFA500",
+        "#FF6347",
+        "#FFFF00",
+        "#FF69B4"
+      ],
+      "effectType": "legendary"
+    },
+    "稀有": {
+      "color": "#A855F7",
+      "bgColor": "linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)",
+      "glowColor": "rgba(168, 85, 247, 0.8)",
+      "particleColors": [
+        "#A855F7",
+        "#7C3AED",
+        "#C084FC",
+        "#E879F9"
+      ],
+      "effectType": "rare"
+    },
+    "普通": {
+      "color": "#60A5FA",
+      "bgColor": "linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%)",
+      "glowColor": "rgba(96, 165, 250, 0.6)",
+      "particleColors": [
+        "#60A5FA",
+        "#93C5FD",
+        "#BFDBFE"
+      ],
+      "effectType": "common"
+    }
+  },
+  "prizes": [
+    {
+      "id": 1,
+      "name": "限时不说指定词",
+      "rarity": "超稀有",
+      "probability": 5,
+      "icon": "💒",
+      "description": ""
+    },
+    {
+      "id": 2,
+      "name": "真心话不怕死局",
+      "rarity": "超稀有",
+      "probability": 6,
+      "icon": "🍀",
+      "description": ""
+    },
+    {
+      "id": 3,
+      "name": "姿势封印30s",
+      "rarity": "稀有",
+      "probability": 6,
+      "icon": "👑",
+      "description": ""
+    },
+    {
+      "id": 4,
+      "name": "本音唱歌挑战",
+      "rarity": "稀有",
+      "probability": 7,
+      "icon": "🎤",
+      "description": ""
+    },
+    {
+      "id": 5,
+      "name": "再来一次",
+      "rarity": "稀有",
+      "probability": 7,
+      "icon": "🔄",
+      "description": ""
+    },
+    {
+      "id": 6,
+      "name": "限时我有你没有",
+      "rarity": "稀有",
+      "probability": 7,
+      "icon": "🎭",
+      "description": ""
+    },
+    {
+      "id": 7,
+      "name": "限时说反话挑战",
+      "rarity": "稀有",
+      "probability": 8,
+      "icon": "🐼",
+      "description": ""
+    },
+    {
+      "id": 8,
+      "name": "一口气朗读挑战",
+      "rarity": "普通",
+      "probability": 8,
+      "icon": "🙌",
+      "description": ""
+    },
+    {
+      "id": 10,
+      "name": "地狱耐久绕口令",
+      "rarity": "普通",
+      "probability": 8,
+      "icon": "💬",
+      "description": ""
+    },
+    {
+      "id": 11,
+      "name": "观众拷打时刻",
+      "rarity": "普通",
+      "probability": 9,
+      "icon": "🙏",
+      "description": ""
+    },
+    {
+      "id": 12,
+      "name": "舔狗日记",
+      "rarity": "普通",
+      "probability": 10,
+      "icon": "🐶",
+      "description": ""
+    },
+    {
+      "id": 13,
+      "name": "数字炸弹游戏",
+      "rarity": "普通",
+      "probability": 19,
+      "icon": "🐸",
+      "description": "说出最羞耻的一件事"
+    }
+  ]
+}

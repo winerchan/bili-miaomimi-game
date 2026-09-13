@@ -205,7 +205,7 @@
 
         .prize-item {
             display: grid;
-            grid-template-columns: 50px 1fr auto auto auto auto;
+            grid-template-columns: 50px minmax(0, 1fr) auto auto auto;
             gap: 15px;
             align-items: center;
             padding: 15px;
@@ -893,6 +893,45 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #a1a1a1;
         }
+        .prize-info, .card, .stat-card { min-width:0; }
+        .prize-name-input, .prize-desc-input { width:100%; min-width:0; }
+        .import-export { flex-wrap:wrap; }
+        @media (max-width: 760px) {
+            .navbar { padding:12px 16px; flex-wrap:wrap; gap:12px; }
+            .navbar-title { font-size:1.05rem; }
+            .navbar-actions { flex-wrap:wrap; }
+            .container { padding:16px; }
+            .card-header, .card-body { padding:16px; }
+            .card-header { flex-wrap:wrap; gap:8px; }
+            .stats { gap:8px; grid-template-columns:repeat(3, minmax(0, 1fr)); }
+            .stat-card { padding:12px 4px; }
+            .stat-value { font-size:1.4rem; }
+            .stat-label { font-size:.75rem; overflow-wrap:anywhere; }
+            .prize-item { grid-template-columns:50px minmax(0, 1fr) auto; gap:10px; padding:12px 0; }
+            .prize-info { grid-column:2 / -1; }
+            .prize-rarity { grid-column:1 / 3; }
+            .prize-probability { grid-column:3; }
+            .prize-actions { grid-column:3; justify-self:end; }
+            .wheel-order-row { flex-wrap:wrap; }
+            .wheel-order-row span { flex-basis:100%; }
+            .toast { max-width:calc(100vw - 32px); }
+        }
+        #wheelEditor { border:0; padding:0; min-width:0; }
+        #wheelEditor:disabled { opacity:.78; }
+        .wheel-manager { margin-bottom:24px; }
+        .wheel-manager .btn-primary { background:var(--primary); color:#fff; }
+        .wheel-manager .btn-primary:hover { background:#ec4f83; }
+        .wheel-manager .btn-secondary { background:#eef2ff; color:#4338ca; }
+        .wheel-manager .btn-secondary:hover { background:#e0e7ff; }
+        .wheel-manager-actions { display:flex; flex-wrap:wrap; gap:10px; }
+        #wheelEditStatus, #libraryStatus { margin:12px 0; line-height:1.6; }
+        #libraryStatus { color:#fbbf24; }
+        .wheel-order { margin-top:18px; }
+        .wheel-order summary { cursor:pointer; }
+        .wheel-order p { margin:12px 0; color:var(--text-secondary); }
+        .wheel-order-row { display:flex; align-items:center; gap:8px; padding:8px 0; }
+        .wheel-order-row span { flex:1; min-width:0; overflow-wrap:anywhere; }
+        button:disabled { opacity:.45; cursor:not-allowed; }
     </style>
 </head>
 <body>
@@ -906,7 +945,7 @@
             <a href="index.html" class="btn btn-secondary">
                 <span>🎡</span> 返回转盘
             </a>
-            <button class="btn btn-primary" onclick="saveConfig()">
+            <button class="btn btn-primary" id="saveWheelBtn" onclick="saveConfig()">
                 <span>💾</span> 保存配置
             </button>
         </div>
@@ -914,6 +953,24 @@
 
     <!-- 主容器 -->
     <div class="container">
+        <section class="wheel-manager card">
+            <div class="card-header"><h2 class="card-title">🎡 转盘管理</h2></div>
+            <div class="card-body">
+                <label class="form-label" for="adminWheelSelect">选择转盘</label>
+                <select id="adminWheelSelect" class="form-input" onchange="selectAdminWheel(this.value)"></select>
+                <p id="wheelEditStatus" role="status"></p>
+                <p id="libraryStatus" role="status"></p>
+                <div class="wheel-manager-actions">
+                    <button class="btn btn-primary" id="newWheelBtn" onclick="createLocalWheel()">➕ 新建本地转盘</button>
+                    <button class="btn btn-secondary" id="copyWheelBtn" onclick="copyLocalWheel()">📋 复制为本地转盘</button>
+                    <button class="btn btn-danger" id="deleteWheelBtn" onclick="deleteLocalWheel()">🗑️ 删除本地转盘</button>
+                </div>
+                <details class="wheel-order"><summary>调整转盘显示顺序</summary>
+                    <p>上下移动调整前台顺序，自动保存到当前浏览器。</p>
+                    <div id="wheelOrderList"></div>
+                </details>
+            </div>
+        </section>
         <!-- 统计信息 -->
         <div class="stats">
             <div class="stat-card">
@@ -934,17 +991,17 @@
         <div class="import-export">
             <input type="file" id="importFile" class="file-input" accept=".json" onchange="importConfig(event)">
             <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
-                <span>📤</span> 导入配置
+                <span>📤</span> 导入为本地转盘
             </button>
             <button class="btn btn-secondary" onclick="exportConfig()">
                 <span>📥</span> 导出配置
             </button>
-            <button class="btn btn-danger" onclick="resetConfig()">
-                <span>🔄</span> 重置默认
+            <button class="btn btn-danger" id="resetWheelBtn" onclick="resetConfig()">
+                <span>🔄</span> 重置当前本地转盘
             </button>
         </div>
 
-        <div class="grid">
+        <fieldset id="wheelEditor" class="grid">
             <!-- 基本设置 -->
             <div class="card">
                 <div class="card-header">
@@ -1017,7 +1074,7 @@
                 <div class="card-body" style="padding: 0;">
                     <div class="json-preview">
                         <div class="json-header">
-                            <span class="json-title">config/prizes.json</span>
+                            <span class="json-title">当前转盘配置</span>
                             <div class="json-actions">
                                 <button class="json-btn copy" onclick="copyJson()">📋 复制</button>
                                 <button class="json-btn download" onclick="downloadJson()">⬇️ 下载</button>
@@ -1029,7 +1086,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </fieldset>
     </div>
 
     <!-- Toast 提示 -->
@@ -1058,10 +1115,12 @@
         </div>
     </div>
 
+    <script src="js/wheel-store.js"></script>
+    <script src="js/admin-library.js"></script>
     <script>
         // ==================== 全局变量 ====================
         let config = null;
-        const CONFIG_STORAGE_KEY = 'wheel-lottery-config';
+
         let emojiPickerPrizeIndex = -1;
         let selectedEmoji = '';
         let emojiPickerCategory = '全部';
@@ -1222,48 +1281,6 @@
         ];
 
         // ==================== 初始化 ====================
-        async function init() {
-            await loadConfig();
-            recalculateLastProbability();
-            renderSettings();
-            renderRaritySettings();
-            renderPrizeList();
-            updateJsonPreview();
-            updateStats();
-        }
-
-        // 加载配置
-        async function loadConfig() {
-            const savedConfig = getStoredConfig();
-            if (savedConfig) {
-                config = savedConfig;
-                return;
-            }
-
-            try {
-                const response = await fetch('config/prizes.json');
-                config = await response.json();
-            } catch (e) {
-                console.log('使用默认配置');
-                config = getDefaultConfig();
-            }
-        }
-
-        function getStoredConfig() {
-            try {
-                const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
-                if (!saved) return null;
-                const parsed = JSON.parse(saved);
-                if (!parsed.settings || !Array.isArray(parsed.prizes) || !parsed.rarityConfig) {
-                    throw new Error('配置格式不正确');
-                }
-                return parsed;
-            } catch (error) {
-                try { localStorage.removeItem(CONFIG_STORAGE_KEY); } catch (removeError) { /* 忽略不可用的存储 */ }
-                return null;
-            }
-        }
-
         // 默认配置
         function getDefaultConfig() {
             return {
@@ -1338,16 +1355,16 @@
                 return `
                     <div class="rarity-card ${rarity}">
                         <div class="rarity-title">
-                            <span class="rarity-badge" style="background: ${rc.bgColor}">${badges[rarity]}</span>
+                            <span class="rarity-badge" style="background: ${escapeWheelText(rc.bgColor)}">${badges[rarity]}</span>
                             <span>${rarity}</span>
                         </div>
                         <div class="color-picker-group">
                             <div class="color-picker">
-                                <input type="color" value="${rc.color}" onchange="updateRarityColor('${rarity}', 'color', this.value)">
+                                <input type="color" value="${escapeWheelText(rc.color)}" onchange="updateRarityColor('${rarity}', 'color', this.value)">
                                 <span class="color-label">主色</span>
                             </div>
                             <div class="color-picker">
-                                <input type="color" value="${rc.glowColor.replace(/rgba?\([^)]+\)/, rc.color)}" onchange="updateRarityColor('${rarity}', 'glow', this.value)">
+                                <input type="color" value="${escapeWheelText(rc.glowColor.replace(/rgba?\([^)]+\)/, rc.color))}" onchange="updateRarityColor('${rarity}', 'glow', this.value)">
                                 <span class="color-label">发光色</span>
                             </div>
                         </div>
@@ -1362,11 +1379,11 @@
             const lastPrizeIndex = config.prizes.length - 1;
             container.innerHTML = config.prizes.map((prize, index) => `
                 <div class="prize-item" data-id="${prize.id}">
-                    <button type="button" class="prize-icon-picker" onclick="openEmojiPicker(${index})" title="点击选择 Emoji" aria-label="选择${prize.name}的 Emoji">${prize.icon || '🎁'}</button>
+                    <button type="button" class="prize-icon-picker" onclick="openEmojiPicker(${index})" title="点击选择 Emoji" aria-label="选择${escapeWheelText(prize.name)}的 Emoji">${escapeWheelText(prize.icon || '🎁')}</button>
                     <div class="prize-info">
-                        <input type="text" class="prize-name-input" value="${prize.name}" 
+                        <input type="text" class="prize-name-input" value="${escapeWheelText(prize.name)}"
                                onchange="updatePrize(${index}, 'name', this.value)" placeholder="奖品名称">
-                        <input type="text" class="prize-desc-input" value="${prize.description}" 
+                        <input type="text" class="prize-desc-input" value="${escapeWheelText(prize.description)}"
                                onchange="updatePrize(${index}, 'description', this.value)" placeholder="奖品描述">
                     </div>
                     <div class="prize-rarity">
@@ -1390,6 +1407,7 @@
 
         // ==================== 更新函数 ====================
         function updatePrize(index, field, value) {
+            if (!canEditWheel()) return;
             if (!config.prizes[index]) return;
 
             if (field === 'probability') {
@@ -1534,6 +1552,7 @@
         }
 
         function openEmojiPicker(index) {
+            if (!canEditWheel()) return;
             if (!config.prizes[index]) return;
             emojiPickerPrizeIndex = index;
             selectedEmoji = config.prizes[index].icon || '🎁';
@@ -1583,6 +1602,7 @@
         }
 
         function confirmEmojiSelection() {
+            if (!canEditWheel()) return;
             if (emojiPickerPrizeIndex < 0 || !config.prizes[emojiPickerPrizeIndex]) return;
             config.prizes[emojiPickerPrizeIndex].icon = selectedEmoji || '🎁';
             renderPrizeList();
@@ -1603,6 +1623,7 @@
         }
 
         function updateRarityColor(rarity, type, value) {
+            if (!canEditWheel()) return;
             if (type === 'color') {
                 config.rarityConfig[rarity].color = value;
             } else if (type === 'glow') {
@@ -1619,6 +1640,7 @@
         }
 
         function addPrize() {
+            if (!canEditWheel()) return;
             const newId = Math.max(...config.prizes.map(p => p.id), 0) + 1;
             config.prizes.push({
                 id: newId,
@@ -1636,6 +1658,7 @@
         }
 
         function deletePrize(index) {
+            if (!canEditWheel()) return;
             if (config.prizes.length <= 2) {
                 showToast('至少需要保留2个奖品', 'error');
                 return;
@@ -1676,33 +1699,16 @@
         }
 
         function collectSettingsFromForm() {
+            if (!canEditWheel()) return;
             config.settings.title = document.getElementById('settingTitle').value;
             config.settings.subtitle = document.getElementById('settingSubtitle').value;
             config.settings.buttonText = document.getElementById('settingButtonText').value;
-            config.settings.spinDuration = parseInt(document.getElementById('settingDuration').value) || 5000;
-            config.settings.minSpins = parseInt(document.getElementById('settingMinSpins').value) || 3;
-            config.settings.maxSpins = parseInt(document.getElementById('settingMaxSpins').value) || 5;
+            config.settings.spinDuration = Number(document.getElementById('settingDuration').value);
+            config.settings.minSpins = Number(document.getElementById('settingMinSpins').value);
+            config.settings.maxSpins = Number(document.getElementById('settingMaxSpins').value);
         }
 
         // ==================== 保存和导出 ====================
-        function saveConfig() {
-            collectSettingsFromForm();
-
-            const total = getTotalProbability();
-            if (Math.abs(total - 100) > 0.001) {
-                updateStats();
-                showToast(`保存失败：总概率为 ${total.toFixed(1)}%，请修改为 100%`, 'error');
-                return;
-            }
-
-            try {
-                localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(config));
-                showToast(`“${config.settings.title || '当前转盘'}”配置已保存到浏览器`, 'success');
-            } catch (error) {
-                showToast('保存失败：浏览器本地存储不可用', 'error');
-            }
-        }
-
         function exportConfig() {
             collectSettingsFromForm();
             const json = JSON.stringify(config, null, 2);
@@ -1716,49 +1722,6 @@
             
             URL.revokeObjectURL(url);
             showToast('配置已导出', 'success');
-        }
-
-        function importConfig(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    
-                    // 验证配置格式
-                    if (!imported.settings || !imported.prizes || !imported.rarityConfig) {
-                        throw new Error('配置格式不正确');
-                    }
-
-                    config = imported;
-                    recalculateLastProbability();
-                    renderSettings();
-                    renderRaritySettings();
-                    renderPrizeList();
-                    updateJsonPreview();
-                    updateStats();
-                    showToast('配置导入成功', 'success');
-                } catch (err) {
-                    showToast('导入失败：' + err.message, 'error');
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
-        function resetConfig() {
-            if (confirm('确定要重置为默认配置吗？所有修改将丢失！')) {
-                config = getDefaultConfig();
-                localStorage.removeItem(CONFIG_STORAGE_KEY);
-                renderSettings();
-                renderRaritySettings();
-                renderPrizeList();
-                updateJsonPreview();
-                updateStats();
-                showToast('已重置为默认配置', 'success');
-            }
         }
 
         function copyJson() {
@@ -1778,7 +1741,7 @@
             
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'prizes.json';
+            a.download = (config.settings.title || '转盘') + '.json';
             a.click();
             
             URL.revokeObjectURL(url);
